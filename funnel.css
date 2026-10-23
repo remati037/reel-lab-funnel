@@ -1,0 +1,221 @@
+/* =========================================================
+   Stranice posle kupovine: /ponuda (upsell) i /hvala.
+   Boje, fontovi i osnovni delovi (dugme, scena, call sheet,
+   koraci, garancija) dolaze iz styles.css.
+   ========================================================= */
+
+/* ---------- atmosfera umesto fotografije (lampa u mraku) ----------
+   Kad budeš imao svoju fotku, u .plate stavi <img src="assets/...">. */
+.plate {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  background:
+    radial-gradient(28% 40% at 80% 28%, rgba(255, 150, 60, .45), transparent 70%),
+    radial-gradient(60% 70% at 85% 40%, rgba(255, 91, 31, .16), transparent 75%),
+    linear-gradient(180deg, transparent 60%, rgba(9, 9, 10, .9));
+}
+.plate::after {
+  content: ""; position: absolute; left: 80%; top: 28%; width: 2px; height: 72%;
+  background: linear-gradient(#2a2a2d, #111); transform: translateX(-50%);
+}
+.plate > img { width: 100%; height: 100%; object-fit: cover; opacity: .9; }
+@media (max-width: 760px) {
+  .plate { background: radial-gradient(70% 40% at 90% 10%, rgba(255, 120, 50, .3), transparent 70%); }
+  .plate::after { display: none; }
+}
+
+/* ---------- traka na vrhu ---------- */
+.stop { background: var(--black); border-bottom: 1px solid var(--line); position: relative; z-index: 2; }
+.stop .wrap { padding-top: 14px; padding-bottom: 14px; }
+.stop .brand { color: var(--taupe); margin: 0 0 4px; }
+.stop-t { font-family: var(--f-display); font-size: clamp(26px, 3.4vw, 38px); text-transform: uppercase; line-height: 1; margin: 0; }
+.stop-t .lit { color: var(--orange); }
+
+.progress { display: flex; gap: 8px; margin-top: 12px; max-width: 360px; }
+.progress span { flex: 1; height: 3px; border-radius: 2px; background: var(--line-2); }
+.progress span.done { background: var(--orange); }
+.progress-l { color: var(--taupe); margin-top: 8px; font-size: 10px; }
+
+.tbar { background: var(--black); border-bottom: 1px solid var(--line); position: relative; z-index: 2; }
+.tbar .wrap { display: flex; justify-content: space-between; align-items: center; height: 52px; }
+.tbar .brand { font-family: var(--f-display); font-size: 22px; text-transform: uppercase; }
+
+.lamp { display: inline-flex; align-items: center; gap: 8px; color: var(--orange); font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.lamp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 10px var(--orange); }
+
+/* ---------- hero ---------- */
+.fhero { position: relative; background: var(--black); overflow: hidden; }
+.fhero .wrap { position: relative; z-index: 1; padding-top: 64px; padding-bottom: 80px; }
+.fhero .in { max-width: 640px; }
+.bridge { color: var(--cream-2); margin-bottom: 20px; }
+.fhero .h1 { margin-bottom: 26px; }
+.hero-sub { font-size: 19px; color: var(--cream-2); max-width: 560px; }
+.cue { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; color: var(--cream); text-decoration: none; border-bottom: 1px solid var(--orange); padding-bottom: 4px; }
+.cue::after { content: "↓"; color: var(--orange); }
+
+.hero-video { margin-top: 36px; max-width: 560px; }
+.hero-video .media { aspect-ratio: 16 / 9; }
+.hero-video .cap { margin-top: 10px; color: var(--taupe); }
+
+.render { max-width: 420px; margin-bottom: 30px; }
+.render-row { display: flex; justify-content: space-between; color: var(--cream-2); font-size: 10px; }
+.render-track { height: 3px; background: var(--line-2); margin-top: 8px; border-radius: 2px; overflow: hidden; }
+.render-fill { height: 100%; width: 100%; background: var(--orange); box-shadow: 0 0 12px var(--orange); animation: fill 1.6s var(--out) both; }
+@keyframes fill { from { width: 0; } }
+
+.portal-go { margin-top: 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.portal-go .btn { min-height: 54px; font-size: 22px; }
+.portal-go span { font-size: 14px; color: var(--taupe); max-width: 460px; }
+
+/* ---------- kartice stanja (radionica, Lab, Hook Pack) ---------- */
+.ws { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line-2); max-width: 640px; }
+.ws h2 { font-family: var(--f-display); font-weight: 400; text-transform: uppercase; font-size: clamp(32px, 3.6vw, 42px); line-height: 1; margin: 12px 0 18px; }
+.facts { margin: 0; }
+.facts > div { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--taupe); font-size: 10px; padding-top: 3px; }
+.facts dd { margin: 0; font-size: 15px; }
+.ws-p { margin-top: 14px; font-size: 14px; color: var(--taupe); }
+.ws .btn { min-height: 46px; font-size: 19px; padding: 10px 22px; margin-top: 18px; background: transparent; color: var(--cream); border: 1px solid var(--line-2); box-shadow: none; }
+.ws .btn:hover { border-color: var(--orange); color: var(--orange); background: transparent; }
+
+/* ---------- sekcije ---------- */
+.fsec { padding: var(--sec) 0 0; }
+.fsec:last-of-type { padding-bottom: var(--sec); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+.two .lead { margin-top: 18px; }
+
+/* sam / sa Lab-om */
+.vs { display: grid; grid-template-columns: 1fr 1.15fr; gap: 28px; margin-top: 48px; align-items: start; }
+.vs ul { list-style: none; margin: 0; padding: 0; }
+.vs li { position: relative; padding: 14px 0 14px 30px; border-bottom: 1px solid var(--line); }
+.vs-l { display: block; padding-bottom: 12px; border-bottom: 1px solid var(--line-2); color: var(--taupe); }
+.vs-col:first-child li { color: var(--cream-2); }
+.vs-col:first-child li::before { content: "—"; position: absolute; left: 2px; color: var(--taupe); }
+.vs-me { background: var(--cream); color: var(--ink); border-radius: 6px; padding: 22px 24px; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .9); }
+.vs-me .vs-l { color: #6b5d51; border-color: rgba(22, 9, 3, .25); }
+.vs-me li { border-color: rgba(22, 9, 3, .12); }
+.vs-me li::before { content: "✓"; position: absolute; left: 4px; font-weight: 800; color: var(--orange-press); }
+
+/* šta je unutra + fotka */
+.inside { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; }
+.inside .media { aspect-ratio: 4 / 5; border-radius: 8px; }
+.note { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 22px 24px; margin-top: 28px; transform: rotate(-.8deg); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9); }
+.note-k { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--orange-press); font-weight: 700; margin-bottom: 10px; }
+.note ul { margin: 0; padding: 0; list-style: none; }
+.note li { padding: 8px 0 8px 24px; position: relative; border-bottom: 1px solid rgba(22, 9, 3, .12); font-size: 15px; }
+.note li:last-child { border-bottom: 0; }
+.note li::before { content: "✓"; position: absolute; left: 2px; font-weight: 800; color: var(--orange-press); }
+
+/* ponuda (dno stranice) */
+.close-sec { position: relative; overflow: hidden; margin-top: var(--sec); padding: var(--sec) 0; }
+.close-sec .wrap { position: relative; z-index: 1; }
+.close-sec .in { max-width: 620px; }
+.offer { margin-top: 32px; }
+.pricerow { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; }
+.pricerow .amt { font-family: var(--f-display); font-size: 84px; line-height: .85; color: var(--orange); }
+.pricerow .lbl { border-left: 1px solid var(--line-2); padding-left: 16px; }
+.pricerow .lbl-k { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--orange); }
+.pricerow .lbl b { font-family: var(--f-display); font-weight: 400; font-size: 26px; text-transform: uppercase; }
+.lock { font-size: 15px; color: var(--cream-2); margin: 0 0 22px; }
+.lock s { color: var(--taupe); }
+.offer .btn { width: 100%; position: relative; overflow: hidden; }
+.offer .btn[disabled] { opacity: .7; cursor: progress; }
+.btn-note { text-align: center; font-family: var(--f-mono); font-size: 11px; color: var(--cream-2); margin: 12px 0 6px; line-height: 1.7; }
+.decline { display: block; text-align: center; color: var(--cream-2); font-size: 15px; margin-top: 8px; }
+.decline:hover { color: var(--cream); }
+.fail { display: none; margin-top: 14px; padding: 12px 14px; border: 1px solid var(--orange); border-radius: 4px; font-size: 14px; }
+.offer[data-state="failed"] .fail { display: block; }
+.small { font-size: 13px; color: var(--taupe); margin-top: 22px; }
+
+/* hvala: snimi tri klipa */
+.clips { display: flex; gap: 12px; margin: 26px 0; }
+.clip { width: 104px; aspect-ratio: 9 / 16; border: 1px solid var(--line-2); border-radius: 8px; display: flex; align-items: flex-end; padding: 10px; color: var(--taupe); position: relative; }
+.clip::before { content: ""; position: absolute; inset: 8px; border: 1px solid transparent; border-top-color: var(--line-2); border-left-color: var(--line-2); width: 12px; height: 12px; }
+.need { font-size: 15px; color: var(--cream-2); max-width: 520px; }
+
+.cmd { margin-top: 10px; background: var(--ink); color: var(--cream); font-family: var(--f-mono); font-size: 11px; border-radius: 4px; padding: 10px 12px; overflow-x: auto; white-space: nowrap; }
+
+/* hvala: garancija + pomoć */
+.gline { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.gline .guarantee { margin-top: 0; }
+.help-k { color: var(--taupe); margin-bottom: 8px; }
+.help-a { font-family: var(--f-display); font-size: clamp(28px, 3.4vw, 44px); text-transform: uppercase; text-decoration: none; word-break: break-all; }
+.help-a:hover { color: var(--orange); }
+
+.ffoot { background: var(--black); border-top: 1px solid var(--line); padding: 30px 0; font-size: 12px; color: var(--taupe); }
+.ffoot a { color: var(--taupe); }
+
+/* demo traka (samo za pregled, sakrij kad pustiš uživo) */
+.demo { position: fixed; right: 12px; bottom: 12px; z-index: 80; background: var(--ground-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 10px 12px; font-family: var(--f-mono); font-size: 10px; color: var(--taupe); display: flex; gap: 10px; flex-wrap: wrap; max-width: calc(100vw - 24px); }
+.demo a { color: var(--cream); }
+
+@media (max-width: 1020px) {
+  .two, .vs, .inside, .gline { grid-template-columns: 1fr; }
+  .inside .media { max-width: 420px; }
+}
+@media (max-width: 760px) {
+  .fhero .wrap { padding-top: 36px; padding-bottom: 56px; }
+  .facts > div { grid-template-columns: 96px 1fr; gap: 10px; }
+  .pricerow .amt { font-size: 68px; }
+  .clip { width: 30%; }
+  .note { transform: none; }
+}
+
+/* =========================================================
+   TEST CHECKOUT (checkout.html) — izgleda kao Stripe Checkout
+   ========================================================= */
+.co-body { background: #fff; }
+.co { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+.co-sum { background: var(--ground); padding: 56px max(32px, calc((100vw - 1000px) / 2)) 56px 48px; }
+.co-sum > * { max-width: 420px; margin-left: auto; }
+.co-back { display: block; color: var(--taupe); text-decoration: none; margin-bottom: 28px; }
+.co-brand { display: flex; align-items: center; gap: 12px; font-family: var(--f-display); font-size: 26px; text-transform: uppercase; margin-bottom: 36px; }
+.co-test { font-family: var(--f-mono); font-size: 9px; letter-spacing: .1em; background: #f5a623; color: #3a2400; padding: 3px 7px; border-radius: 4px; }
+.co-k { color: var(--taupe); margin: 0 0 6px; }
+.co-total { font-family: var(--f-display); font-size: 64px; line-height: 1; margin: 0 0 32px; }
+.co-line { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.co-line span { color: var(--cream-2); }
+.co-line div span { display: block; font-size: 13px; color: var(--taupe); }
+.co-sub { border-bottom: 0; padding-top: 18px; }
+.co-fine { font-size: 12px; color: var(--taupe); }
+
+.co-bump { display: grid; grid-template-columns: 22px 1fr auto; gap: 12px; margin: 18px 0; padding: 16px; border: 1px dashed var(--orange); border-radius: 8px; background: rgba(255, 91, 31, .08); cursor: pointer; font-size: 14px; }
+.co-bump input { width: 18px; height: 18px; accent-color: var(--orange); margin-top: 2px; }
+.co-bump b { display: block; color: var(--cream); margin-bottom: 4px; }
+.co-bump span { color: var(--cream-2); font-size: 13px; line-height: 1.45; }
+.co-bump .co-bump-p { color: var(--orange); font-weight: 700; white-space: nowrap; font-size: 14px; }
+
+.co-form { background: #fff; color: #30313d; padding: 56px 48px 56px max(32px, calc((100vw - 1000px) / 2)); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 14px; }
+.co-form > * { max-width: 400px; }
+.co-pay-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.co-wallet { height: 44px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+.co-wallet.g { background: #fff; color: #3c4043; border: 1px solid #dadce0; }
+.co-or { display: flex; align-items: center; gap: 12px; color: #6d6e78; margin: 22px 0; }
+.co-or::before, .co-or::after { content: ""; flex: 1; height: 1px; background: #e6e6e6; }
+.co-f { display: block; margin-bottom: 16px; color: #30313d; font-weight: 500; }
+.co-f input, .co-card { display: block; width: 100%; margin-top: 6px; }
+.co-f input { height: 42px; border: 1px solid #e0e0e0; border-radius: 6px; padding: 0 12px; font: inherit; font-weight: 400; color: #30313d; box-shadow: 0 1px 1px rgba(0, 0, 0, .03); }
+.co-f input:focus { outline: none; border-color: #0570de; box-shadow: 0 0 0 3px rgba(5, 112, 222, .2); }
+.co-card input { margin-top: 0; border-radius: 0; color: #6d6e78; background: #fafafa; }
+.co-card > input { border-radius: 6px 6px 0 0; }
+.co-card-row { display: grid; grid-template-columns: 1fr 1fr; }
+.co-card-row input { border-top: 0; }
+.co-card-row input:first-child { border-radius: 0 0 0 6px; border-right: 0; }
+.co-card-row input:last-child { border-radius: 0 0 6px 0; }
+.co-hint { display: block; margin-top: 6px; font-size: 12px; font-weight: 400; color: #b26b00; }
+.co-check { display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-size: 13px; color: #6d6e78; line-height: 1.5; margin: 6px 0 18px; }
+.co-check input { margin-top: 3px; }
+.co-check a { color: #0570de; }
+.co-err { color: #df1b41; min-height: 1em; margin: 0 0 8px; font-size: 13px; }
+.co-submit { width: 100%; height: 48px; border: 0; border-radius: 6px; background: var(--orange); color: var(--ink); font-family: var(--f-display); font-size: 22px; letter-spacing: .03em; text-transform: uppercase; cursor: pointer; }
+.co-submit:hover { background: #ff6d36; }
+.co-secure { text-align: center; color: #6d6e78; font-size: 12px; margin-top: 12px; }
+.co-sim { margin-top: 32px; border: 1px dashed #f5a623; border-radius: 8px; padding: 12px 14px; background: #fffaf0; }
+.co-sim legend { color: #b26b00; padding: 0 6px; font-size: 10px; }
+.co-sim label { display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 4px 0; }
+
+@media (max-width: 860px) {
+  .co { grid-template-columns: 1fr; }
+  .co-sum, .co-form { padding: 32px var(--gutter); }
+  .co-sum > *, .co-form > * { max-width: none; }
+  .co-total { font-size: 52px; margin-bottom: 20px; }
+}

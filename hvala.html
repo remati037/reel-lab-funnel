@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Unutra si · Creator Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="funnel.css">
+</head>
+<body>
+<!--
+  STRANICA: /hvala — poslednji korak (3 od 3). Jedan cilj: da kupac za 10 minuta
+  bude u Circle-u i nalepi install komandu.
+  Kartice ispod dugmeta se pojavljuju po porudžbini (u produkciji iz /api/order,
+  u pregledu iz URL-a): ?lab=1  ?lab=clan  ?bump=1  ?radionica=1
+-->
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="clap" viewBox="0 0 30 16">
+    <rect x="0" y="9" width="30" height="7" rx="1" fill="#F4EDE0"/>
+    <path d="M1 7 27 0l1 4L2 11z" fill="#F4EDE0"/>
+    <path d="M6 5.6 9 3.4l3 1-3 2.2zM13 3.7l3-2.2 3 1-3 2.2zM20 1.9l3-1.6 2.2.8-3 2z" fill="#151517"/>
+  </symbol>
+</svg>
+
+<div class="tbar">
+  <div class="wrap">
+    <span class="brand">Creator Studio</span>
+    <span class="lamp">Porudžbina potvrđena</span>
+  </div>
+</div>
+
+<main>
+<!-- ================= UNUTRA SI ================= -->
+<header class="fhero">
+  <div class="plate" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="in">
+      <div class="render" aria-hidden="true">
+        <div class="render-row mono"><span>Plaćanje završeno</span><span>100%</span></div>
+        <div class="render-track"><div class="render-fill"></div></div>
+      </div>
+
+      <h1 class="display h1">Čestitam.<br>Unutra si.</h1>
+      <p class="hero-sub"><b>Dobrodošlica u Creator Studio.</b> Račun ti stiže mejlom. Sve što si kupio čeka te u Circle-u.</p>
+
+      <p class="portal-go">
+        <a class="btn" data-circle href="#">Otvori Circle</a>
+        <span>Pozivnica za Circle stiže mejlom za minut (pogledaj i Promocije i Spam). Lozinku postaviš jednom, i to je to.</span>
+      </p>
+
+      <!-- Ovde se ubacuju kartice: Lab, Hook Pack, radionica -->
+      <div data-cards></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= SCENA 01 · ŠTA SAD ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>01</b> <span class="sep">|</span> Šta sad</div>
+
+    <div class="two">
+      <div>
+        <h2 class="display h2">Tri koraka do prvog rilsa.</h2>
+        <p class="lead">Podesi jednom. Onda samo reci kreni.</p>
+      </div>
+      <div class="steps" style="margin-top:0">
+        <div class="step"><span class="num">1</span><div><span class="mono">Odmah</span><p><b>Proveri mejl.</b> Pozivnica za Circle stiže za minut. Ako je nema, pogledaj Promocije i Spam.</p></div></div>
+        <div class="step"><span class="num">2</span><div><span class="mono">Za 2 minuta</span><p><b>Uđi u Circle → Kreni ovde.</b> Tamo je sve: lekcije, snimci, biblioteka efekata.</p></div></div>
+        <div class="step"><span class="num">3</span><div><span class="mono">Jednom</span><p><b>Nalepi install komandu u Claude</b> i montiraj prvi rils. Komanda je u lekciji <i>Instalacija</i>, za Mac i Windows.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 02 · PRVI KLIPOVI ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Tvoji prvi klipovi</div>
+
+    <div class="two">
+      <div>
+        <h2 class="display h2">Snimi tri klipa.</h2>
+        <p class="lead">Vertikalno, 4K ako telefon može, kamera mirna. Pogrešiš rečenicu? Nastavi da snimaš i reci je ponovo. Claude bira najbolji take.</p>
+        <div class="clips" aria-hidden="true">
+          <div class="clip mono">Klip 01</div>
+          <div class="clip mono">Klip 02</div>
+          <div class="clip mono">Klip 03</div>
+        </div>
+        <p class="need"><b>Pripremi i ovo:</b> Mac ili Windows računar, i Claude desktop aplikaciju sa plaćenim Claude planom. Pro plan (20$ mesečno) je dovoljan.</p>
+      </div>
+      <!-- Zameni sa: <img src="assets/stolica.jpg" alt=""> -->
+      <div class="media" style="aspect-ratio:4/5"><div class="ph">Fotografija (set, stolica, lampa)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 03 · ŠTA DOBIJAŠ ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>03</b> <span class="sep">|</span> Šta dobijaš</div>
+
+    <div class="sec-head" style="margin-bottom:40px">
+      <h2 class="display h2">Ovo je ceo studio. Devet stvari.</h2>
+      <ul class="ticks mono" style="margin:0">
+        <li>Svih devet je u tvom Circle-u</li>
+        <li>Besplatna ažuriranja zauvek</li>
+      </ul>
+    </div>
+
+    <div class="sheet">
+      <div class="sheet-top mono"><span>Call sheet</span><span>Creator Studio</span></div>
+      <div class="sheet-grid">
+        <div class="item"><span class="n">01</span><div><h3>Look Builder</h3><p>Izaberi izgled titlova koji ti se sviđa, ili daj Claude-u rils koji voliš kao primer. Tvoji rilsovi izlaze u tvom stilu.</p></div></div>
+        <div class="item"><span class="n">02</span><div><h3>FX paket: 46 efekata</h3><p>Izabereš one koje voliš i Claude ih ugradi u tvoj rils.</p></div></div>
+        <div class="item"><span class="n">03</span><div><h3>Probni rilsovi</h3><p>Posle montaže reci „napravi 8 probnih rilsova“. Svaki testira novi hook, titlove ili stil, a Claude ih objavi umesto tebe.</p></div></div>
+        <div class="item"><span class="n">04</span><div><h3>Carousel Studio</h3><p>Reci „pretvori moj poslednji rils u karusel“ ili „napravi karusel o [tvoja tema]“.</p></div></div>
+        <div class="item"><span class="n">05</span><div><h3>Automatsko objavljivanje</h3><p>Reci „objavi“ ili „zakaži za sutra“. Claude objavljuje tvoje videe, probne rilsove i karusele.</p></div></div>
+        <div class="item"><span class="n">06</span><div><h3>Pravila zvuka</h3><p>Moji preporučeni zvukovi, koji ide uz koji efekat i koliko glasno. Claude ih postavi umesto tebe.</p></div></div>
+        <div class="item"><span class="n">07</span><div><h3>GIF Finder</h3><p>Kaži da hoćeš GIF. Claude nađe onaj koji paše uz tvoju rečenicu i ubaci ga u rils.</p></div></div>
+        <div class="item"><span class="n">08</span><div><h3>8 snimaka „preko ramena“</h3><p>Kratki videi u kojima gledaš kako ga koristim. Jedan je ceo rils od nule.</p></div></div>
+        <div class="item"><span class="n">09</span><div><h3>Podešavanje prvog rilsa</h3><p>Instalacija jednim lepljenjem za Mac i Windows, sa „doctor“ komandom koja nađe i popravi probleme.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 04 · GARANCIJA ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>04</b> <span class="sep">|</span> Garancija</div>
+
+    <div class="gline">
+      <aside class="guarantee">
+        <h2 class="display h3">Zameni montažera za 7 dana, ili ti vraćamo novac.</h2>
+        <p><b>Montiraj svoje rilsove sa njim 7 dana.</b></p>
+        <p>Ako i dalje radije otvaraš CapCut ili plaćaš montažera, pošalji mejl na <a data-mail href="#"></a> i vraćam ti svaki evro.</p>
+        <p style="margin:0">Tvojih 7 dana počinje danas.</p>
+      </aside>
+      <div>
+        <p class="help-k mono">Pitanja o porudžbini?</p>
+        <a class="help-a" data-mail href="#"></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ffoot" style="margin-top:var(--sec)">
+  <div class="wrap">© [Tvoj Brend] · <a href="#">Uslovi korišćenja</a> · <a href="#">Privatnost</a> · <a href="#">Povraćaj novca</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+</footer>
+
+<!-- ================= KARTICE (ubacuju se gore po porudžbini) ================= -->
+<template id="card-lab">
+  <section class="ws">
+    <p class="lamp">AI Profit Lab dodat</p>
+    <h2>AI Profit Lab je otključan.</h2>
+    <dl class="facts">
+      <div><dt class="mono">Gde</dt><dd>U istom Circle-u, odmah ispod Creator Studija.</dd></div>
+      <div><dt class="mono">Kreni od</dt><dd><b>Prvih 30 dana</b>: prvi zadatak te čeka unutra.</dd></div>
+      <div><dt class="mono">Naplata</dt><dd><span data-f="lab.first">1€</span> danas. Za 30 dana <span data-f="lab.monthly">47€</span> mesečno. Otkazuješ bilo kad, link je u svakom mejlu.</dd></div>
+    </dl>
+  </section>
+</template>
+
+<template id="card-lab-clan">
+  <section class="ws">
+    <p class="lamp">AI Profit Lab</p>
+    <h2>Već si u Lab-u. Vidimo se unutra.</h2>
+    <p class="ws-p">Creator Studio se pojavio u istom Circle-u, pored Lab-a.</p>
+  </section>
+</template>
+
+<template id="card-bump">
+  <section class="ws">
+    <p class="lamp">Viral Hook Pack dodat</p>
+    <h2>Viral Hook Pack je u tvom Circle-u.</h2>
+    <dl class="facts">
+      <div><dt class="mono">Gde</dt><dd>Creator Studio → Viral Hook Pack.</dd></div>
+      <div><dt class="mono">Onda reci</dt><dd>„Napravi 8 probnih rilsova sa hook-ovima iz paketa.“</dd></div>
+    </dl>
+  </section>
+</template>
+
+<template id="card-radionica">
+  <section class="ws">
+    <p class="lamp">Među prvih 100 si</p>
+    <h2>🎟️ Tvoje mesto na radionici je sačuvano.</h2>
+    <dl class="facts">
+      <div><dt class="mono">Kada</dt><dd data-ws-when></dd></div>
+      <div><dt class="mono">Gde</dt><dd>Uživo na Zoom-u, sa mnom. 2 sata.</dd></div>
+      <div><dt class="mono">Donesi</dt><dd>Svoje klipove i pitanja.</dd></div>
+    </dl>
+    <p class="ws-p">Zoom link stiže mejlom pre radionice.</p>
+    <a class="btn" data-gcal href="#" target="_blank" rel="noopener">+ Dodaj u kalendar</a>
+  </section>
+</template>
+
+<!-- Samo za pregled: obriši pre puštanja uživo -->
+<div class="demo">TEST FUNNEL: <a href="index.html">↺ ispočetka (landing)</a> <a href="checkout.html">checkout</a> <a href="hvala.html?lab=1&radionica=1&bump=1">sve kartice</a></div>
+
+<script src="funnel.js"></script>
+</body>
+</html>

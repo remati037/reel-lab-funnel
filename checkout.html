@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Plaćanje · Creator Studio (TEST)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="funnel.css">
+</head>
+<body class="co-body">
+<!--
+  TEST CHECKOUT — samo za prolazak kroz funnel bez Stripe-a.
+  Ništa se ne naplaćuje i ništa se ne šalje. Uživo ovu stranicu zamenjuje
+  Stripe Checkout (/api/checkout), sa istim stavkama: Studio + order bump
+  Viral Hook Pack + saglasnost za digitalni sadržaj (FUNNEL-PLAN.md, sekcija 3).
+-->
+
+<div class="co">
+  <!-- LEVO: porudžbina -->
+  <aside class="co-sum">
+    <a class="co-back mono" href="index.html">← Nazad</a>
+    <div class="co-brand"><span>Creator Studio</span><span class="co-test">Test mode</span></div>
+
+    <p class="co-k mono">Plaćaš</p>
+    <p class="co-total" data-total>97,00 €</p>
+
+    <div class="co-line">
+      <div><b>Creator Studio</b><span>Jedna uplata · pristup odmah</span></div>
+      <span data-studio-price>97,00 €</span>
+    </div>
+
+    <!-- ORDER BUMP (u Stripe-u: optional_items) -->
+    <label class="co-bump">
+      <input type="checkbox" data-bump>
+      <div>
+        <b>Dodaj Viral Hook Pack za 27 €</b>
+        <span>150 proverenih hook formula za prve 3 sekunde, po nišama. Studio ih sam rotira u probnim rilsovima.</span>
+      </div>
+      <span class="co-bump-p">+27,00 €</span>
+    </label>
+
+    <div class="co-line co-sub"><span>Ukupno</span><b data-total>97,00 €</b></div>
+    <p class="co-fine">PDV se obračunava po državi kupca (Stripe Tax).</p>
+  </aside>
+
+  <!-- DESNO: forma -->
+  <main class="co-form">
+    <div class="co-pay-btns">
+      <button type="button" class="co-wallet" data-pay>Apple Pay</button>
+      <button type="button" class="co-wallet g" data-pay>Google Pay</button>
+    </div>
+    <p class="co-or"><span>Ili platite karticom</span></p>
+
+    <form data-form novalidate>
+      <label class="co-f">Email
+        <input type="email" name="email" placeholder="ime@primer.rs" autocomplete="off" required>
+      </label>
+
+      <label class="co-f">Podaci o kartici
+        <div class="co-card">
+          <input value="4242 4242 4242 4242" readonly aria-label="Broj kartice">
+          <div class="co-card-row"><input value="12 / 34" readonly aria-label="Ističe"><input value="123" readonly aria-label="CVC"></div>
+        </div>
+        <span class="co-hint">Test kartica, polja su zaključana. Ništa se ne naplaćuje.</span>
+      </label>
+
+      <label class="co-f">Ime na kartici
+        <input name="name" placeholder="Ime i prezime" autocomplete="off">
+      </label>
+
+      <label class="co-check">
+        <input type="checkbox" name="terms" required>
+        <span>Prihvatam <a href="#">uslove korišćenja</a> i saglasan sam da pristup digitalnom sadržaju počinje odmah, čime gubim pravo na odustanak od 14 dana. Garancija od 7 dana i dalje važi.</span>
+      </label>
+
+      <p class="co-err" data-err></p>
+      <button class="co-submit" type="submit"><span data-pay-label>Plati 97,00 €</span></button>
+      <p class="co-secure">🔒 Sigurno plaćanje preko Stripe-a</p>
+    </form>
+
+    <!-- SIMULACIJA: šta webhook/server zna o kupcu -->
+    <fieldset class="co-sim">
+      <legend class="mono">Simulacija (samo test)</legend>
+      <label><input type="checkbox" data-sim="radionica" checked> Kupac je među prvih 100 (radionica)</label>
+      <label><input type="checkbox" data-sim="labClan"> Kupac je već AI Profit Lab član (preskače ponudu)</label>
+      <label><input type="checkbox" data-sim="fail"> Banka odbija upsell naplatu</label>
+    </fieldset>
+  </main>
+</div>
+
+<script>
+  const STUDIO = 97, BUMP = 27;
+  const eur = (n) => n.toFixed(2).replace(".", ",") + " €";
+  const bump = document.querySelector("[data-bump]");
+  const sync = () => {
+    const t = STUDIO + (bump.checked ? BUMP : 0);
+    document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = eur(t)));
+    document.querySelector("[data-pay-label]").textContent = "Plati " + eur(t);
+  };
+  bump.addEventListener("change", sync);
+  sync();
+
+  const form = document.querySelector("[data-form]");
+  const err = document.querySelector("[data-err]");
+  const sim = (k) => document.querySelector(`[data-sim="${k}"]`).checked;
+
+  function pay(viaWallet) {
+    if (!viaWallet) {
+      if (!form.email.value.includes("@")) return (err.textContent = "Upiši ispravan email.");
+      if (!form.terms.checked) return (err.textContent = "Prihvati uslove da nastaviš.");
+    }
+    err.textContent = "";
+    document.querySelector("[data-pay-label]").textContent = "Obrađujem...";
+
+    // isto što bi Stripe vratio u success_url: /ponuda?session_id=...
+    const q = new URLSearchParams({ session_id: "cs_test_" + Math.random().toString(36).slice(2, 10) });
+    if (bump.checked) q.set("bump", "1");
+    if (sim("radionica")) q.set("radionica", "1");
+    if (sim("fail")) q.set("fail", "1");
+    // već Lab član: server preskače ponudu i šalje direktno na hvala
+    const next = sim("labClan") ? "hvala.html" : "ponuda.html";
+    if (sim("labClan")) q.set("lab", "clan");
+    setTimeout(() => (location.href = next + "?" + q), 900);
+  }
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); pay(false); });
+  document.querySelectorAll("[data-pay]").forEach((b) => b.addEventListener("click", () => pay(true)));
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Još jedan korak · Creator Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="funnel.css">
+  <!-- Za 3DS potvrdu kod one-click naplate: -->
+  <script src="https://js.stripe.com/v3/" defer></script>
+</head>
+<body>
+<!--
+  STRANICA: /ponuda — one-click upsell odmah posle Stripe Checkout-a (korak 2 od 3).
+  Stripe success_url: /ponuda?session_id={CHECKOUT_SESSION_ID}
+  Ponuda: AI Profit Lab, 1€ prvi mesec, pa 47€/mes (redovno 57€, cena zaključana).
+  Cena i dugme su tek na dnu: kupac prvo pročita ponudu.
+  Ako je kupac već Lab član, server ga preskače direktno na /hvala?lab=clan.
+-->
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="clap" viewBox="0 0 30 16">
+    <rect x="0" y="9" width="30" height="7" rx="1" fill="#F4EDE0"/>
+    <path d="M1 7 27 0l1 4L2 11z" fill="#F4EDE0"/>
+    <path d="M6 5.6 9 3.4l3 1-3 2.2zM13 3.7l3-2.2 3 1-3 2.2zM20 1.9l3-1.6 2.2.8-3 2z" fill="#151517"/>
+  </symbol>
+</svg>
+
+<!-- STOP TRAKA: prvo što kupac vidi posle plaćanja -->
+<div class="stop" role="status">
+  <div class="wrap">
+    <p class="brand mono">Creator Studio</p>
+    <p class="stop-t"><span>Tvoja porudžbina nije završena.</span> <span class="lit">Pročitaj ovo prvo.</span></p>
+    <div class="progress" aria-hidden="true"><span class="done"></span><span class="done"></span><span></span></div>
+    <p class="progress-l mono">Korak 2 od 3</p>
+  </div>
+</div>
+
+<main>
+<!-- ================= HERO ================= -->
+<section class="fhero">
+  <div class="plate" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="in">
+      <p class="bridge"><b>✓ Plaćanje je prošlo. Tvoj Studio je spreman.</b> Još jedan izbor pre potvrde:</p>
+      <h1 class="display h1">Hoćeš i da zaradiš od tih rilsova?</h1>
+      <p class="hero-sub"><b>AI Profit Lab.</b> Studio ti pravi sadržaj. Lab ti pokazuje kako da od tog sadržaja zaradiš: korak po korak, sa mnom i ljudima koji to već rade.</p>
+
+      <div class="hero-video">
+        <!-- Video 60–90 sek: ti, iskreno, šta je Lab i šta dobija u prvih 30 dana.
+             Zameni sa: <video src="assets/lab.mp4" controls playsinline poster="assets/lab.jpg"></video> -->
+        <div class="media"><div class="ph">Video 60–90 sek · šta je AI Profit Lab</div><span class="play"></span></div>
+      </div>
+
+      <a class="cue mono" href="#zasto">Evo kako radi</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 02 · ZAŠTO ================= -->
+<section class="fsec" id="zasto">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Zašto ga dodati</div>
+
+    <h2 class="display h2">Studio ti montira rilsove. Lab ti pokazuje kako da od njih zaradiš.</h2>
+    <p class="lead" style="margin-top:22px"><b>Pregledi nisu cilj.</b> Cilj je da sadržaj donosi klijente, prodaju ili posao. Većina kreatora objavljuje svaki dan i i dalje ne zna šta da prodaje ni kome. <b>Lab to rešava.</b></p>
+
+    <!-- PROVERI: ishodi ispod su predlog, uskladi ih sa onim što Lab stvarno daje -->
+    <div class="vs">
+      <div class="vs-col">
+        <span class="vs-l mono">Sam</span>
+        <ul>
+          <li>Objavljuješ redovno, ali pregledi ne postaju novac.</li>
+          <li>Ne znaš koju ponudu da napraviš ni koliko da naplatiš.</li>
+          <li>Pratiš AI alate sam i gubiš vreme na ono što ne radi.</li>
+        </ul>
+      </div>
+      <div class="vs-col vs-me">
+        <span class="vs-l mono">Sa AI Profit Lab-om</span>
+        <ul>
+          <li><b>Prvih 30 dana</b>: jasan put do prve zarade od AI-ja, zadatak po zadatak.</li>
+          <li>Pokazujem ti kako da od sadržaja napraviš ponudu i prodaju, ne samo preglede.</li>
+          <li><b>Mesečni live poziv</b> sa mnom: doneseš pitanje, odeš sa rešenjem.</li>
+          <li>Zajednica ljudi koji grade isto što i ti, u istom Circle-u gde je tvoj Studio.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 03 · ŠTA JE UNUTRA ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>03</b> <span class="sep">|</span> Šta je unutra</div>
+
+    <div class="inside">
+      <div>
+        <h2 class="display h2">Prvih 30 dana. Onda ostaješ samo ako vredi.</h2>
+        <p class="lead" style="margin-top:20px">Lab je u istom Circle-u kao tvoj Studio. Bez nove lozinke, bez nove aplikacije. Kažeš da i otvara se odmah.</p>
+
+        <div class="note">
+          <span class="note-k">Šta dobijaš kao član</span>
+          <ul>
+            <li><b>Prvih 30 dana:</b> put do prve zarade, napravljen za nove članove</li>
+            <li><b>Mesečni live poziv</b> sa mnom</li>
+            <li><b>Novi Studio stil svakog meseca</b>, pre svih ostalih</li>
+            <li><b>Snimak radionice</b>, i ako ne stigneš uživo</li>
+            <li><b>Sve postojeće lekcije i prostori</b> AI Profit Lab-a</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Zameni sa: <img src="assets/autor-lab.jpg" alt="Tvoje ime"> -->
+      <div class="media"><div class="ph">Tvoja fotografija</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 04 · TVOJA ODLUKA ================= -->
+<section class="close-sec">
+  <div class="plate" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>04</b> <span class="sep">|</span> Tvoja odluka</div>
+
+    <div class="in">
+      <h2 class="display h2">Prestani da objavljuješ za lajkove.</h2>
+      <p class="lead" style="margin-top:20px"><b>AI Profit Lab.</b> Otvara se u istom Circle-u čim kažeš da. Prvi mesec za <span data-f="lab.first">1€</span>, da vidiš iznutra da li je za tebe.</p>
+
+      <div class="offer" data-offer>
+        <p class="pricerow">
+          <span class="amt" data-f="lab.first">1€</span>
+          <span class="lbl"><span class="lbl-k">Prvi mesec</span><b>Pristup odmah</b></span>
+        </p>
+        <p class="lock">Posle toga <b><span data-f="lab.monthly">47€</span> mesečno</b> umesto <s><span data-f="lab.regular">57€</span></s>. Kao kupac Studija zadržavaš tu cenu dok god si član.</p>
+
+        <button class="btn" type="button" data-yes data-label="Da, dodaj AI Profit Lab za 1€"><span>Da, dodaj AI Profit Lab za 1€</span></button>
+        <p class="btn-note">Jedan klik. Naplaćujemo karticu koju si upravo koristio.<br><span data-f="lab.first">1€</span> sada, <span data-f="lab.monthly">47€</span>/mes od <span data-renew-date>…</span>. Otkaži bilo kad, jednim klikom.</p>
+        <p class="fail">Banka nije prihvatila naplatu. Tvoj Studio je i dalje kupljen. Probaj ponovo, ili idi dalje i Lab možeš dodati kasnije iz Circle-a.</p>
+        <a class="decline" data-no href="hvala.html">Ne hvala, idem na svoj Studio →</a>
+      </div>
+
+      <p class="small">Pretplatu otkazuješ sam, u par sekundi, preko linka koji dobiješ u svakom mejlu. <a href="#">Uslovi pretplate</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ffoot">
+  <div class="wrap">© [Tvoj Brend] · <a href="#">Uslovi korišćenja</a> · <a href="#">Privatnost</a></div>
+</footer>
+
+<!-- Samo za pregled: obriši pre puštanja uživo -->
+<div class="demo">TEST FUNNEL: <a href="index.html">↺ ispočetka (landing)</a> <a href="checkout.html">checkout</a></div>
+
+<script src="funnel.js"></script>
+</body>
+</html>
