@@ -34,10 +34,10 @@ Server gasiš sa `Ctrl + C` u terminalu.
 ## Kako da prođeš ceo flow
 
 1. **Landing:** na http://localhost:5500 klikni bilo koje dugme **„Neka Claude montira moje rilsove“**.
-2. **Checkout:** otvara se test checkout koji liči na Stripe.
-   - Po želji čekiraj **Viral Hook Pack (+27 €)** (order bump). Ukupno se menja sa 97 € na 124 €.
-   - Upiši bilo koji email (npr. `test@primer.rs`) i čekiraj **uslove**.
-   - Klikni **Plati**. Apple Pay i Google Pay dugmad preskaču proveru forme.
+2. **Checkout:** otvara se test checkout, sa formom i odbrojavanjem levo i karticom „Tvoja porudžbina“ desno.
+   - Po želji čekiraj **Viral Hook Pack (+27€)** (order bump). Ukupno u kartici porudžbine se menja sa 97€ na 124€.
+   - Upiši bilo koji email (npr. `test@primer.rs`) i čekiraj **uslove**. Polja kartice su zaključana test vrednostima.
+   - Klikni **Završi porudžbinu**.
 3. **Ponuda (upsell):** stranica „Tvoja porudžbina nije završena“.
    - **„Da, dodaj AI Profit Lab za 1€“** vodi na hvala stranicu sa karticom za Lab.
    - **„Ne hvala, idem na svoj Studio →“** vodi na hvala stranicu bez Lab-a.
