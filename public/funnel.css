@@ -205,6 +205,8 @@
 .co-cardnum .brands i { width: 26px; height: 17px; border-radius: 3px; background: #fff; font: normal 700 7px/17px var(--f-body); color: #1a1f71; text-align: center; }
 .co-link { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 18px; }
 .co-link::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: #00d66f; }
+.co-pay { margin-bottom: 18px; min-height: 120px; }
+.co-loading { font-size: 11px; color: var(--taupe); padding: 20px 0; }
 .co-hint { font-size: 12px; color: #f5a623; margin: -4px 0 14px; }
 .co-fee { font-size: 14px; color: var(--cream-2); margin: 4px 0 22px; }
 .co-fee b { color: var(--cream); }

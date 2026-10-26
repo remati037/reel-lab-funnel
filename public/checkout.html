@@ -10,13 +10,14 @@
   <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="funnel.css">
+  <script src="https://js.stripe.com/endive/stripe.js"></script>
 </head>
 <body>
 <!--
-  CHECKOUT — korak 1 od 3. Trenutno TEST: ništa se ne naplaćuje i ništa se ne šalje.
-  Uživo polja za karticu zamenjuje Stripe Payment Element (Link, kartice, Apple/Google Pay),
-  a "Završi porudžbinu" ide preko /api/checkout (FUNNEL-PLAN.md, sekcija 3).
-  Posle uspešnog plaćanja ide na ponuda.html?session_id=...
+  CHECKOUT — korak 1 od 3. Naš dizajn, a polja za karticu daje Stripe (Payment Element:
+  kartice, Link, Apple Pay, Google Pay). POST /api/checkout pravi Stripe sesiju, a posle
+  plaćanja Stripe vraća kupca na /ponuda?session_id=...
+  Dok Stripe ključ nije podešen na serveru, stranica radi u test modu (simulacija ispod).
 -->
 
 <!-- ================= TRAKA: ROK ================= -->
@@ -57,41 +58,33 @@
       <form data-form novalidate>
         <!-- KORAK 1 -->
         <div class="co-step mono"><b>1</b> Tvoji podaci</div>
-        <div class="co-row">
-          <label class="co-fld">Email. <small>Ovde stiže tvoj pristup.</small>
-            <input type="email" name="email" autocomplete="off" required>
-          </label>
-          <label class="co-fld">Ime na kartici
-            <input name="name" autocomplete="off">
-          </label>
-        </div>
+        <label class="co-fld">Email. <small>Ovde stiže tvoj pristup.</small>
+          <input type="email" name="email" autocomplete="email" required>
+        </label>
 
-        <!-- KORAK 2 — uživo: Stripe Payment Element umesto polja ispod -->
+        <!-- KORAK 2 -->
         <div class="co-step mono"><b>2</b> Plaćanje</div>
-        <div class="co-link">Sigurno, brzo plaćanje sa Link-om</div>
-        <label class="co-fld co-cardnum">Broj kartice
-          <input value="4242 4242 4242 4242" readonly>
-          <span class="brands" aria-hidden="true"><i>VISA</i><i>MC</i><i>AMEX</i></span>
-        </label>
-        <div class="co-row">
-          <label class="co-fld">Datum isteka<input value="12 / 34" readonly></label>
-          <label class="co-fld">Sigurnosni kod<input value="123" readonly></label>
+        <div class="co-pay" data-live-only>
+          <div id="payment-element"><p class="co-loading mono">Učitavam sigurno plaćanje…</p></div>
         </div>
-        <p class="co-hint">TEST: polja kartice su zaključana, ništa se ne naplaćuje.</p>
-        <label class="co-fld">Država
-          <select name="country">
-            <option selected>Srbija</option><option>Hrvatska</option><option>Bosna i Hercegovina</option>
-            <option>Crna Gora</option><option>Slovenija</option><option>Severna Makedonija</option>
-            <option>Nemačka</option><option>Austrija</option><option>Švajcarska</option><option>Druga država</option>
-          </select>
-        </label>
+        <div data-test-only hidden>
+          <label class="co-fld co-cardnum">Broj kartice
+            <input value="4242 4242 4242 4242" readonly>
+            <span class="brands" aria-hidden="true"><i>VISA</i><i>MC</i><i>AMEX</i></span>
+          </label>
+          <div class="co-row">
+            <label class="co-fld">Datum isteka<input value="12 / 34" readonly></label>
+            <label class="co-fld">Sigurnosni kod<input value="123" readonly></label>
+          </div>
+          <p class="co-hint">TEST: polja kartice su zaključana, ništa se ne naplaćuje.</p>
+        </div>
 
-        <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš [Tvoj Brend] da sačuva karticu za eventualne naredne kupovine kod nas.</p>
+        <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš da je sačuvamo za eventualne naredne kupovine kod nas, uvek samo uz tvoj klik.</p>
 
 
         <label class="co-terms">
           <input type="checkbox" name="terms">
-          <span>Prihvatam <a href="#">uslove korišćenja</a> i saglasan sam da pristup digitalnom sadržaju počinje odmah, čime gubim pravo na odustanak od 14 dana. Razumem da povraćaj novca nije moguć.</span>
+          <span>Prihvatam <a href="/uslovi" target="_blank">uslove korišćenja</a> i saglasan sam da pristup digitalnom sadržaju počinje odmah, čime gubim pravo na odustanak od 14 dana. Razumem da povraćaj novca nije moguć.</span>
         </label>
 
         <p class="co-err" data-err></p>
@@ -102,7 +95,7 @@
       <aside class="guarantee">
         <h2 class="display h3">Ne ostaješ sam posle kupovine.</h2>
         <p><b>Ako nešto zapne, „doctor“ komanda ti kaže tačno rešenje.</b></p>
-        <p>Ako ni ona ne pomogne, pošalji mejl na <a href="mailto:info@tvojdomen.rs">info@tvojdomen.rs</a> sa screenshot-om i rešavamo zajedno.</p>
+        <p>Ako ni ona ne pomogne, pošalji mejl na <a href="mailto:podrska@vladsdigital.com">podrska@vladsdigital.com</a> sa screenshot-om i rešavamo zajedno.</p>
         <p style="margin:0">Ažuriranja i novi efekti stižu besplatno, zauvek.</p>
       </aside>
 
@@ -123,8 +116,8 @@
         <details open><summary>Da li je ovo pretplata?</summary><p>Ne. Jedna uplata.</p></details>
       </div>
 
-      <!-- SIMULACIJA: šta server zna o kupcu (samo test, obriši uživo) -->
-      <fieldset class="co-sim">
+      <!-- SIMULACIJA: samo u test modu (bez Stripe ključa na serveru) -->
+      <fieldset class="co-sim" data-test-only hidden>
         <legend class="mono">Simulacija (samo test)</legend>
         <label><input type="checkbox" data-sim="labClan"> Kupac je već AI Profit Lab član (preskače ponudu)</label>
         <label><input type="checkbox" data-sim="fail"> Banka odbija upsell naplatu</label>
@@ -136,7 +129,7 @@
       <div class="co-order" data-order>
         <div class="top">Tvoja porudžbina <span>Jedna uplata, bez pretplate</span></div>
         <h2>Creator Studio</h2>
-        <div class="pr"><span class="n">97€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 25. OKT</span></div>
+        <div class="pr"><span class="n" data-total>97€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 25. OKT</span></div>
 
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
@@ -165,7 +158,7 @@
 </div>
 
 <footer class="ffoot">
-  <div class="wrap">© [Tvoj Brend] · <a href="#">Uslovi korišćenja</a> · <a href="#">Privatnost</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
 </footer>
 
 <script>
@@ -185,26 +178,117 @@
   tick();
   setInterval(tick, 1000);
 
-  /* ---------- test plaćanje ---------- */
+  /* ---------- plaćanje ---------- */
   const form = document.querySelector("[data-form]");
   const err = document.querySelector("[data-err]");
-  const sim = (k) => document.querySelector(`[data-sim="${k}"]`).checked;
+  const payLabel = document.querySelector("[data-pay-label]");
+  const fail = (msg) => {
+    err.textContent = msg;
+    payLabel.textContent = "Završi porudžbinu";
+    form.querySelector("button").disabled = false;
+  };
+  const check = () => {
+    if (!form.email.value.includes("@")) return "Upiši ispravan email.";
+    if (!form.terms.checked) return "Prihvati uslove da nastaviš.";
+    return "";
+  };
 
-  form.addEventListener("submit", (e) => {
+  // UTM i ostali parametri sa landinga idu u Stripe sesiju
+  const params = Object.fromEntries(new URLSearchParams(location.search));
+  let checkout, sessionId;
+
+  fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ params }) })
+    .then((r) => r.json())
+    .then((res) => {
+      if (res.test) return testMode();
+      if (res.closed) return (location.href = "/?zatvoreno=1");
+      if (!res.clientSecret) throw new Error("bez sesije");
+      sessionId = res.clientSecret.split("_secret_")[0];
+      // Stripe nema srpski; hrvatski je najbliži
+      checkout = Stripe(res.publishableKey, { locale: "hr" }).initCheckoutElementsSdk({
+        clientSecret: res.clientSecret,
+        elementsOptions: {
+          fonts: [{ cssSrc: "https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600&display=swap" }],
+          appearance: {
+            theme: "night",
+            variables: {
+              colorPrimary: "#FF5B1F",
+              colorBackground: "#111113",
+              colorText: "#F4EDE0",
+              colorTextSecondary: "#DDD5C6",
+              colorDanger: "#FF6B5B",
+              fontFamily: '"Libre Franklin", system-ui, sans-serif',
+              fontSizeBase: "15px",
+              borderRadius: "6px",
+              spacingUnit: "4px",
+            },
+            rules: {
+              ".Input": { border: "1px solid rgba(244, 237, 224, .3)", boxShadow: "none", padding: "13px 14px" },
+              ".Input:focus": { borderColor: "#FF5B1F", boxShadow: "0 0 0 3px rgba(255, 91, 31, .2)" },
+              ".Label": { fontWeight: "600", fontSize: "14px", color: "#F4EDE0" },
+            },
+          },
+        },
+      });
+      // Iznos uvek iz Stripe sesije (Stripe to i traži pre potvrde)
+      checkout.on("change", (session) => {
+        const t = session.total.total;
+        const euros = t.minorUnitsAmount / session.minorUnitsAmountDivisor;
+        const text = session.currency.toLowerCase() === "eur" ? `${Number.isInteger(euros) ? euros : euros.toFixed(2)}€` : t.amount;
+        document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = text));
+      });
+      checkout.createPaymentElement({
+        layout: "tabs",
+        fields: { billingDetails: { email: "never", name: "always" } },
+        // Link bi tražio mejl drugi put; Apple Pay i Google Pay ostaju
+        wallets: { link: "never" },
+      }).mount("#payment-element");
+    })
+    .catch(() => fail("Plaćanje trenutno ne može da se učita. Osveži stranicu ili nam piši na podrska@vladsdigital.com."));
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!form.email.value.includes("@")) return (err.textContent = "Upiši ispravan email.");
-    if (!form.terms.checked) return (err.textContent = "Prihvati uslove da nastaviš.");
+    const problem = check();
+    if (problem) return (err.textContent = problem);
+    if (!checkout) return testSubmit();
     err.textContent = "";
-    document.querySelector("[data-pay-label]").textContent = "Obrađujem...";
+    payLabel.textContent = "Obrađujem...";
+    form.querySelector("button").disabled = true;
 
-    // isto što bi Stripe vratio u success_url: /ponuda?session_id=...
+    try {
+      const consent = await fetch("/api/checkout/consent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      if (!consent.ok) throw new Error("pristanak");
+      const loaded = await checkout.loadActions();
+      if (loaded.type !== "success") throw new Error("akcije");
+      // Uspešno plaćanje (i 3DS potvrda) vodi na /ponuda, ovde se vraća samo greška
+      const result = await loaded.actions.confirm({ email: form.email.value.trim() });
+      if (result.type === "error") fail(result.error.message);
+    } catch {
+      fail("Nešto nije u redu. Pokušaj ponovo ili osveži stranicu.");
+    }
+  });
+
+  /* ---------- test mod: bez Stripe ključa na serveru ništa se ne naplaćuje ---------- */
+  function testMode() {
+    document.querySelectorAll("[data-live-only]").forEach((el) => (el.hidden = true));
+    document.querySelectorAll("[data-test-only]").forEach((el) => (el.hidden = false));
+  }
+  function testSubmit() {
+    const sim = (k) => document.querySelector(`[data-sim="${k}"]`).checked;
+    err.textContent = "";
+    payLabel.textContent = "Obrađujem...";
+    // isto što bi Stripe vratio u return_url: /ponuda?session_id=...
     const q = new URLSearchParams({ session_id: "cs_test_" + Math.random().toString(36).slice(2, 10) });
     if (sim("fail")) q.set("fail", "1");
     // već Lab član: server preskače ponudu i šalje direktno na hvala
     if (sim("labClan")) q.set("lab", "clan");
     const next = sim("labClan") ? "hvala.html" : "ponuda.html";
     setTimeout(() => (location.href = next + "?" + q), 900);
-  });
+  }
 </script>
 </body>
 </html>

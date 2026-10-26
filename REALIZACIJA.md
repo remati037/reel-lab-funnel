@@ -162,6 +162,9 @@ Treba mi pristup repou plugina.
 - [x] Test upsell-a uživo: pretplata napravljena, 1€ naplaćen, Woo porudžbina, MailerLite, PostHog, Telegram
 - [x] Test otkazivanja (Lab pristup skinut, Studio ostaje, MailerLite „otkazali“, beleška u Woo-u) i Stripe test clock: 2. mesec naplaćen 47€ i obrađen
 - [x] Jedan mejl umesto dva: Circle pozivnica je ugašena, novi kupac dobija lozinku u welcome mejlu (računa se iz `CIRCLE_PASSWORD_SECRET` i mejla, nigde se ne čuva); postojeći Circle član dobija „prijavi se svojim nalogom“
+- [x] Naš dizajnirani checkout (`/checkout`) sa Stripe poljima za karticu (Payment Element, `ui_mode: elements`, hrvatski jezik polja jer Stripe nema srpski); pristanak „bez povraćaja“ se beleži u Stripe sesiji (`terms_accepted_at`)
+- [x] Pravne stranice: `/uslovi`, `/uslovi-pretplate`, `/privatnost` (nacrt, proveriti sa pravnikom)
+- [x] Test porudžbine #45409–#45415 u Woo otpadu, test pretplate otkazane
 
 **Čeka tebe**
 - [ ] Stripe → Settings → Public details: javni naziv firme (sada se u checkout-u vidi „VLADSDIGITAL LLC VLADIMIR STANKOVIC SOLE MBR“)

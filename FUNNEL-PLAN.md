@@ -91,7 +91,9 @@ Struktura je jaka. Pre puštanja:
 
 ---
 
-## 3. Checkout (Stripe Checkout, hosted)
+## 3. Checkout (naša stranica + Stripe Payment Element)
+
+> Ažurirano 26.10.: umesto Stripe-ove hostovane stranice koristi se naša dizajnirana `/checkout` stranica. Sesija se pravi sa `ui_mode: "elements"`, polja za karticu daje Stripe, a pristanak na uslove beležimo sami (`/api/checkout/consent`). Ostala podešavanja iz tabele važe.
 
 `POST /api/checkout` kreira Checkout Session:
 

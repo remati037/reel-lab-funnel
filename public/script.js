@@ -2,9 +2,8 @@
    PODEŠAVANJA — menjaj ovde
    ========================================================= */
 const CONFIG = {
-  // Svako dugme vodi ovde. Server pravi Stripe Checkout sesiju (dok Stripe ključ
-  // nije podešen, vraća na test checkout). UTM parametri sa landinga idu dalje.
-  checkoutUrl: "/api/checkout",
+  // Svako dugme vodi na našu checkout stranicu. UTM parametri sa landinga idu dalje.
+  checkoutUrl: "/checkout",
 
   // Kad se vrata zatvaraju (odbrojavanje ide do ovog trenutka). +01:00 = srednjoevropsko vreme.
   deadline: "2026-10-25T21:00:00+01:00",
