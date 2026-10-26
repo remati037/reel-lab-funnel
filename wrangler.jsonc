@@ -5,6 +5,9 @@
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // Cloudflare sam pravi DNS zapis i SSL za ovaj domen pri deploy-u
+  "routes": [{ "pattern": "studio.aiprofit.rs", "custom_domain": true }],
+
   // Stranice iz public/. /ponuda služi ponuda.html. /api/* ide u Worker.
   "assets": {
     "directory": "./public",
@@ -13,12 +16,11 @@
     "run_worker_first": ["/api/*"]
   },
 
-  // Posle `npx wrangler d1 create creator-studio` upiši pravi database_id.
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "creator-studio",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "2bd23a05-d4bf-444a-9de5-52fc5d9833dc",
       "migrations_dir": "migrations"
     }
   ],
@@ -40,8 +42,26 @@
     // Do kada važi 67€, i kad se vrata zatvaraju (isto kao CONFIG.deadline u public/script.js)
     "LAUNCH_UNTIL": "2026-11-11T21:00:00+01:00",
     "CLOSE_AT": "2026-11-15T21:00:00+01:00",
-    "WORKSHOP_LIMIT": "100",
-    "AUTOMATIC_TAX": "false"
+    "AUTOMATIC_TAX": "false",
+
+    // Circle (aiprofit.rs): access grupe i link kursa
+    "CIRCLE_STUDIO_GROUP": "167621",
+    "CIRCLE_LAB_GROUP": "167622",
+    "CIRCLE_STUDIO_URL": "https://www.aiprofit.rs/c/studio-reel-lab-kurs",
+
+    // Transakcioni mejlovi (Resend). Domen pošiljaoca mora biti potvrđen u Resend-u.
+    "MAIL_FROM": "Studio Reel Lab <studio@aiprofit.rs>",
+    "MAIL_REPLY_TO": "podrska@vladsdigital.com",
+
+    // MailerLite grupe (napravio scripts/setup.mjs mailerlite)
+    "ML_GROUP_STUDIO": "202394703090419309",
+    "ML_GROUP_LAB": "202394703402894907",
+    "ML_GROUP_LAB_EX": "202394703679719016",
+
+    // WooCommerce (vladsdigital.com), samo evidencija (scripts/setup.mjs woo)
+    "WOO_URL": "https://vladsdigital.com",
+    "WOO_PRODUCT_STUDIO": "45406",
+    "WOO_PRODUCT_LAB": "45407"
   },
 
   "observability": { "enabled": true }

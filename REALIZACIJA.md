@@ -45,8 +45,8 @@ Sve u **test modu** gde postoji. Live ključevi tek u Fazi 5.
 
 ### 0.4 WooCommerce na vladsdigital.com [TI]
 1. **WooCommerce → Settings → Advanced → REST API → Add key:** opis „Creator Studio“, permisije **Read/Write**. Upiši `Consumer key` i `Consumer secret` u `.dev.vars`.
-2. **WooCommerce → Settings → Emails:** isključi mejlove kupcima: *Processing order*, *Completed order*, *Refunded order*, *Customer invoice*. Admin mejl „New order“ po želji.
-3. Proizvode sa SKU-ovima (`CS-STUDIO`, `CS-HOOKPACK`, `LAB-MESECNO`) **pravim ja** preko API-ja, kao virtuelne i sakrivene iz prodavnice.
+2. **Woo mejlovi:** ne gase se globalno (sajt prodaje i druge proizvode). Umesto toga instaliraš snippet `wordpress/studio-funnel-tihi-mejlovi.php`, koji ih gasi samo za porudžbine iz funnela.
+3. Proizvode sa SKU-ovima (`CS-STUDIO`, `LAB-MESECNO`) **pravim ja** preko API-ja, kao virtuelne i sakrivene iz prodavnice.
 4. Ako sajt ima Wordfence, iThemes ili sličan plugin: dozvoli `/wp-json/wc/v3`. Proverim ja prvim pozivom.
 
 ### 0.5 Mejlovi [TI]
@@ -144,7 +144,21 @@ Treba mi pristup repou plugina.
 
 ---
 
-## Gde smo sada
-- [x] Plan (FUNNEL-PLAN.md) i dizajn stranica u test modu
-- [ ] **Faza 0:** čeka tebe (0.1–0.6)
-- [ ] **Faza 1:** krećem sa 1.1–1.4, jer ne traže ključeve: kod se piše i testira lokalno sa Stripe test ključem čim ga dodaš
+## Gde smo sada (26.10.)
+
+**Za sada isključeno:** order bump (Viral Hook Pack) i radionica za prvih 100. Koraci iznad koji ih pominju se preskaču.
+
+**Urađeno**
+- [x] Cloudflare: Worker na https://studio.aiprofit.rs, D1 baza, redovi, noćni cron
+- [x] Circle: grupe „Reel Lab Studio“ (167621) i „AI Profit Lab (Studio Reel Lab Upsell)“ (167622), prostor „Studio Reel Lab Kurs“
+- [x] Woo: proizvodi `CS-STUDIO` (#45406) i `LAB-MESECNO` (#45407), privatni i sakriveni
+- [x] MailerLite: grupe „Studio Reel Lab (kupci ✅)“, „AI Profit Lab - Studio upsell (aktivni / otkazali)“ i polja `studio_datum`, `studio_cena`, `studio_izvor`
+- [x] Kod isporuke posle kupovine: Circle (nalog + grupa) → MailerLite → welcome mejl (Resend) → Woo porudžbina → PostHog `purchase` → Telegram
+- [x] Snippet za Woo mejlove: [wordpress/studio-funnel-tihi-mejlovi.php](wordpress/studio-funnel-tihi-mejlovi.php)
+
+**Čeka tebe**
+- [ ] Ispravan Stripe test ključ u `.dev.vars` (sadašnji Stripe odbija)
+- [ ] Snippet za Woo mejlove na vladsdigital.com
+- [ ] Potvrda adrese pošiljaoca (`MAIL_FROM`) i adrese za odgovore (`MAIL_REPLY_TO`) u wrangler.jsonc
+
+**Sledeće (ja):** Stripe proizvodi skriptom → webhook endpoint u Stripe-u → test kupovina od početka do kraja → objava → Faza 2 (upsell)

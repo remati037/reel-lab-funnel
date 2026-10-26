@@ -13,9 +13,8 @@ export async function checkout(request, env) {
   if (!priceKey) return Response.redirect(`${url.origin}/?zatvoreno=1`, 303);
 
   const s = stripe(env);
-  const { data: prices } = await s.prices.list({ lookup_keys: [priceKey, "hookpack"], active: true });
-  const studio = prices.find((p) => p.lookup_key === priceKey);
-  const hookpack = prices.find((p) => p.lookup_key === "hookpack");
+  const { data: prices } = await s.prices.list({ lookup_keys: [priceKey], active: true });
+  const studio = prices[0];
   if (!studio) throw new Error(`Nema Stripe cene sa lookup_key ${priceKey}`);
 
   const metadata = { source: SOURCE, price_type: priceKey };
@@ -27,7 +26,6 @@ export async function checkout(request, env) {
   const session = await s.checkout.sessions.create({
     mode: "payment",
     line_items: [{ price: studio.id, quantity: 1 }],
-    ...(hookpack && { optional_items: [{ price: hookpack.id, quantity: 1 }] }),
     customer_creation: "always",
     // Čuva karticu za one-click upsell na /ponuda
     payment_intent_data: { setup_future_usage: "off_session", metadata },

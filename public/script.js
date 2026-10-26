@@ -13,7 +13,6 @@ const CONFIG = {
   texts: {
     price: "97€",
     launchPrice: "67€",
-    workshopValue: "197€",
   },
 };
 

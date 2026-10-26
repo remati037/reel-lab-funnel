@@ -4,6 +4,8 @@ Od prvog rilsa do 2. meseca u AI Profit Lab-u.
 
 **Stack:** Cloudflare Workers na `studio.aiprofit.rs` (stranice + API + D1 baza + Queues) · Stripe Checkout (custom one-click upsell) · Circle Business na `aiprofit.rs` (isporuka + zajednica) · WooCommerce na `vladsdigital.com` (samo spisak porudžbina) · MailerLite (mejlovi) · ManyChat (DM iz rilsova) · PostHog + Meta Pixel/CAPI (analitika)
 
+**Za sada isključeno (26.10.):** order bump (Viral Hook Pack) i radionica za prvih 100. Delovi plana o njima ostaju kao ideje za kasnije, ali nisu u kodu ni na stranicama. Proizvod se zove **Studio Reel Lab** (Circle grupa „Reel Lab Studio“, prostor „Studio Reel Lab Kurs“).
+
 **Odluke (26.10.):** bez garancije i bez povraćaja za Studio · Woo je samo evidencija, ne pravi fakture · Stripe nalog i porez su rešeni · bez TikTok oglasa · postojeći Lab članovi ostaju na Circle Paywall-u, nove Lab pretplate iz upsella idu direktno preko Stripe-a
 
 ---
@@ -208,10 +210,10 @@ Sajt: **vladsdigital.com**. Svaka uspešna naplata pravi porudžbinu u WooCommer
 | `customer.subscription.deleted` | Beleška na poslednjoj Lab porudžbini: „Pretplata otkazana“ |
 
 Pravila:
-- **Proizvodi u Woo-u** sa fiksnim SKU-ovima (`CS-STUDIO`, `CS-HOOKPACK`, `LAB-MESECNO`), virtuelni, sakriveni iz prodavnice. Webhook ih traži po SKU-u.
-- **Kupac:** traži se po mejlu (`GET /customers?email=`), a ako ne postoji, pravi se novi. Tako jedan kupac ima sve svoje porudžbine na jednom mestu.
+- **Proizvodi u Woo-u** sa fiksnim SKU-ovima (`CS-STUDIO` #45406, `LAB-MESECNO` #45407), virtuelni, privatni i sakriveni iz prodavnice.
+- **Kupac:** porudžbine su gostujuće (mejl i ime u billing podacima), bez pravljenja Woo naloga, jer bi Woo inače poslao mejl „nalog je napravljen“. Sve porudžbine jednog kupca se nađu pretragom po mejlu.
 - **Bez duplikata:** u porudžbinu se upisuje `meta_data` `stripe_session_id` / `stripe_invoice_id`. Pre kreiranja proverava se da li porudžbina sa tim ID-om već postoji.
-- **Ugasiti Woo mejlove kupcima** (Completed order, Customer invoice, Refunded order), jer kupac već dobija welcome mejl. Ostaviti samo obaveštenje adminu, po želji.
+- **Woo mejlovi kupcima:** ne gase se globalno, jer sajt prodaje i druge proizvode. Porudžbine iz funnela nose meta `studio_funnel = 1`, a snippet [wordpress/studio-funnel-tihi-mejlovi.php](wordpress/studio-funnel-tihi-mejlovi.php) gasi Woo mejlove samo za njih. Admin obaveštenje „New order“ ostaje (može se isključiti u snippetu).
 - **UTM i izvor** idu u `meta_data`, pa se i u Woo-u vidi odakle je kupac došao.
 - **Ako je Woo nedostupan:** Queue ponavlja samo Woo korak. Pristup u Circle-u se ne blokira zbog Woo-a: Circle i licenca idu prvi, Woo posle.
 - **Samo spisak:** bez faktura i fiskalizacije, pa Checkout ne mora da traži adresu. Ime i mejl su dovoljni.
@@ -423,8 +425,7 @@ Sve metrike osim aktivacije su u PostHog dashboard-u. Aktivacija dolazi iz Circl
 
 ## 13. Otvorena pitanja (za tebe)
 
-1. **Hook Pack:** da li ga praviš ili biramo Premium paket stilova?
-2. **Circle Paywall i Stripe:** kako je Lab Paywall povezan sa Stripe-om (isti nalog kao za Studio ili Stripe Connect)? Proveravamo pri izradi, utiče na filtriranje webhook-a (sekcija 4).
+1. **Circle Paywall i Stripe:** kako je Lab Paywall povezan sa Stripe-om (isti nalog kao za Studio ili Stripe Connect)? Proveravamo pri izradi, utiče na filtriranje webhook-a (sekcija 4).
 
 ### Rešeno 26.10.
 - Postojeći Lab članovi ostaju na Circle Paywall-u, nove pretplate iz upsella idu direktno preko Stripe-a (oba paralelno).

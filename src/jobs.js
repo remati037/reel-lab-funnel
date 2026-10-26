@@ -1,9 +1,63 @@
 import { stripe } from "./stripe.js";
+import { grantAccess } from "./circle.js";
+import { addToGroup } from "./mailerlite.js";
+import { createOrder } from "./woo.js";
+import { sendEmail, track, telegram } from "./notify.js";
+import { welcomeEmail } from "./emails.js";
+
+const euros = (cents) => (cents / 100).toFixed(2).replace(/\.00$/, "");
 
 // Koraci isporuke, redom. Svaki se radi tačno jednom po porudžbini; ako padne,
 // red ponavlja posao i preskaču se koraci koji su već "done".
-// Circle, MailerLite, welcome mejl, Woo, PostHog i obaveštenje dolaze u koracima 1.5–1.7.
-const STUDIO_STEPS = [];
+// Circle ide prvi (pristup), Woo i analitika poslednji, da ne blokiraju kupca.
+const STUDIO_STEPS = [
+  ["circle", (o, env) => grantAccess(env, o, env.CIRCLE_STUDIO_GROUP)],
+  [
+    "mailerlite",
+    (o, env) =>
+      addToGroup(env, o.email, env.ML_GROUP_STUDIO, {
+        ...(o.name && { name: o.name.trim().split(/\s+/)[0] }),
+        studio_datum: o.created_at.slice(0, 10),
+        studio_cena: o.amount_cents / 100,
+        studio_izvor: o.utm_source || "direktno",
+      }),
+  ],
+  [
+    "welcome",
+    (o, env) => sendEmail(env, { to: o.email, idempotencyKey: `welcome-${o.stripe_ref}`, ...welcomeEmail(env, o) }),
+  ],
+  [
+    "woo",
+    async (o, env) => {
+      const wooId = await createOrder(env, o, env.WOO_PRODUCT_STUDIO);
+      await env.DB.prepare("UPDATE orders SET woo_order_id = ? WHERE id = ?").bind(wooId, o.id).run();
+    },
+  ],
+  [
+    "posthog",
+    (o, env) =>
+      track(env, "purchase", {
+        distinctId: o.ph_id || o.email,
+        insertId: o.stripe_ref,
+        properties: {
+          product: "studio",
+          revenue: o.amount_cents / 100,
+          currency: o.currency,
+          price_type: o.price_type,
+          utm_source: o.utm_source,
+          utm_medium: o.utm_medium,
+          utm_campaign: o.utm_campaign,
+          utm_content: o.utm_content,
+          $set: { email: o.email },
+        },
+      }),
+  ],
+  [
+    "telegram",
+    (o, env) =>
+      telegram(env, `🎬 Studio Reel Lab: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
+  ],
+];
 
 export async function handleBatch(batch, env) {
   for (const msg of batch.messages) {
@@ -23,7 +77,7 @@ export async function runJob(job, env) {
 }
 
 async function studioPurchase(sessionId, env) {
-  const session = await stripe(env).checkout.sessions.retrieve(sessionId, { expand: ["line_items.data.price"] });
+  const session = await stripe(env).checkout.sessions.retrieve(sessionId);
   if (session.payment_status !== "paid") return;
 
   const order = await saveStudioOrder(session, env);
@@ -32,14 +86,13 @@ async function studioPurchase(sessionId, env) {
 
 async function saveStudioOrder(session, env) {
   const m = session.metadata || {};
-  const bump = session.line_items.data.some((li) => li.price?.lookup_key === "hookpack");
 
-  // buyer_no se računa u istom upitu, pa dva istovremena kupca ne dobiju isti broj
+  // buyer_no (redni broj kupca) se računa u istom upitu, pa dva istovremena kupca ne dobiju isti broj
   await env.DB.prepare(
     `INSERT OR IGNORE INTO orders
-       (kind, stripe_ref, payment_intent, customer_id, email, name, amount_cents, currency, price_type, bump, buyer_no,
+       (kind, stripe_ref, payment_intent, customer_id, email, name, amount_cents, currency, price_type, buyer_no,
         utm_source, utm_medium, utm_campaign, utm_content, utm_term, fbclid, ph_id)
-     VALUES ('studio', ?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT COUNT(*) + 1 FROM orders WHERE kind = 'studio'),
+     VALUES ('studio', ?, ?, ?, ?, ?, ?, ?, ?, (SELECT COUNT(*) + 1 FROM orders WHERE kind = 'studio'),
         ?, ?, ?, ?, ?, ?, ?)`
   )
     .bind(
@@ -51,7 +104,6 @@ async function saveStudioOrder(session, env) {
       session.amount_total,
       session.currency,
       m.price_type ?? null,
-      bump ? 1 : 0,
       m.utm_source ?? null,
       m.utm_medium ?? null,
       m.utm_campaign ?? null,

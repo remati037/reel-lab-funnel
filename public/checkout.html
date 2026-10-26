@@ -88,20 +88,6 @@
 
         <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš [Tvoj Brend] da sačuva karticu za eventualne naredne kupovine kod nas.</p>
 
-        <!-- ORDER BUMP (uživo: optional_items u Stripe Checkout-u) -->
-        <label class="co-bump">
-          <span class="top"><b>Dodaj u porudžbinu</b><span>Opciono</span></span>
-          <span class="yes"><input type="checkbox" data-bump> Da, dodaj Viral Hook Pack za 27€</span>
-          <p><b>150 proverenih hook formula za prve 3 sekunde, po nišama.</b> Studio ih sam rotira u probnim rilsovima. Jedna uplata, dodata u ovu istu porudžbinu.</p>
-          <details>
-            <summary>Saznaj više</summary>
-            <ul>
-              <li>Hook formule podeljene po nišama: biznis, lifestyle, edukacija, prodaja.</li>
-              <li>Reci „napravi 8 probnih rilsova sa hook-ovima iz paketa“ i Studio ih sam ubaci.</li>
-              <li>Radi odmah, u istom Circle-u kao tvoj Studio.</li>
-            </ul>
-          </details>
-        </label>
 
         <label class="co-terms">
           <input type="checkbox" name="terms">
@@ -140,7 +126,6 @@
       <!-- SIMULACIJA: šta server zna o kupcu (samo test, obriši uživo) -->
       <fieldset class="co-sim">
         <legend class="mono">Simulacija (samo test)</legend>
-        <label><input type="checkbox" data-sim="radionica" checked> Kupac je među prvih 100 (radionica)</label>
         <label><input type="checkbox" data-sim="labClan"> Kupac je već AI Profit Lab član (preskače ponudu)</label>
         <label><input type="checkbox" data-sim="fail"> Banka odbija upsell naplatu</label>
       </fieldset>
@@ -166,8 +151,6 @@
           <li><span>09</span>Podešavanje prvog rilsa</li>
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
-
-        <div class="addon"><span>+ Viral Hook Pack</span><b>27€</b></div>
         <div class="sum"><span>Ukupno</span><b data-total>97€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
@@ -188,7 +171,6 @@
 <script>
   // Isti rok kao na landingu (script.js → CONFIG.deadline)
   const DEADLINE = new Date("2026-10-25T21:00:00+01:00").getTime();
-  const STUDIO = 97, BUMP = 27;
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -202,14 +184,6 @@
   }
   tick();
   setInterval(tick, 1000);
-
-  /* ---------- order bump ---------- */
-  const bump = document.querySelector("[data-bump]");
-  const order = document.querySelector("[data-order]");
-  bump.addEventListener("change", () => {
-    order.classList.toggle("has-bump", bump.checked);
-    document.querySelector("[data-total]").textContent = STUDIO + (bump.checked ? BUMP : 0) + "€";
-  });
 
   /* ---------- test plaćanje ---------- */
   const form = document.querySelector("[data-form]");
@@ -225,8 +199,6 @@
 
     // isto što bi Stripe vratio u success_url: /ponuda?session_id=...
     const q = new URLSearchParams({ session_id: "cs_test_" + Math.random().toString(36).slice(2, 10) });
-    if (bump.checked) q.set("bump", "1");
-    if (sim("radionica")) q.set("radionica", "1");
     if (sim("fail")) q.set("fail", "1");
     // već Lab član: server preskače ponudu i šalje direktno na hvala
     if (sim("labClan")) q.set("lab", "clan");

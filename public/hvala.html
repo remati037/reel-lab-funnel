@@ -16,7 +16,7 @@
   STRANICA: /hvala — poslednji korak (3 od 3). Jedan cilj: da kupac za 10 minuta
   bude u Circle-u i nalepi install komandu.
   Kartice ispod dugmeta se pojavljuju po porudžbini (u produkciji iz /api/order,
-  u pregledu iz URL-a): ?lab=1  ?lab=clan  ?bump=1  ?radionica=1
+  u pregledu iz URL-a): ?lab=1  ?lab=clan
 -->
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -53,7 +53,7 @@
         <span>Pozivnica za Circle stiže mejlom za minut (pogledaj i Promocije i Spam). Lozinku postaviš jednom, i to je to.</span>
       </p>
 
-      <!-- Ovde se ubacuju kartice: Lab, Hook Pack, radionica -->
+      <!-- Ovde se ubacuje kartica za Lab -->
       <div data-cards></div>
     </div>
   </div>
@@ -176,33 +176,10 @@
   </section>
 </template>
 
-<template id="card-bump">
-  <section class="ws">
-    <p class="lamp">Viral Hook Pack dodat</p>
-    <h2>Viral Hook Pack je u tvom Circle-u.</h2>
-    <dl class="facts">
-      <div><dt class="mono">Gde</dt><dd>Creator Studio → Viral Hook Pack.</dd></div>
-      <div><dt class="mono">Onda reci</dt><dd>„Napravi 8 probnih rilsova sa hook-ovima iz paketa.“</dd></div>
-    </dl>
-  </section>
-</template>
 
-<template id="card-radionica">
-  <section class="ws">
-    <p class="lamp">Među prvih 100 si</p>
-    <h2>🎟️ Tvoje mesto na radionici je sačuvano.</h2>
-    <dl class="facts">
-      <div><dt class="mono">Kada</dt><dd data-ws-when></dd></div>
-      <div><dt class="mono">Gde</dt><dd>Uživo na Zoom-u, sa mnom. 2 sata.</dd></div>
-      <div><dt class="mono">Donesi</dt><dd>Svoje klipove i pitanja.</dd></div>
-    </dl>
-    <p class="ws-p">Zoom link stiže mejlom pre radionice.</p>
-    <a class="btn" data-gcal href="#" target="_blank" rel="noopener">+ Dodaj u kalendar</a>
-  </section>
-</template>
 
 <!-- Samo za pregled: obriši pre puštanja uživo -->
-<div class="demo">TEST FUNNEL: <a href="index.html">↺ ispočetka (landing)</a> <a href="checkout.html">checkout</a> <a href="hvala.html?lab=1&radionica=1&bump=1">sve kartice</a></div>
+<div class="demo">TEST FUNNEL: <a href="index.html">↺ ispočetka (landing)</a> <a href="checkout.html">checkout</a> <a href="hvala.html?lab=1">sa Lab-om</a></div>
 
 <script src="funnel.js"></script>
 </body>
