@@ -165,11 +165,16 @@ Treba mi pristup repou plugina.
 - [x] Naš dizajnirani checkout (`/checkout`) sa Stripe poljima za karticu (Payment Element, `ui_mode: elements`, hrvatski jezik polja jer Stripe nema srpski); pristanak „bez povraćaja“ se beleži u Stripe sesiji (`terms_accepted_at`)
 - [x] Pravne stranice: `/uslovi`, `/uslovi-pretplate`, `/privatnost` (nacrt, proveriti sa pravnikom)
 - [x] Test porudžbine #45409–#45415 u Woo otpadu, test pretplate otkazane
+- [x] Circle rezerva: ako Circle ne upiše kupca u grupu, upisuje se direktno u prostor kursa (provera + ponavljanje + Telegram upozorenje)
+- [x] Faza 4 kod: banner za kolačiće, PostHog na svim stranicama i sa servera, Meta Pixel + Conversions API (čeka Pixel ID i token), `/besplatno` + `/besplatno-hvala`, lični rok 67€ potpisanim linkom. Uputstvo: [ANALITIKA.md](ANALITIKA.md)
 
 **Čeka tebe**
 - [ ] Stripe → Settings → Public details: javni naziv firme (sada se u checkout-u vidi „VLADSDIGITAL LLC VLADIMIR STANKOVIC SOLE MBR“)
 - [ ] Link za Stripe Customer Portal (`STRIPE_PORTAL_URL`) ubaciti u MailerLite Lab mejlove (otkazivanje bez tebe). Uživo zameniti test link.
 
 - [x] 3DS test uživo: checkout sa 3DS karticom, upsell sa odbijenom pa potvrđenom 3DS proverom (drugi pokušaj kreće odmah, jednim klikom)
+
+- [ ] Meta Pixel ID i Conversions API token, PostHog personal API key (za dashboard), Cloudflare Web Analytics (ANALITIKA.md)
+- [ ] Komande za instalaciju besplatnog skill-a na `/besplatno-hvala`, MailerLite nurture automatizacija sa `{$studio_ponuda_link}`
 
 **Sledeće (ja):** Stripe test clock (naplata 47€ posle 30 dana, otkazivanje) → pravne stranice → Faza 4 (analitika na stranicama)

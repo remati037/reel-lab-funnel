@@ -105,6 +105,7 @@ async function setupMailerLite() {
     ["ML_GROUP_STUDIO", "Studio Reel Lab (kupci ✅)"],
     ["ML_GROUP_LAB", "AI Profit Lab - Studio upsell (aktivni)"],
     ["ML_GROUP_LAB_EX", "AI Profit Lab - Studio upsell (otkazali)"],
+    ["ML_GROUP_LEAD", "Studio Reel Lab - besplatni skill (lead)"],
   ]) {
     const { data: groups } = await ml("GET", `/groups?limit=100&filter[name]=${encodeURIComponent(name)}`);
     const found = groups.find((g) => g.name === name);
@@ -116,6 +117,8 @@ async function setupMailerLite() {
     ["studio_datum", "date"],
     ["studio_cena", "number"],
     ["studio_izvor", "text"],
+    ["studio_ponuda_link", "text"],
+    ["studio_ponuda_do", "date"],
   ]) {
     if (fields.some((f) => f.key === name)) console.log(`  ✓ polje ${name}`);
     else await ml("POST", "/fields", { name, type }), console.log(`  + polje ${name}`);

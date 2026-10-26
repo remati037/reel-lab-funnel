@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Skill stiže na mejl</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lead.css">
+  <script src="/api/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/posthog-js@1.438.7/dist/array.js" defer></script>
+  <script src="/analytics.js" defer></script>
+</head>
+<body>
+<!-- /besplatno-hvala: posle prijave. SKILL podešavanja su u skripti na dnu (link i komande). -->
+<main class="lead-hero">
+  <div class="wrap" style="max-width:760px">
+    <div class="mono brand">Prijava je uspela</div>
+    <h1 class="display h1">Skill stiže<br>na tvoj mejl.</h1>
+    <p class="sub">Za minut ti stiže mejl sa linkom. Ako ga nema, pogledaj Promocije i Spam. Evo i odmah kako da ga instaliraš:</p>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div><b>Otvori Claude desktop aplikaciju.</b><p>Treba ti Mac ili Windows i plaćeni Claude plan (Pro je dovoljan).</p></div></div>
+      <div class="step"><span class="n">2</span><div><b>Nalepi komandu za instalaciju.</b>
+        <div class="cmd"><code data-cmd="mac"></code><button type="button" data-copy="mac">Kopiraj</button></div>
+        <p style="font-size:14px">Windows: <span class="cmd"><code data-cmd="win"></code><button type="button" data-copy="win">Kopiraj</button></span></p></div></div>
+      <div class="step"><span class="n">3</span><div><b>Ubaci klipove i reci „kreni“.</b><p>Prvi rils ti je par minuta daleko.</p></div></div>
+    </div>
+    <a class="btn" href="/" data-studio>Pogledaj šta sve radi Studio Reel Lab →</a>
+  </div>
+</main>
+<footer class="ffoot">
+  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+</footer>
+<script>
+  // PODEŠAVANJA: komande za instalaciju besplatnog skill-a
+  const SKILL = {
+    mac: "[KOMANDA ZA MAC]",
+    win: "[KOMANDA ZA WINDOWS]",
+  };
+  document.querySelectorAll("[data-cmd]").forEach((el) => (el.textContent = SKILL[el.dataset.cmd]));
+  document.querySelectorAll("[data-copy]").forEach((b) =>
+    b.addEventListener("click", async () => {
+      await navigator.clipboard?.writeText(SKILL[b.dataset.copy]);
+      b.textContent = "Kopirano";
+      window.studioTrack?.("skill_command_copy", { os: b.dataset.copy });
+    })
+  );
+  document.querySelector("[data-studio]").href = "/" + location.search;
+</script>
+</body>
+</html>

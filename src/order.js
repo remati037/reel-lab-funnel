@@ -10,7 +10,7 @@ export async function order(request, env) {
   const session = await paidStudioSession(env, sessionId);
   if (!session) return Response.json({ error: "Nepoznata kupovina" }, { status: 404 });
 
-  const row = await env.DB.prepare("SELECT 1 FROM orders WHERE stripe_ref = ? AND kind = 'studio'").bind(session.id).first();
+  const row = await env.DB.prepare("SELECT amount_cents, currency FROM orders WHERE stripe_ref = ? AND kind = 'studio'").bind(session.id).first();
   const upsell = await env.DB.prepare("SELECT status, subscription_id FROM upsells WHERE session_id = ?").bind(session.id).first();
 
   let lab = upsell?.status === "succeeded";
@@ -21,6 +21,7 @@ export async function order(request, env) {
 
   return Response.json({
     ready: !!row,
+    ...(row && { amount: row.amount_cents / 100, currency: row.currency.toUpperCase() }),
     lab,
     labClan: !lab && (await isLabMember(env, session.customer_details.email.toLowerCase())),
   });

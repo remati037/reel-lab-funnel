@@ -1,9 +1,10 @@
 import { stripe } from "./stripe.js";
-import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, ensureInGroup, initialPassword } from "./circle.js";
+import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, ensureInGroup, removeFromSpace, initialPassword } from "./circle.js";
 import { addToGroup, removeFromGroup } from "./mailerlite.js";
 import { createOrder, addOrderNote } from "./woo.js";
 import { sendEmail, track, telegram } from "./notify.js";
 import { welcomeEmail } from "./emails.js";
+import { metaEvent } from "./meta.js";
 
 const euros = (cents) => (cents / 100).toFixed(2).replace(/\.00$/, "");
 
@@ -72,8 +73,23 @@ const STUDIO_STEPS = [
     (o, env) =>
       telegram(env, `🎬 Studio Reel Lab: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
   ],
+  [
+    "meta",
+    async (o, env) => {
+      const session = await stripe(env).checkout.sessions.retrieve(o.stripe_ref);
+      await metaEvent(env, {
+        name: "Purchase",
+        eventId: o.stripe_ref, // isti ID šalje Pixel sa /hvala
+        email: o.email,
+        meta: { ...session.metadata, url: "https://studio.aiprofit.rs/checkout" },
+        value: o.amount_cents / 100,
+        currency: o.currency,
+        time: session.created,
+      });
+    },
+  ],
   // Poslednji: potvrda da je Circle stvarno upisao pristup (ne blokira mejl ni Woo)
-  ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_STUDIO_GROUP)],
+  ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_STUDIO_GROUP, env.CIRCLE_STUDIO_SPACE)],
 ];
 
 // Svaka Lab naplata: 1€ prvi mesec, pa 47€ svakog sledećeg
@@ -267,7 +283,14 @@ async function dispute(disputeId, env) {
 
   await runSteps(d.id, order, [
     ["status", (o, env) => env.DB.prepare("UPDATE orders SET status = 'disputed' WHERE id = ?").bind(o.id).run()],
-    ["circle", (o, env) => revokeAccess(env, o.email, env.CIRCLE_STUDIO_GROUP)],
+    [
+      "circle",
+      async (o, env) => {
+        await revokeAccess(env, o.email, env.CIRCLE_STUDIO_GROUP);
+        // i direktan upis u prostor, ako ga je rezerva napravila
+        await removeFromSpace(env, o.email, env.CIRCLE_STUDIO_SPACE);
+      },
+    ],
     ["woo", (o, env) => o.woo_order_id && addOrderNote(env, o.woo_order_id, `Chargeback (${d.id}, razlog: ${d.reason}). Pristup Studiju ugašen.`)],
     ["posthog", (o, env) => track(env, "chargeback", { distinctId: o.ph_id || o.email, insertId: d.id, properties: { reason: d.reason, amount: d.amount / 100 } })],
     ["telegram", (o, env) => telegram(env, `🚨 Chargeback za Studio\n${o.email}\n${euros(d.amount)}€, razlog: ${d.reason}. Pristup Studiju ugašen, Lab ostaje.`)],

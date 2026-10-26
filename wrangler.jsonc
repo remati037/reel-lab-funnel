@@ -53,6 +53,8 @@
     "CIRCLE_LAB_GROUP": "167622",
     // Grupa koju daje Circle Paywall postojećim Lab članovima (za proveru "već je član")
     "CIRCLE_PAYWALL_LAB_GROUP": "124997",
+    // Prostor "Studio Reel Lab Kurs": rezerva ako Circle ne upiše člana u grupu
+    "CIRCLE_STUDIO_SPACE": "2924801",
     "CIRCLE_STUDIO_URL": "https://www.aiprofit.rs/c/studio-reel-lab-kurs",
 
     // Transakcioni mejlovi (Resend). Domen pošiljaoca mora biti potvrđen u Resend-u.
@@ -63,6 +65,12 @@
     "ML_GROUP_STUDIO": "202394703090419309",
     "ML_GROUP_LAB": "202394703402894907",
     "ML_GROUP_LAB_EX": "202394703679719016",
+    "ML_GROUP_LEAD": "202400595411207789",
+
+    // Meta Pixel ID (javan). Conversions API token ide kao secret META_CAPI_TOKEN.
+    // META_TEST_CODE: kod iz Events Manager → Test events, samo dok testiraš.
+    "META_PIXEL_ID": "",
+    "META_TEST_CODE": "",
 
     // WooCommerce (vladsdigital.com), samo evidencija (scripts/setup.mjs woo)
     "WOO_URL": "https://vladsdigital.com",

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Besplatni skill: Claude ti montira prvi rils</title>
+  <meta name="description" content="Besplatni Claude skill koji ti montira prvi rils: tri izgleda, titlovi i rezovi, bez programa za montažu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lead.css">
+  <script src="/api/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/posthog-js@1.438.7/dist/array.js" defer></script>
+  <script src="/analytics.js" defer></script>
+</head>
+<body>
+<!-- /besplatno: lead magnet. Prijava ide u MailerLite grupu "Studio Reel Lab - besplatni skill (lead)"
+     sa ličnim linkom za ponudu (polje studio_ponuda_link). Nurture mejlove šalje MailerLite automatizacija. -->
+<header class="lead-hero">
+  <div class="wrap lead-grid">
+    <div>
+      <div class="mono brand">Besplatni skill</div>
+      <h1 class="display h1">Claude ti montira<br>prvi rils.</h1>
+      <p class="sub">Isti skill iz mog rilsa. Ubaciš klipove, kažeš „kreni“ i dobiješ montiran rils sa titlovima. Bez CapCut-a, bez montažera.</p>
+      <ul class="lead-list">
+        <li>Tri gotova izgleda montaže, biraš jednim rečima</li>
+        <li>Rezovi praznog hoda i titlovi na srpskom, sami od sebe</li>
+        <li>Instalacija jednim lepljenjem, na Mac-u i Windows-u</li>
+      </ul>
+    </div>
+    <div class="lead-card">
+      <h2>Pošalji mi skill</h2>
+      <p>Link i uputstvo za instalaciju stižu ti na mejl za minut.</p>
+      <form data-lead novalidate>
+        <label class="lead-fld">Ime <input name="name" autocomplete="given-name"></label>
+        <label class="lead-fld">Email <input name="email" type="email" autocomplete="email" required></label>
+        <label class="hp" aria-hidden="true">Sajt <input name="website" tabindex="-1" autocomplete="off"></label>
+        <p class="lead-err" data-err></p>
+        <button class="btn" type="submit"><span data-label>Pošalji mi besplatni skill</span></button>
+        <p class="lead-fine">Prijavom dobijaš skill i mejlove o montaži uz Claude. Odjava jednim klikom. <a href="/privatnost">Privatnost</a></p>
+      </form>
+    </div>
+  </div>
+</header>
+<footer class="ffoot">
+  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+</footer>
+<script>
+  const form = document.querySelector("[data-lead]");
+  const err = document.querySelector("[data-err]");
+  const label = document.querySelector("[data-label]");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = form.email.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return (err.textContent = "Upiši ispravan email.");
+    err.textContent = "";
+    label.textContent = "Šaljem...";
+    form.querySelector("button").disabled = true;
+    // Isti ID ide u Pixel i u Conversions API, da se Lead broji jednom
+    const eventId = "lead-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const params = { ...Object.fromEntries(new URLSearchParams(location.search)), ...(window.studioIds?.() || {}) };
+    try {
+      const r = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name: form.name.value.trim(), website: form.website.value, eventId, params }),
+      });
+      const res = await r.json();
+      if (!res.ok) throw new Error(res.error || "greška");
+      window.studioTrack?.("lead_submit", { source: "besplatno" }, { event: "Lead", eventID: eventId });
+      location.href = "/besplatno-hvala" + location.search;
+    } catch (e2) {
+      err.textContent = e2.message === "greška" ? "Nešto nije u redu. Pokušaj ponovo." : e2.message;
+      label.textContent = "Pošalji mi besplatni skill";
+      form.querySelector("button").disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

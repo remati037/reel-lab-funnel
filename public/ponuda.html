@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="funnel.css">
   <!-- Za 3DS potvrdu kod one-click naplate: -->
   <script src="https://js.stripe.com/v3/" defer></script>
+  <script src="/api/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/posthog-js@1.438.7/dist/array.js" defer></script>
+  <script src="/analytics.js" defer></script>
 </head>
 <body>
 <!--
@@ -148,7 +151,7 @@
 </main>
 
 <footer class="ffoot">
-  <div class="wrap">© [Tvoj Brend] · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a></div>
+  <div class="wrap">© [Tvoj Brend] · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a></div>
 </footer>
 
 <!-- Samo za pregled: obriši pre puštanja uživo -->

@@ -54,6 +54,8 @@ if (offer) {
 
   const no = offer.querySelector("[data-no]");
   no.href = withSession("hvala.html");
+  no.addEventListener("click", () => window.studioTrack?.("upsell_declined"));
+  document.addEventListener("DOMContentLoaded", () => window.studioTrack?.("upsell_viewed"));
 
   const yes = offer.querySelector("[data-yes]");
   const label = yes.querySelector("span");
@@ -73,6 +75,7 @@ if (offer) {
 
   yes.addEventListener("click", async () => {
     setState("processing");
+    window.studioTrack?.("upsell_click");
     if (FUNNEL.demo) return setTimeout(() => (params.get("fail") === "1" ? setState("failed") : done()), 900);
     try {
       const r = await fetch(FUNNEL.upsellApi, {
@@ -119,12 +122,13 @@ if (mount) {
   const load = (tries = 0) =>
     fetch(`${FUNNEL.orderApi}?session_id=${encodeURIComponent(sessionId)}`)
       .then((r) => r.json())
-      .then((res) => (res.ready || tries >= 10 ? show(res) : setTimeout(() => load(tries + 1), 1500)))
+      .then((res) => (res.ready || tries >= 10 ? (show(res), purchasePixel(res)) : setTimeout(() => load(tries + 1), 1500)))
       .catch(() => show(fromUrl()));
 
   if (FUNNEL.demo || !sessionId) show(fromUrl());
   else load();
 
-  // Meta Pixel Purchase (dedup sa CAPI preko event_id = session_id)
-  // if (window.fbq && sessionId) fbq("track", "Purchase", { value: UKUPNO, currency: "EUR" }, { eventID: sessionId });
+  // Meta Pixel Purchase: isti event_id (session_id) šalje i server preko Conversions API, pa se broji jednom
+  const purchasePixel = (res) =>
+    res.amount && window.studioTrack?.("purchase_page", { amount: res.amount }, { event: "Purchase", data: { value: res.amount, currency: res.currency }, eventID: sessionId });
 }

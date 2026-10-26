@@ -41,12 +41,26 @@ export async function addToAccessGroup(env, email, groupId) {
   await circle(env, "POST", `/access_groups/${groupId}/community_members`, { email });
 }
 
-// Circle ponekad odgovori 201, a člana ne upiše (npr. nalog napravljen sekundu ranije još nije spreman).
-// Ako ga nema u grupi, dodaje ponovo i baca grešku, pa red ponavlja proveru za 30s, 60s...
-export async function ensureInGroup(env, email, groupId) {
-  const inGroup = await circle(env, "GET", `/access_groups/${groupId}/community_member?email=${encodeURIComponent(email)}`);
-  if (inGroup) return;
+const q = (email, extra = "") => `?email=${encodeURIComponent(email)}${extra}`;
+
+export async function addToSpace(env, email, spaceId) {
+  await circle(env, "POST", "/space_members", { email, space_id: Number(spaceId) });
+}
+
+export async function removeFromSpace(env, email, spaceId) {
+  await circle(env, "DELETE", `/space_members${q(email, `&space_id=${spaceId}`)}`);
+}
+
+// Circle grupe upisuje u pozadini i ponekad odgovori 201, a člana ne upiše.
+// Ako ga nema u grupi: dodaje ponovo, a kad je zadat prostor, upisuje ga i direktno u prostor
+// (rezerva, da kupac sigurno vidi kurs). Ako ni to nije potvrđeno, baca grešku i red ponavlja.
+export async function ensureInGroup(env, email, groupId, spaceId) {
+  if (await circle(env, "GET", `/access_groups/${groupId}/community_member${q(email)}`)) return;
   await addToAccessGroup(env, email, groupId);
+  if (spaceId) {
+    if (!(await circle(env, "GET", `/space_member${q(email, `&space_id=${spaceId}`)}`))) await addToSpace(env, email, spaceId);
+    if (await circle(env, "GET", `/space_member${q(email, `&space_id=${spaceId}`)}`)) return;
+  }
   throw new Error(`Circle još nije upisao ${email} u grupu ${groupId}, proveravam ponovo`);
 }
 

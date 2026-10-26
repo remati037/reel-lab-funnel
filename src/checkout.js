@@ -1,6 +1,9 @@
 import { stripe, currentPriceKey, SOURCE } from "./stripe.js";
+import { metaEvent, clientInfo } from "./meta.js";
+import { readOffer } from "./offer.js";
+import { track } from "./notify.js";
 
-const TRACKED = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "ph_id"];
+const TRACKED = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "ph_id", "fbp", "fbc", "consent"];
 
 // GET /api/checkout?utm_... → stari linkovi (ManyChat, mejlovi) vode na našu checkout stranicu
 export function checkoutRedirect(request) {
@@ -14,12 +17,16 @@ export async function checkout(request, env) {
   // Dok Stripe ključ nije podešen, stranica radi u test modu (simulacija)
   if (!env.STRIPE_SECRET_KEY) return Response.json({ test: true });
 
-  const priceKey = currentPriceKey(env);
+  const { params = {} } = await request.json().catch(() => ({}));
+  // Lični link iz mejla (67€ do roka) važi i kad su vrata zatvorena
+  const offer = await readOffer(env, params.ponuda);
+  const priceKey = offer ? "studio_lead" : currentPriceKey(env);
   if (!priceKey) return Response.json({ closed: true });
 
-  const { params = {} } = await request.json().catch(() => ({}));
   const metadata = { source: SOURCE, price_type: priceKey };
   for (const k of TRACKED) if (typeof params[k] === "string" && params[k]) metadata[k] = params[k].slice(0, 200);
+  // IP i browser samo uz pristanak na kolačiće, za Meta Conversions API
+  if (metadata.consent === "1") Object.assign(metadata, clientInfo(request));
 
   const s = stripe(env);
   const { data: prices } = await s.prices.list({ lookup_keys: [priceKey], active: true });
@@ -41,7 +48,25 @@ export async function checkout(request, env) {
     return_url: `${origin}/ponuda?session_id={CHECKOUT_SESSION_ID}`,
   });
 
-  return Response.json({ clientSecret: session.client_secret, publishableKey: env.STRIPE_PUBLISHABLE_KEY });
+  await track(env, "checkout_started", {
+    distinctId: metadata.ph_id || session.id,
+    insertId: `ic-${session.id}`,
+    properties: { price_type: priceKey, amount: prices[0].unit_amount / 100, utm_source: metadata.utm_source, utm_campaign: metadata.utm_campaign },
+  }).catch((e) => console.error("posthog", e));
+  await metaEvent(env, {
+    name: "InitiateCheckout",
+    eventId: `ic-${session.id}`,
+    meta: { ...metadata, url: `${origin}/checkout` },
+    value: prices[0].unit_amount / 100,
+    currency: prices[0].currency,
+  }).catch((e) => console.error("meta", e));
+
+  return Response.json({
+    clientSecret: session.client_secret,
+    publishableKey: env.STRIPE_PUBLISHABLE_KEY,
+    sessionId: session.id,
+    ...(offer && { offer: { until: offer.until, email: offer.email } }),
+  });
 }
 
 // POST /api/checkout/consent { session_id } → pre plaćanja beleži da je kupac prihvatio uslove

@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="funnel.css">
   <script src="https://js.stripe.com/endive/stripe.js"></script>
+  <script src="/api/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/posthog-js@1.438.7/dist/array.js" defer></script>
+  <script src="/analytics.js" defer></script>
 </head>
 <body>
 <!--
@@ -158,12 +161,12 @@
 </div>
 
 <footer class="ffoot">
-  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
 </footer>
 
 <script>
   // Isti rok kao na landingu (script.js → CONFIG.deadline)
-  const DEADLINE = new Date("2026-10-25T21:00:00+01:00").getTime();
+  let DEADLINE = new Date("2026-10-25T21:00:00+01:00").getTime();
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -193,9 +196,13 @@
     return "";
   };
 
-  // UTM i ostali parametri sa landinga idu u Stripe sesiju
-  const params = Object.fromEntries(new URLSearchParams(location.search));
   let checkout, sessionId;
+  const track = (...a) => window.studioTrack?.(...a);
+
+  // Kreće posle analytics.js (deferred), da bi PostHog ID i pristanak na kolačiće išli u Stripe sesiju
+  document.addEventListener("DOMContentLoaded", () => {
+  // UTM, lični link za ponudu i ID-jevi za analitiku idu u Stripe sesiju
+  const params = { ...Object.fromEntries(new URLSearchParams(location.search)), ...(window.studioIds?.() || {}) };
 
   fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ params }) })
     .then((r) => r.json())
@@ -203,7 +210,9 @@
       if (res.test) return testMode();
       if (res.closed) return (location.href = "/?zatvoreno=1");
       if (!res.clientSecret) throw new Error("bez sesije");
-      sessionId = res.clientSecret.split("_secret_")[0];
+      sessionId = res.sessionId || res.clientSecret.split("_secret_")[0];
+      if (res.offer) personalOffer(res.offer);
+      track("checkout_view", { personal_offer: !!res.offer }, { event: "InitiateCheckout", eventID: `ic-${sessionId}` });
       // Stripe nema srpski; hrvatski je najbliži
       checkout = Stripe(res.publishableKey, { locale: "hr" }).initCheckoutElementsSdk({
         clientSecret: res.clientSecret,
@@ -245,6 +254,19 @@
       }).mount("#payment-element");
     })
     .catch(() => fail("Plaćanje trenutno ne može da se učita. Osveži stranicu ili nam piši na podrska@vladsdigital.com."));
+  });
+
+  // Lični rok iz mejla: odbrojavanje do njega i mejl unapred upisan
+  function personalOffer(offer) {
+    DEADLINE = offer.until;
+    tick();
+    if (offer.email && !form.email.value) form.email.value = offer.email;
+    document.querySelector(".co-top .lamp").textContent = "Tvoja lična cena";
+    const d = new Date(offer.until);
+    const months = ["januara", "februara", "marta", "aprila", "maja", "juna", "jula", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
+    const when = `${d.getDate()}. ${months[d.getMonth()]} u ${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}h`;
+    document.querySelectorAll(".closes, .co-order .pr .mono").forEach((el) => (el.textContent = "Lična cena važi do " + when));
+  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -254,6 +276,7 @@
     err.textContent = "";
     payLabel.textContent = "Obrađujem...";
     form.querySelector("button").disabled = true;
+    track("checkout_submit");
 
     try {
       const consent = await fetch("/api/checkout/consent", {
@@ -266,7 +289,10 @@
       if (loaded.type !== "success") throw new Error("akcije");
       // Uspešno plaćanje (i 3DS potvrda) vodi na /ponuda, ovde se vraća samo greška
       const result = await loaded.actions.confirm({ email: form.email.value.trim() });
-      if (result.type === "error") fail(result.error.message);
+      if (result.type === "error") {
+        track("checkout_error", { message: result.error.message?.slice(0, 120) });
+        fail(result.error.message);
+      }
     } catch {
       fail("Nešto nije u redu. Pokušaj ponovo ili osveži stranicu.");
     }
