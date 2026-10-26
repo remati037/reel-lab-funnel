@@ -2,16 +2,11 @@
    PODEŠAVANJA za /ponuda i /hvala — menjaj ovde
    ========================================================= */
 const FUNNEL = {
-  // true = pregled bez servera: dugme "Da" samo glumi uspešnu naplatu.
-  // Kad postoje /api/upsell i /api/order (vidi FUNNEL-PLAN.md), stavi false.
-  demo: true,
-
-  upsellApi: "/api/upsell",  // POST { session_id } → { status: "succeeded" | "requires_action" | "declined" | "already" }
+  upsellApi: "/api/upsell",  // POST { session_id } → { status: "succeeded" | "requires_action" | "declined" | "already", client_secret?, publishable_key? }
   orderApi: "/api/order",    // GET ?session_id= → { ready: bool, lab: bool, labClan: bool }
-  stripeKey: "",             // pk_live_... ili pk_test_..., treba samo za 3DS potvrdu
 
   circleUrl: "https://www.aiprofit.rs/c/studio-reel-lab-kurs", // Circle prostor kursa
-  email: "info@tvojdomen.rs",
+  email: "podrska@vladsdigital.com",
 
   lab: { first: "1€", monthly: "47€", regular: "57€", trialDays: 30 },
 
@@ -20,6 +15,9 @@ const FUNNEL = {
 /* ---------- zajedničko ---------- */
 const params = new URLSearchParams(location.search);
 const sessionId = params.get("session_id") || "";
+// Pravi Stripe session_id ide na server. Test checkout (checkout.html) pravi kratak lažni ID,
+// pa tada dugme "Da" samo glumi naplatu, a ?fail=1 i ?lab=... simuliraju ishode.
+FUNNEL.demo = !/^cs_(test|live)_[A-Za-z0-9]{20,}$/.test(sessionId);
 
 function fill(root = document) {
   root.querySelectorAll("[data-f]").forEach((el) => {
@@ -64,6 +62,13 @@ if (offer) {
   };
   const done = () => (location.href = withSession("hvala.html", { lab: "1" }));
 
+  // Već je Lab član: ponuda nema smisla, ide pravo na hvala
+  if (!FUNNEL.demo)
+    fetch(`${FUNNEL.orderApi}?session_id=${encodeURIComponent(sessionId)}`)
+      .then((r) => r.json())
+      .then((res) => res.labClan && location.replace(withSession("hvala.html")))
+      .catch(() => {});
+
   yes.addEventListener("click", async () => {
     setState("processing");
     if (FUNNEL.demo) return setTimeout(() => (params.get("fail") === "1" ? setState("failed") : done()), 900);
@@ -75,9 +80,9 @@ if (offer) {
       });
       const res = await r.json();
       if (res.status === "succeeded" || res.status === "already") return done();
-      if (res.status === "requires_action" && window.Stripe && FUNNEL.stripeKey) {
+      if (res.status === "requires_action" && window.Stripe && res.publishable_key) {
         // Banka traži potvrdu (3DS): kupac potvrdi u Stripe prozoru
-        const { error } = await Stripe(FUNNEL.stripeKey).confirmCardPayment(res.client_secret);
+        const { error } = await Stripe(res.publishable_key).confirmCardPayment(res.client_secret);
         return error ? setState("failed") : done();
       }
       setState("failed");

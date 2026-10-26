@@ -43,10 +43,14 @@
     "LAUNCH_UNTIL": "2026-11-11T21:00:00+01:00",
     "CLOSE_AT": "2026-11-15T21:00:00+01:00",
     "AUTOMATIC_TAX": "false",
+    // Javni Stripe ključ (pk_...), treba samo za 3DS potvrdu na /ponuda
+    "STRIPE_PUBLISHABLE_KEY": "",
 
     // Circle (aiprofit.rs): access grupe i link kursa
     "CIRCLE_STUDIO_GROUP": "167621",
     "CIRCLE_LAB_GROUP": "167622",
+    // Grupa koju daje Circle Paywall postojećim Lab članovima (za proveru "već je član")
+    "CIRCLE_PAYWALL_LAB_GROUP": "124997",
     "CIRCLE_STUDIO_URL": "https://www.aiprofit.rs/c/studio-reel-lab-kurs",
 
     // Transakcioni mejlovi (Resend). Domen pošiljaoca mora biti potvrđen u Resend-u.

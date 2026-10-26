@@ -1,8 +1,21 @@
 import { webhooks, cryptoProvider, SOURCE } from "./stripe.js";
 
-// Eventi koje obrađujemo. Faza 2 dodaje invoice.paid, invoice.payment_failed,
-// customer.subscription.deleted i charge.dispute.created.
-const HANDLED = new Set(["checkout.session.completed"]);
+const HANDLED = new Set([
+  "checkout.session.completed",
+  "invoice.paid",
+  "invoice.payment_failed",
+  "customer.subscription.deleted",
+  "charge.dispute.created",
+]);
+
+// Da li event pripada ovom funnelu. Circle Paywall naplate na istom nalogu nemaju source=studio.
+// Spor (chargeback) ne nosi metadata, pa ga proverava posao preko PaymentIntent-a.
+function fromFunnel(event) {
+  const o = event.data.object;
+  if (event.type === "charge.dispute.created") return true;
+  if (o.object === "invoice") return (o.parent?.subscription_details?.metadata ?? o.subscription_details?.metadata)?.source === SOURCE;
+  return o.metadata?.source === SOURCE;
+}
 
 // POST /api/stripe-webhook
 export async function webhook(request, env) {
@@ -21,7 +34,7 @@ export async function webhook(request, env) {
   }
 
   if (!HANDLED.has(event.type)) return new Response("ignorisano");
-  if (event.data.object.metadata?.source !== SOURCE) return new Response("nije iz funnela");
+  if (!fromFunnel(event)) return new Response("nije iz funnela");
 
   const { meta } = await env.DB.prepare("INSERT OR IGNORE INTO stripe_events (id, type) VALUES (?, ?)")
     .bind(event.id, event.type)

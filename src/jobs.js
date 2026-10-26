@@ -1,7 +1,7 @@
 import { stripe } from "./stripe.js";
-import { grantAccess } from "./circle.js";
-import { addToGroup } from "./mailerlite.js";
-import { createOrder } from "./woo.js";
+import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, initialPassword } from "./circle.js";
+import { addToGroup, removeFromGroup } from "./mailerlite.js";
+import { createOrder, addOrderNote } from "./woo.js";
 import { sendEmail, track, telegram } from "./notify.js";
 import { welcomeEmail } from "./emails.js";
 
@@ -11,7 +11,17 @@ const euros = (cents) => (cents / 100).toFixed(2).replace(/\.00$/, "");
 // red ponavlja posao i preskaču se koraci koji su već "done".
 // Circle ide prvi (pristup), Woo i analitika poslednji, da ne blokiraju kupca.
 const STUDIO_STEPS = [
-  ["circle", (o, env) => grantAccess(env, o, env.CIRCLE_STUDIO_GROUP)],
+  [
+    "circle",
+    async (o, env) => {
+      // Zapamti da je nalog nov pre dodavanja u grupu, da ponovljeni pokušaj ne izgubi tu informaciju
+      if (await createMemberIfMissing(env, o)) {
+        await env.DB.prepare("UPDATE orders SET circle_new = 1 WHERE id = ?").bind(o.id).run();
+        o.circle_new = 1;
+      }
+      await addToAccessGroup(env, o.email, env.CIRCLE_STUDIO_GROUP);
+    },
+  ],
   [
     "mailerlite",
     (o, env) =>
@@ -24,7 +34,12 @@ const STUDIO_STEPS = [
   ],
   [
     "welcome",
-    (o, env) => sendEmail(env, { to: o.email, idempotencyKey: `welcome-${o.stripe_ref}`, ...welcomeEmail(env, o) }),
+    async (o, env) =>
+      sendEmail(env, {
+        to: o.email,
+        idempotencyKey: `welcome-${o.stripe_ref}`,
+        ...welcomeEmail(env, o, o.circle_new ? await initialPassword(env, o.email) : null),
+      }),
   ],
   [
     "woo",
@@ -59,6 +74,50 @@ const STUDIO_STEPS = [
   ],
 ];
 
+// Svaka Lab naplata: 1€ prvi mesec, pa 47€ svakog sledećeg
+const LAB_STEPS = [
+  ["circle", (o, env) => grantAccess(env, o, env.CIRCLE_LAB_GROUP)],
+  [
+    "mailerlite",
+    async (o, env) => {
+      await addToGroup(env, o.email, env.ML_GROUP_LAB);
+      await removeFromGroup(env, o.email, env.ML_GROUP_LAB_EX);
+    },
+  ],
+  [
+    "woo",
+    async (o, env) => {
+      const wooId = await createOrder(env, o, env.WOO_PRODUCT_LAB);
+      await env.DB.prepare("UPDATE orders SET woo_order_id = ? WHERE id = ?").bind(wooId, o.id).run();
+    },
+  ],
+  [
+    "posthog",
+    (o, env) =>
+      track(env, "lab_payment", {
+        distinctId: o.ph_id || o.email,
+        insertId: o.stripe_ref,
+        properties: { product: "lab", month: o.lab_month, revenue: o.amount_cents / 100, currency: o.currency, utm_source: o.utm_source, utm_campaign: o.utm_campaign, $set: { email: o.email } },
+      }),
+  ],
+  ["telegram", (o, env) => telegram(env, `🧪 AI Profit Lab (Studio upsell): ${o.lab_month}. mesec plaćen\n${o.email}\n${euros(o.amount_cents)}€`)],
+];
+
+// Pretplata otkazana ili ugašena posle neuspelih naplata
+const LAB_CANCEL_STEPS = [
+  ["circle", (c, env) => revokeAccess(env, c.email, env.CIRCLE_LAB_GROUP)],
+  [
+    "mailerlite",
+    async (c, env) => {
+      await removeFromGroup(env, c.email, env.ML_GROUP_LAB);
+      await addToGroup(env, c.email, env.ML_GROUP_LAB_EX);
+    },
+  ],
+  ["woo", (c, env) => c.lastWooOrder && addOrderNote(env, c.lastWooOrder, `Pretplata otkazana (${c.subscriptionId}).`)],
+  ["posthog", (c, env) => track(env, "lab_canceled", { distinctId: c.email, insertId: `${c.subscriptionId}-canceled`, properties: { months_paid: c.monthsPaid } })],
+  ["telegram", (c, env) => telegram(env, `❌ AI Profit Lab (Studio upsell) otkazan\n${c.email}\nplaćenih meseci: ${c.monthsPaid}`)],
+];
+
 export async function handleBatch(batch, env) {
   for (const msg of batch.messages) {
     try {
@@ -72,7 +131,18 @@ export async function handleBatch(batch, env) {
 }
 
 export async function runJob(job, env) {
-  if (job.type === "checkout.session.completed") return studioPurchase(job.object_id, env);
+  switch (job.type) {
+    case "checkout.session.completed":
+      return studioPurchase(job.object_id, env);
+    case "invoice.paid":
+      return labPayment(job.object_id, env);
+    case "invoice.payment_failed":
+      return labPaymentFailed(job.object_id, env);
+    case "customer.subscription.deleted":
+      return labCanceled(job.object_id, env);
+    case "charge.dispute.created":
+      return dispute(job.object_id, env);
+  }
   console.warn("nepoznat posao", job);
 }
 
@@ -81,7 +151,7 @@ async function studioPurchase(sessionId, env) {
   if (session.payment_status !== "paid") return;
 
   const order = await saveStudioOrder(session, env);
-  await runSteps(order, STUDIO_STEPS, env);
+  await runSteps(order.stripe_ref, order, STUDIO_STEPS, env);
 }
 
 async function saveStudioOrder(session, env) {
@@ -117,31 +187,108 @@ async function saveStudioOrder(session, env) {
   return env.DB.prepare("SELECT * FROM orders WHERE stripe_ref = ?").bind(session.id).first();
 }
 
-async function runSteps(order, steps, env) {
-  const { results } = await env.DB.prepare("SELECT step FROM delivery_steps WHERE order_id = ? AND status = 'done'")
-    .bind(order.id)
-    .all();
+async function labPayment(invoiceId, env) {
+  const s = stripe(env);
+  const inv = await s.invoices.retrieve(invoiceId);
+  if (inv.status !== "paid") return;
+  const sub = await s.subscriptions.retrieve(inv.parent.subscription_details.subscription);
+  const m = sub.metadata;
+
+  await env.DB.prepare(
+    `INSERT OR IGNORE INTO orders
+       (kind, stripe_ref, customer_id, subscription_id, email, name, amount_cents, currency, price_type, lab_month,
+        utm_source, utm_medium, utm_campaign, utm_content, utm_term, ph_id)
+     VALUES ('lab', ?, ?, ?, ?, ?, ?, ?, 'lab_monthly', (SELECT COUNT(*) + 1 FROM orders WHERE kind = 'lab' AND subscription_id = ?),
+        ?, ?, ?, ?, ?, ?)`
+  )
+    .bind(
+      inv.id,
+      inv.customer,
+      sub.id,
+      inv.customer_email.toLowerCase(),
+      inv.customer_name,
+      inv.amount_paid,
+      inv.currency,
+      sub.id,
+      m.utm_source ?? null,
+      m.utm_medium ?? null,
+      m.utm_campaign ?? null,
+      m.utm_content ?? null,
+      m.utm_term ?? null,
+      m.ph_id ?? null
+    )
+    .run();
+  // Upsell posle 3DS potvrde postaje uspešan tek ovde
+  await env.DB.prepare("UPDATE upsells SET status = 'succeeded', updated_at = datetime('now') WHERE subscription_id = ?").bind(sub.id).run();
+
+  const order = await env.DB.prepare("SELECT * FROM orders WHERE stripe_ref = ?").bind(inv.id).first();
+  await runSteps(order.stripe_ref, order, LAB_STEPS, env);
+}
+
+async function labPaymentFailed(invoiceId, env) {
+  const inv = await stripe(env).invoices.retrieve(invoiceId);
+  // Prvu naplatu od 1€ rešava /ponuda (odbijena kartica), ovde su samo mesečne
+  if (inv.billing_reason === "subscription_create") return;
+  const ref = `${inv.id}-failed-${inv.attempt_count}`;
+  await runSteps(ref, inv, [
+    ["posthog", (i, env) => track(env, "lab_payment_failed", { distinctId: i.customer_email, insertId: ref, properties: { attempt: i.attempt_count } })],
+    ["telegram", (i, env) => telegram(env, `⚠️ Lab naplata nije prošla (pokušaj ${i.attempt_count})\n${i.customer_email}\n${euros(i.amount_due)}€. Stripe pokušava ponovo.`)],
+  ], env);
+}
+
+async function labCanceled(subscriptionId, env) {
+  const s = stripe(env);
+  const sub = await s.subscriptions.retrieve(subscriptionId);
+  const customer = await s.customers.retrieve(sub.customer);
+  const paid = await env.DB.prepare(
+    "SELECT COUNT(*) AS n, MAX(woo_order_id) AS last_woo FROM orders WHERE kind = 'lab' AND subscription_id = ?"
+  )
+    .bind(sub.id)
+    .first();
+  const ctx = { email: customer.email.toLowerCase(), subscriptionId: sub.id, monthsPaid: paid.n, lastWooOrder: paid.last_woo };
+  await runSteps(`${sub.id}-canceled`, ctx, LAB_CANCEL_STEPS, env);
+}
+
+// Chargeback za Studio: pristup Studiju se gasi, Lab ostaje
+async function dispute(disputeId, env) {
+  const s = stripe(env);
+  const d = await s.disputes.retrieve(disputeId);
+  const order = await env.DB.prepare("SELECT * FROM orders WHERE payment_intent = ? AND kind = 'studio'").bind(d.payment_intent).first();
+  if (!order) return; // nije Studio kupovina iz ovog funnela
+
+  await runSteps(d.id, order, [
+    ["status", (o, env) => env.DB.prepare("UPDATE orders SET status = 'disputed' WHERE id = ?").bind(o.id).run()],
+    ["circle", (o, env) => revokeAccess(env, o.email, env.CIRCLE_STUDIO_GROUP)],
+    ["woo", (o, env) => o.woo_order_id && addOrderNote(env, o.woo_order_id, `Chargeback (${d.id}, razlog: ${d.reason}). Pristup Studiju ugašen.`)],
+    ["posthog", (o, env) => track(env, "chargeback", { distinctId: o.ph_id || o.email, insertId: d.id, properties: { reason: d.reason, amount: d.amount / 100 } })],
+    ["telegram", (o, env) => telegram(env, `🚨 Chargeback za Studio\n${o.email}\n${euros(d.amount)}€, razlog: ${d.reason}. Pristup Studiju ugašen, Lab ostaje.`)],
+  ], env);
+}
+
+// Koraci su vezani za Stripe referencu: svaki se radi tačno jednom
+async function runSteps(ref, ctx, steps, env) {
+  const { results } = await env.DB.prepare("SELECT step FROM steps WHERE ref = ? AND status = 'done'").bind(ref).all();
   const done = new Set(results.map((r) => r.step));
 
   for (const [name, fn] of steps) {
     if (done.has(name)) continue;
     try {
-      await fn(order, env);
-      await saveStep(env, order.id, name, "done", null);
+      await fn(ctx, env);
+      await saveStep(env, ref, name, "done", null);
     } catch (e) {
-      await saveStep(env, order.id, name, "failed", String(e?.message ?? e));
+      await saveStep(env, ref, name, "failed", String(e?.message ?? e));
       throw e;
     }
   }
 }
 
-function saveStep(env, orderId, step, status, error) {
+function saveStep(env, ref, step, status, error) {
   return env.DB.prepare(
-    `INSERT INTO delivery_steps (order_id, step, status, attempts, last_error) VALUES (?, ?, ?, 1, ?)
-     ON CONFLICT (order_id, step) DO UPDATE SET
+    `INSERT INTO steps (ref, step, status, attempts, last_error) VALUES (?, ?, ?, 1, ?)
+     ON CONFLICT (ref, step) DO UPDATE SET
        status = excluded.status, attempts = attempts + 1, last_error = excluded.last_error, updated_at = datetime('now')`
   )
-    .bind(orderId, step, status, error)
+    .bind(ref, step, status, error)
     .run();
 }
 

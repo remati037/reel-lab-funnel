@@ -1,12 +1,14 @@
 import { checkout } from "./checkout.js";
 import { webhook } from "./webhook.js";
 import { order } from "./order.js";
+import { upsell } from "./upsell.js";
 import { handleBatch, reconcile } from "./jobs.js";
 
 const routes = {
   "GET /api/checkout": checkout,
   "POST /api/stripe-webhook": webhook,
   "GET /api/order": order,
+  "POST /api/upsell": upsell,
 };
 
 export default {

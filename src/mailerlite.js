@@ -6,6 +6,7 @@ async function ml(env, method, path, body) {
     headers: { Authorization: `Bearer ${env.MAILERLITE_TOKEN}`, "Content-Type": "application/json", Accept: "application/json" },
     body: body && JSON.stringify(body),
   });
+  if (r.status === 404 && method === "DELETE") return null; // već nije u grupi
   if (!r.ok) throw new Error(`MailerLite ${method} ${path}: ${r.status} ${await r.text()}`);
   return r.status === 204 ? null : r.json();
 }

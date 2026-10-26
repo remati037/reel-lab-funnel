@@ -156,9 +156,16 @@ Treba mi pristup repou plugina.
 - [x] Kod isporuke posle kupovine: Circle (nalog + grupa) → MailerLite → welcome mejl (Resend) → Woo porudžbina → PostHog `purchase` → Telegram
 - [x] Snippet za Woo mejlove: [wordpress/studio-funnel-tihi-mejlovi.php](wordpress/studio-funnel-tihi-mejlovi.php)
 
-**Čeka tebe**
-- [ ] Ispravan Stripe test ključ u `.dev.vars` (sadašnji Stripe odbija)
-- [ ] Snippet za Woo mejlove na vladsdigital.com
-- [ ] Potvrda adrese pošiljaoca (`MAIL_FROM`) i adrese za odgovore (`MAIL_REPLY_TO`) u wrangler.jsonc
+- [x] Stripe (test): proizvodi, cene, kupon `PRVI_MESEC_1E`, webhook na `studio.aiprofit.rs/api/stripe-webhook`
+- [x] Test kupovina Studija uživo prošla sve korake (Circle, MailerLite, welcome mejl, Woo bez mejla kupcu, PostHog, Telegram)
+- [x] **Faza 2 kod:** `/api/upsell` (pretplata 1€ pa 47€ karticom iz checkout-a, 3DS, odbijena kartica), provera „već Lab član“ (Circle grupe Paywall-a 124997 i upsell-a 167622), Lab naplate (`invoice.paid`), neuspele naplate, otkazivanje, chargeback za Studio
+- [x] Test upsell-a uživo: pretplata napravljena, 1€ naplaćen, Woo porudžbina, MailerLite, PostHog, Telegram
+- [x] Test otkazivanja (Lab pristup skinut, Studio ostaje, MailerLite „otkazali“, beleška u Woo-u) i Stripe test clock: 2. mesec naplaćen 47€ i obrađen
+- [x] Jedan mejl umesto dva: Circle pozivnica je ugašena, novi kupac dobija lozinku u welcome mejlu (računa se iz `CIRCLE_PASSWORD_SECRET` i mejla, nigde se ne čuva); postojeći Circle član dobija „prijavi se svojim nalogom“
 
-**Sledeće (ja):** Stripe proizvodi skriptom → webhook endpoint u Stripe-u → test kupovina od početka do kraja → objava → Faza 2 (upsell)
+**Čeka tebe**
+- [ ] Javni Stripe ključ (`pk_test_...`) za 3DS potvrdu na /ponuda (u wrangler.jsonc, `STRIPE_PUBLISHABLE_KEY`)
+- [ ] Stripe → Settings → Public details: javni naziv firme (sada se u checkout-u vidi „VLADSDIGITAL LLC VLADIMIR STANKOVIC SOLE MBR“)
+- [ ] Stripe → Customer portal → uključiti link za prijavu (za otkazivanje Lab-a bez tebe)
+
+**Sledeće (ja):** 3DS test → Stripe test clock (naplata 47€ posle 30 dana, otkazivanje) → pravne stranice → Faza 4 (analitika na stranicama)

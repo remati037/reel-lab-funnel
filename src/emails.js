@@ -1,19 +1,38 @@
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-export function welcomeEmail(env, order) {
+const LOGIN_URL = "https://www.aiprofit.rs/sign_in";
+const RESET_URL = "https://login.circle.so/users/password/new?request_host=www.aiprofit.rs";
+
+// Jedan mejl sa svim što treba za ulazak. password je null kad kupac već ima Circle nalog.
+export function welcomeEmail(env, order, password) {
   const firstName = (order.name || "").trim().split(/\s+/)[0];
   const hi = firstName ? `Ćao ${firstName},` : "Ćao,";
   const url = env.CIRCLE_STUDIO_URL;
+
+  const loginText = password
+    ? `Tvoji podaci za prijavu na aiprofit.rs:
+Mejl: ${order.email}
+Lozinka: ${password}
+(lozinku možeš da promeniš u svom profilu)`
+    : `Prijavi se na aiprofit.rs svojim postojećim nalogom (mejl ${order.email}). Zaboravio si lozinku? ${RESET_URL}`;
+
+  const loginHtml = password
+    ? `<table style="border-collapse:collapse;margin:8px 0 4px;font-size:15px">
+<tr><td style="padding:4px 14px 4px 0;color:#666">Mejl</td><td style="padding:4px 0"><b>${esc(order.email)}</b></td></tr>
+<tr><td style="padding:4px 14px 4px 0;color:#666">Lozinka</td><td style="padding:4px 0;font-family:Menlo,Consolas,monospace"><b>${esc(password)}</b></td></tr>
+</table>
+<p style="font-size:14px;color:#666;margin-top:4px">Lozinku možeš da promeniš u svom profilu.</p>`
+    : `<p>Prijavi se na aiprofit.rs svojim postojećim nalogom (mejl <b>${esc(order.email)}</b>). Zaboravio si lozinku? <a href="${RESET_URL}">Napravi novu</a>.</p>`;
 
   const text = `${hi}
 
 uplata je prošla i tvoj Studio Reel Lab je otključan.
 
-Tri koraka do prvog rilsa:
-
-1. Pozivnica za Circle zajednicu AI Profit Lab stiže u posebnom mejlu za par minuta (pogledaj i Promocije i Spam). Ako već imaš Circle nalog na aiprofit.rs, prijavi se kao i do sada.
-2. Otvori kurs: ${url}
+1. Otvori kurs: ${url}
+2. ${loginText}
 3. Prati lekciju za instalaciju i nalepi komandu. Prvi rils ti je 10 minuta daleko.
+
+Kurs je u zajednici AI Profit Lab na aiprofit.rs, gde su i moji ostali programi.
 
 Zapelo je negde? Samo odgovori na ovaj mejl.
 
@@ -22,16 +41,14 @@ Vidimo se unutra!`;
   const html = `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a;max-width:560px">
 <p>${esc(hi)}</p>
 <p>uplata je prošla i tvoj <b>Studio Reel Lab</b> je otključan.</p>
-<p><b>Tri koraka do prvog rilsa:</b></p>
-<ol style="padding-left:20px">
-<li style="margin-bottom:8px">Pozivnica za Circle zajednicu <b>AI Profit Lab</b> stiže u posebnom mejlu za par minuta (pogledaj i Promocije i Spam). Ako već imaš Circle nalog na aiprofit.rs, prijavi se kao i do sada.</li>
-<li style="margin-bottom:8px">Otvori kurs preko dugmeta ispod.</li>
-<li>Prati lekciju za instalaciju i nalepi komandu. Prvi rils ti je 10 minuta daleko.</li>
-</ol>
 <p style="margin:24px 0"><a href="${esc(url)}" style="background:#ff5a1f;color:#fff;text-decoration:none;padding:14px 22px;border-radius:8px;font-weight:600;display:inline-block">Otvori Studio Reel Lab kurs</a></p>
+<p style="margin-bottom:4px"><b>Prijava</b> (<a href="${LOGIN_URL}">www.aiprofit.rs</a>)</p>
+${loginHtml}
+<p><b>Prvi rils:</b> u kursu prati lekciju za instalaciju i nalepi komandu. Prvi rils ti je 10 minuta daleko.</p>
+<p style="font-size:14px;color:#666">Kurs je u zajednici AI Profit Lab na aiprofit.rs, gde su i moji ostali programi.</p>
 <p>Zapelo je negde? Samo odgovori na ovaj mejl.</p>
 <p>Vidimo se unutra!</p>
 </div>`;
 
-  return { subject: "Tvoj Studio Reel Lab je otključan", text, html };
+  return { subject: "Tvoj Studio Reel Lab je otključan: pristup i lozinka", text, html };
 }

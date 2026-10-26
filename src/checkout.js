@@ -27,6 +27,9 @@ export async function checkout(request, env) {
     mode: "payment",
     line_items: [{ price: studio.id, quantity: 1 }],
     customer_creation: "always",
+    // Upsell naplaćuje sačuvanu karticu (uklj. Apple Pay, Google Pay, Link). Bancontact i iDEAL
+    // bi umesto kartice ostavili SEPA nalog, pa ih ovde ne nudimo.
+    excluded_payment_method_types: ["bancontact", "ideal"],
     // Čuva karticu za one-click upsell na /ponuda
     payment_intent_data: { setup_future_usage: "off_session", metadata },
     consent_collection: { terms_of_service: "required" },

@@ -1,19 +1,27 @@
-// GET /api/order?session_id=  → šta hvala stranica treba da prikaže
+import { isLabMember, paidStudioSession } from "./lab.js";
+import { stripe } from "./stripe.js";
+
+// GET /api/order?session_id=  → šta ponuda i hvala stranica treba da prikažu
+//   ready:  webhook je obradio kupovinu
+//   lab:    uzeo je Lab u ovom funnelu
+//   labClan: već je bio Lab član (ponuda se preskače)
 export async function order(request, env) {
   const sessionId = new URL(request.url).searchParams.get("session_id");
-  if (!sessionId) return Response.json({ error: "session_id" }, { status: 400 });
+  const session = await paidStudioSession(env, sessionId);
+  if (!session) return Response.json({ error: "Nepoznata kupovina" }, { status: 404 });
 
-  const row = await env.DB.prepare("SELECT 1 FROM orders WHERE stripe_ref = ? AND kind = 'studio'")
-    .bind(sessionId)
-    .first();
-  // Webhook još nije stigao: stranica pita ponovo za sekund
-  if (!row) return Response.json({ ready: false });
+  const row = await env.DB.prepare("SELECT 1 FROM orders WHERE stripe_ref = ? AND kind = 'studio'").bind(session.id).first();
+  const upsell = await env.DB.prepare("SELECT status, subscription_id FROM upsells WHERE session_id = ?").bind(session.id).first();
 
-  const upsell = await env.DB.prepare("SELECT status FROM upsells WHERE session_id = ?").bind(sessionId).first();
+  let lab = upsell?.status === "succeeded";
+  // Posle 3DS potvrde webhook ponekad kasni par sekundi: pitamo Stripe direktno
+  if (upsell?.status === "requires_action" && upsell.subscription_id) {
+    lab = (await stripe(env).subscriptions.retrieve(upsell.subscription_id)).status === "active";
+  }
 
   return Response.json({
-    ready: true,
-    lab: upsell?.status === "succeeded",
-    labClan: false, // Faza 2: provera Lab članstva preko Circle-a
+    ready: !!row,
+    lab,
+    labClan: !lab && (await isLabMember(env, session.customer_details.email.toLowerCase())),
   });
 }
