@@ -2,9 +2,9 @@
    PODEŠAVANJA — menjaj ovde
    ========================================================= */
 const CONFIG = {
-  // Link ka stranici za plaćanje (Stripe, Paddle, ThriveCart...). Svako dugme vodi ovde.
-  // Sada: test checkout. Uživo: "/api/checkout".
-  checkoutUrl: "checkout.html",
+  // Svako dugme vodi ovde. Server pravi Stripe Checkout sesiju (dok Stripe ključ
+  // nije podešen, vraća na test checkout). UTM parametri sa landinga idu dalje.
+  checkoutUrl: "/api/checkout",
 
   // Kad se vrata zatvaraju (odbrojavanje ide do ovog trenutka). +01:00 = srednjoevropsko vreme.
   deadline: "2026-10-25T21:00:00+01:00",
@@ -22,7 +22,7 @@ document.querySelectorAll("[data-t]").forEach((el) => {
   const v = CONFIG.texts[el.dataset.t];
   if (v) el.textContent = v;
 });
-document.querySelectorAll(".js-buy").forEach((a) => (a.href = CONFIG.checkoutUrl));
+document.querySelectorAll(".js-buy").forEach((a) => (a.href = CONFIG.checkoutUrl + location.search));
 
 /* ---------- odbrojavanje ---------- */
 const deadline = new Date(CONFIG.deadline).getTime();

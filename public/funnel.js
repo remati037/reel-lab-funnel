@@ -119,12 +119,15 @@ if (mount) {
     radionica: params.get("radionica") === "1",
   });
 
-  if (FUNNEL.demo || !sessionId) show(fromUrl());
-  else
+  // Webhook ponekad stigne sekundu posle kupca, pa pitamo server nekoliko puta
+  const load = (tries = 0) =>
     fetch(`${FUNNEL.orderApi}?session_id=${encodeURIComponent(sessionId)}`)
       .then((r) => r.json())
-      .then(show)
+      .then((res) => (res.ready || tries >= 10 ? show(res) : setTimeout(() => load(tries + 1), 1500)))
       .catch(() => show(fromUrl()));
+
+  if (FUNNEL.demo || !sessionId) show(fromUrl());
+  else load();
 
   // Meta Pixel Purchase (dedup sa CAPI preko event_id = session_id)
   // if (window.fbq && sessionId) fbq("track", "Purchase", { value: UKUPNO, currency: "EUR" }, { eventID: sessionId });

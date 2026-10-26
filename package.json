@@ -1,0 +1,18 @@
+{
+  "name": "creator-studio-funnel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "db:local": "wrangler d1 migrations apply creator-studio --local",
+    "db:remote": "wrangler d1 migrations apply creator-studio --remote",
+    "deploy": "wrangler deploy",
+    "stripe:listen": "stripe listen --forward-to localhost:8787/api/stripe-webhook"
+  },
+  "dependencies": {
+    "stripe": "23.0.1"
+  },
+  "devDependencies": {
+    "wrangler": "4.152.0"
+  }
+}

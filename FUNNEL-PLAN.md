@@ -2,7 +2,9 @@
 
 Od prvog rilsa do 2. meseca u AI Profit Lab-u.
 
-**Stack:** Vercel (stranice + API) · Stripe Checkout (custom one-click upsell) · Circle Business (isporuka + zajednica) · MailerLite (mejlovi) · ManyChat (DM iz rilsova) · Meta Pixel + CAPI
+**Stack:** Cloudflare Workers na `studio.aiprofit.rs` (stranice + API + D1 baza + Queues) · Stripe Checkout (custom one-click upsell) · Circle Business na `aiprofit.rs` (isporuka + zajednica) · WooCommerce na `vladsdigital.com` (samo spisak porudžbina) · MailerLite (mejlovi) · ManyChat (DM iz rilsova) · PostHog + Meta Pixel/CAPI (analitika)
+
+**Odluke (26.10.):** bez garancije i bez povraćaja za Studio · Woo je samo evidencija, ne pravi fakture · Stripe nalog i porez su rešeni · bez TikTok oglasa · postojeći Lab članovi ostaju na Circle Paywall-u, nove Lab pretplate iz upsella idu direktno preko Stripe-a
 
 ---
 
@@ -77,8 +79,8 @@ Struktura je jaka. Pre puštanja:
 - [ ] Placeholderi: `[Tvoje Ime]`, `[Tvoj Brend]`, „Ime Prezime“ u testimonijalima, `info@tvojdomen.rs`, stilovi 6–9 („Naziv stila“), tvoja fotografija.
 - [ ] `checkoutUrl` → svako dugme ide na `/api/checkout` (kreira Stripe sesiju i nosi UTM).
 - [ ] FAQ „prijavi se mejlom, bez lozinke“: uskladiti sa stvarnim Circle loginom (vidi sekciju 5).
-- [ ] Garancija: tekst je OK, dodati link na uslove povraćaja.
-- [ ] Pixel (PageView, ViewContent, InitiateCheckout na klik).
+- [x] Garancija uklonjena sa landinga, checkout-a i hvala stranice (umesto nje: blok „Ne ostaješ sam posle kupovine“ i FAQ da nema povraćaja).
+- [ ] PostHog + Pixel (vidi sekciju 10).
 
 **Dodati**
 - [ ] `CONFIG.mode: "launch" | "evergreen"`. U evergreen modu nestaju „vrata se zatvaraju“ blokovi, ostaje cena 97€ i bonus.
@@ -99,8 +101,8 @@ Struktura je jaka. Pre puštanja:
 | `customer_creation` | `always` | treba nam Customer za upsell |
 | `payment_intent_data.setup_future_usage` | `off_session` | **ovo omogućava one-click upsell** |
 | `automatic_tax` | uključiti Stripe Tax | PDV/OSS (vidi Pravno) |
-| `consent_collection.terms_of_service` | `required` | prihvatanje uslova + odricanje od 14 dana za digitalni sadržaj |
-| `metadata` | utm_*, fbclid, lead_id, cena_tip | atribucija i CAPI |
+| `consent_collection.terms_of_service` | `required` | prihvatanje uslova + odricanje od 14 dana za digitalni sadržaj (`custom_text`: „pristup počinje odmah, gubim pravo na odustanak, povraćaj nije moguć“). Pošto nema garancije, ovaj pristanak je ono što pravno drži „bez povraćaja“. |
+| `metadata` | utm_*, fbclid, lead_id, cena_tip, `ph_id` (PostHog ID posetioca), `source: "studio"` | atribucija, CAPI, i oznaka da je kupovina iz ovog funnela |
 | `success_url` | `/ponuda?session_id={CHECKOUT_SESSION_ID}` | ide na upsell, ne na hvala |
 | `cancel_url` | `/` | |
 
@@ -140,7 +142,15 @@ Rezerva ako ti se ne sviđa: **Premium paket stilova** (+6 stilova montaže + 6 
 4. Ako banka traži 3DS (`requires_action`) → stranica pokaže Stripe potvrdu (`confirmCardPayment`), kupac potvrdi u par sekundi.
 5. Redirect na `/hvala?lab=1`.
 
-**Ako je kupac već Lab član** (provera po mejlu preko Circle API-ja): preskače `/ponuda` i ide direktno na `/hvala` sa porukom „Već si u Lab-u, vidimo se unutra“.
+**Ako je kupac već Lab član** (provera po mejlu preko Circle API-ja): preskače `/ponuda` i ide direktno na `/hvala` sa porukom „Već si u Lab-u, vidimo se unutra“. Član je Lab član ako ima aktivan Circle Paywall za Lab **ili** je u access group-u `AI Profit Lab` (nove pretplate iz ovog funnela).
+
+### Dva sistema za Lab, paralelno
+Postojeći Lab članovi kupuju preko Lab landinga na Circle-u i Circle Paywall-a (Circle-ov checkout, iza je Stripe). To ostaje kako jeste. Paywall ne može da uradi one-click upsell sačuvanom karticom, pa nove Lab pretplate iz Studio funnela idu direktno preko Stripe-a, a pristup daje access group.
+
+- Access group `AI Profit Lab` mora da otvara **iste prostore** kao Lab Paywall, da član ne vidi razliku.
+- Webhook obrađuje **samo** evente sa `metadata.source = "studio"` (sesija ili pretplata). Ako je Circle Paywall povezan na isti Stripe nalog, njegove naplate takođe stižu na naš webhook, i moraju da se preskoče, inače bi duplo dodavali pristup i pravili Woo porudžbine.
+- Otkazivanje: Lab članovi iz funnela otkazuju preko Stripe Customer Portal-a (link u mejlovima i u Circle-u), Paywall članovi kao i do sada.
+- Proveriti pre izrade: kako je Circle Paywall povezan sa Stripe-om (isti nalog ili Stripe Connect) i da li Circle API vraća status paywall pretplate po članu.
 
 **Ako kaže ne:** ne prikazujemo drugi downsell odmah (kupac je tek platio, ne treba mu treća stranica). Lab ponuda se vraća kroz mejl D3 i D10 i kroz Circle teaser.
 
@@ -158,7 +168,7 @@ Jedan cilj: **da kupac u roku od 10 minuta bude u Circle-u i nalepi install koma
 3. Dugme „Otvori Circle“ (direktan link na lekciju Instalacija)
 4. **Ako je među prvih 100:** „🎟️ Tvoje mesto na radionici je sačuvano. Nedelja, [datum] u 11h, Zoom.“ + dugme „Dodaj u kalendar“
 5. **Ako je uzeo Lab:** „AI Profit Lab je otključan, naći ćeš ga u istom Circle-u.“
-6. Pixel `Purchase` sa ukupnom vrednošću (Studio + bump + Lab 1€), deduplikovan sa CAPI preko `event_id`.
+6. Pixel `Purchase` sa ukupnom vrednošću (Studio + bump + Lab 1€), deduplikovan sa CAPI preko `event_id`. PostHog `identify` po mejlu, da se poseta spoji sa kupovinom.
 
 ### Circle login
 Webhook kreira člana preko API-ja. Dve opcije, odaberi jednu i prilagodi FAQ:
@@ -169,18 +179,26 @@ Webhook kreira člana preko API-ja. Dve opcije, odaberi jednu i prilagodi FAQ:
 
 ## 6. Isporuka (automatski, Stripe webhook)
 
-`POST /api/stripe-webhook`, sve idempotentno (svaki event obrađen tačno jednom).
+`POST /api/stripe-webhook` na Cloudflare Worker-u, sve idempotentno (svaki event obrađen tačno jednom).
+
+### Kako radi na Cloudflare-u
+1. Worker proveri Stripe potpis (`constructEventAsync`, Web Crypto), preskoči evente bez `source: "studio"`, upiše event ID u D1 i stavi posao u **Queue**. Stripe-u odgovara za manje od sekunde.
+2. Queue consumer radi korake redom. Svaki korak ima svoj status u D1 (`circle_ok`, `license_ok`, `mailerlite_ok`, `woo_ok`, `analytics_ok`). Ako jedan padne, Queue ponavlja samo taj korak, ostali se ne ponavljaju.
+3. Posle 5 neuspelih pokušaja posao ide u dead-letter queue + poruka tebi.
+4. **Noćni cron:** uporedi Stripe naplate iz poslednjih 48h sa D1 i dopuni sve što fali.
+
+Treba **Workers Paid plan (5$ mesečno)** zbog Queues, cron-a i CPU limita.
 
 | Stripe event | Šta se dešava |
 |---|---|
-| `checkout.session.completed` | 1. Circle: kreira/nađe člana, doda u access group **Creator Studio** (+ **Hook Pack** ako je bump)<br>2. Kupac broj ≤ 100 → access group **Radionica**<br>3. Kreira licencu (vezana za mejl)<br>4. MailerLite: upsert, grupa `Kupci – Studio`, izbaci iz `Lead`, polja (datum, bump, radionica, cena)<br>5. Welcome mejl (transakcioni)<br>6. Meta CAPI `Purchase`<br>7. Obaveštenje tebi (Telegram/Slack) |
-| `invoice.paid` (Lab) | Circle access group **AI Profit Lab** dodat/ostaje · MailerLite grupa `Lab – član` |
+| `checkout.session.completed` | 1. Circle: kreira/nađe člana, doda u access group **Creator Studio** (+ **Hook Pack** ako je bump)<br>2. Kupac broj ≤ 100 → access group **Radionica**<br>3. Kreira licencu (vezana za mejl)<br>4. MailerLite: upsert, grupa `Kupci – Studio`, izbaci iz `Lead`, polja (datum, bump, radionica, cena)<br>5. Welcome mejl (transakcioni)<br>6. WooCommerce porudžbina<br>7. PostHog `purchase` + Meta CAPI `Purchase`<br>8. Obaveštenje tebi (Telegram/Slack) |
+| `invoice.paid` (Lab, `source: studio`) | Circle access group **AI Profit Lab** dodat/ostaje · MailerLite grupa `Lab – član` · Woo porudžbina · PostHog `lab_payment` (1. ili n-ti mesec) |
 | `invoice.payment_failed` | Stripe Smart Retries + mejl za ažuriranje kartice (pristup ostaje tokom retry perioda) |
-| `customer.subscription.deleted` | Ukloni iz **AI Profit Lab** access group-a · MailerLite `Lab – bivši` |
-| `charge.refunded` (Studio) | Ukloni **Creator Studio** access · opozovi licencu · MailerLite `Refund` |
+| `customer.subscription.deleted` | Ukloni iz **AI Profit Lab** access group-a · MailerLite `Lab – bivši` · PostHog `lab_canceled` |
+| `charge.dispute.created` / ručni `charge.refunded` | Povraćaja nema, ali chargeback ili izuzetak koji ti ručno uradiš i dalje mogu da se dese: ukloni **Creator Studio** access, opozovi licencu, MailerLite `Refund`. **Lab ostaje aktivan.** |
 
 ### Evidencija kupaca u WooCommerce-u
-Svaka uspešna naplata pravi porudžbinu u WooCommerce-u, pa je tamo spisak svih kupaca i svih uplata na jednom mestu. Stripe ostaje sistem koji naplaćuje, a Woo služi samo za evidenciju i ne naplaćuje ništa.
+Sajt: **vladsdigital.com**. Svaka uspešna naplata pravi porudžbinu u WooCommerce-u, pa je tamo spisak svih kupaca i svih uplata na jednom mestu. Stripe ostaje sistem koji naplaćuje, a Woo služi samo za evidenciju i ne naplaćuje ništa.
 
 | Stripe event | WooCommerce (REST API `/wp-json/wc/v3`) |
 |---|---|
@@ -195,17 +213,19 @@ Pravila:
 - **Bez duplikata:** u porudžbinu se upisuje `meta_data` `stripe_session_id` / `stripe_invoice_id`. Pre kreiranja proverava se da li porudžbina sa tim ID-om već postoji.
 - **Ugasiti Woo mejlove kupcima** (Completed order, Customer invoice, Refunded order), jer kupac već dobija welcome mejl. Ostaviti samo obaveštenje adminu, po želji.
 - **UTM i izvor** idu u `meta_data`, pa se i u Woo-u vidi odakle je kupac došao.
-- **Ako je Woo nedostupan:** pokušaj se ponavlja (Stripe sam ponavlja webhook, ili red u Upstash-u). Pristup u Circle-u se ne blokira zbog Woo-a: Circle i licenca idu prvi, Woo poslednji.
-- **Ključ:** WooCommerce REST API ključ sa Read/Write pravom, preko HTTPS-a, čuva se u Vercel env varijablama.
+- **Ako je Woo nedostupan:** Queue ponavlja samo Woo korak. Pristup u Circle-u se ne blokira zbog Woo-a: Circle i licenca idu prvi, Woo posle.
+- **Samo spisak:** bez faktura i fiskalizacije, pa Checkout ne mora da traži adresu. Ime i mejl su dovoljni.
+- **Ključ:** WooCommerce REST API ključ sa Read/Write pravom, preko HTTPS-a, čuva se kao Cloudflare secret (`wrangler secret put`).
+- Ako vladsdigital.com ima Cloudflare ili sigurnosni plugin koji blokira REST pozive, dodati izuzetak za `/wp-json/wc/v3`.
 
-**Skladište:** Upstash Redis (Vercel KV) ili Supabase: kupci, licence, brojač radionice, obrađeni eventi.
+**Skladište: Cloudflare D1** (SQLite): kupci, porudžbine (sa UTM-om i PostHog ID-om), licence, brojač radionice, obrađeni eventi, status koraka isporuke.
 
 ### Plugin i install komanda
 - U Circle lekciji je **ista komanda za sve:**
   - Mac: `curl -fsSL https://studio.[domen]/install.sh | bash`
   - Windows: `irm https://studio.[domen]/install.ps1 | iex`
 - Pri prvom pokretanju plugin traži **mejl sa kojim si kupio** → šalje mu 6-cifreni kod → aktivira licencu na tom računaru (`/api/license/activate`, limit npr. 2 uređaja).
-- Ažuriranja proveravaju licencu (`/api/license/verify`). Refund = licenca opozvana = nema više ažuriranja.
+- Ažuriranja proveravaju licencu (`/api/license/verify`). Chargeback = licenca opozvana = nema više ažuriranja.
 - Kod privatan (privatni GitHub repo, a server isporučuje paket tek posle provere licence).
 - `doctor` komanda proverava i licencu.
 
@@ -266,7 +286,7 @@ Ovim je komanda u Circle-u bezbedna i ako procuri, a „prijavi se mejlom, bez l
 | D2 | Izaberi svoj stil (Look Builder) | |
 | D3 | Probni rilsovi: 8 verzija iz jednog videa · *+ Lab 1€ (samo ne-članovi)* | |
 | D5 | Carousel Studio | |
-| D6 | „Garancija ističe sutra. Zapeo si? Odgovori na ovaj mejl.“ | manje refunda, iskreno |
+| D6 | „Zapeo si negde? Odgovori na ovaj mejl, rešavamo zajedno.“ | aktivacija, manje chargeback-ova |
 | D7 | Pokaži svoj rils + zamolba za utisak | testimonijali |
 | D10 | *Lab 1€, poslednji put (samo ne-članovi)* | |
 | D14 | Preporuči prijatelju (affiliate/referral, kasnije) | |
@@ -301,9 +321,44 @@ Najava 3 dana pre · otvaranje · „48h launch cena ističe“ · dokaz/studija
 
 ---
 
-## 10. Merenje
+## 10. Merenje i analitika
 
-UTM → Checkout `metadata` → webhook → MailerLite polja i CAPI. Ovako znaš koji rils ili oglas je doneo novac, a ne samo klikove.
+UTM → Checkout `metadata` → webhook → D1, PostHog, MailerLite polja i CAPI. Ovako znaš koji rils ili oglas je doneo novac, a ne samo klikove.
+
+### Alati
+| Alat | Za šta |
+|---|---|
+| **PostHog** (EU cloud, besplatno do 1M događaja mesečno) | Glavna analitika: posete, funnel, izvori, session replay. Dashboard-i su ovde. |
+| **Meta Pixel + Conversions API** | Optimizacija i merenje Meta oglasa |
+| **Cloudflare Web Analytics** | Rezerva bez kolačića: čist broj poseta, radi i kad neko odbije kolačiće |
+| **Stripe** | Izvor istine za novac |
+| **Circle** | Aktivacija (otvorena lekcija 05) |
+
+### Zamka: Stripe Checkout je Stripe-ova stranica
+Na nju ne možemo da ubacimo svoj tracking. Zato se „ušao u checkout“ meri kad `/api/checkout` napravi sesiju, a „platio“ serverski iz webhook-a. PostHog ID posetioca ide kroz `metadata`, pa se serverski događaj spaja sa istom osobom koja je došla sa rilsa.
+
+### Događaji
+| Događaj | Gde se šalje | Odakle |
+|---|---|---|
+| `$pageview` (landing, /ponuda, /hvala, /besplatno) | stranica | PostHog + Pixel `PageView` |
+| `scroll_50`, `video_play`, `faq_open` | stranica | PostHog |
+| `cta_click` (koje dugme, koja sekcija) | stranica | PostHog |
+| `checkout_started` | `/api/checkout` | PostHog + CAPI `InitiateCheckout` |
+| `purchase` (iznos, bump da/ne, cena_tip, UTM) | webhook | PostHog + CAPI `Purchase` |
+| `upsell_viewed`, `upsell_accepted`, `upsell_declined`, `upsell_failed` | /ponuda + `/api/upsell` | PostHog |
+| `lab_payment` (mesec 1, 2, 3...), `lab_canceled` | webhook | PostHog |
+| `lead` | /besplatno forma | PostHog + CAPI `Lead` |
+
+### Dashboard u PostHog-u
+1. **Glavni funnel:** poseta → CTA → checkout → kupovina → upsell → Lab 2. mesec, razbijen po `utm_source` / `utm_campaign` (koji rils, koji oglas).
+2. **Prihod po izvoru:** Studio + bump + Lab, po UTM-u.
+3. **Lab zadržavanje:** koliko ih plati 2., 3., 4. mesec.
+4. **Lead → kupac** za /besplatno.
+
+Po želji, mala zaštićena `/admin` stranica iz D1 (danas: posete, kupovine, prihod, upsell %), za brz pogled sa telefona.
+
+### Kolačići
+EU posetioci: cookie banner. PostHog i Pixel se pale tek posle pristanka. Bez pristanka PostHog radi bez kolačića (anonimno, bez spajanja sa kupovinom), a Cloudflare Web Analytics i serverski događaji iz webhook-a rade uvek.
 
 | Metrika | Cilj |
 |---|---|
@@ -313,19 +368,20 @@ UTM → Checkout `metadata` → webhook → MailerLite polja i CAPI. Ovako znaš
 | Upsell Lab 1€ | 30–50% |
 | Lab 1. → 2. mesec | 50%+ |
 | Aktivacija (prvi rils za 48h) | 60%+ |
-| Refund | < 5% |
+| Chargeback | < 1% |
 | Lead → kupac (7 dana) | 3–8% |
 
-Jednostavan dashboard: Stripe (prihod) + MailerLite (grupe) + Circle (aktivnost lekcije 05).
+Sve metrike osim aktivacije su u PostHog dashboard-u. Aktivacija dolazi iz Circle-a (lekcija 05).
 
 ---
 
 ## 11. Pravno i porez
 
-- Stranice: Uslovi korišćenja, Politika privatnosti, Politika povraćaja (7 dana), Uslovi pretplate za Lab.
+- Stranice: Uslovi korišćenja (sa jasnom rečenicom da za Studio nema povraćaja posle pristupa), Politika privatnosti, Uslovi pretplate za Lab.
+- **Bez garancije:** pošto je Studio digitalni sadržaj isporučen odmah, „bez povraćaja“ važi samo uz izričitu saglasnost u checkout-u (sekcija 3). Bez tog pristanka kupac iz EU ima 14 dana za odustanak.
 - Upsell dugme mora jasno da kaže: **1€ sada, 47€/mes od [datum], otkaži bilo kad.** Stripe Customer Portal za samostalno otkazivanje (link u svakom Lab mejlu).
 - Checkbox u checkout-u: saglasnost da pristup digitalnom sadržaju počinje odmah (EU pravo na odustanak).
-- **Porez:** Stripe Tax za obračun. Prodaja fizičkim licima u EU = EU PDV (OSS). Obavezno potvrditi sa knjigovođom pre lansiranja, posebno za koju firmu ide Stripe nalog.
+- **Porez:** Stripe nalog i porez su rešeni (potvrđeno 26.10.).
 - Cookie banner za Pixel (EU posetioci).
 
 ---
@@ -334,26 +390,28 @@ Jednostavan dashboard: Stripe (prihod) + MailerLite (grupe) + Circle (aktivnost 
 
 **Faza 1: bez ovoga nema lansiranja**
 1. Stripe: proizvodi i cene (Studio 97/67/lead-67, Hook Pack 27, Lab 47/mes, kupon 1€), Tax, Radar, Customer Portal
-2. `/api/checkout` + landing CONFIG + datumi + placeholderi
-3. `/api/stripe-webhook` → Circle + MailerLite + welcome mejl + licenca + WooCommerce porudžbina (proizvodi sa SKU-om, REST ključ, ugašeni Woo mejlovi kupcima)
-4. Circle: access groups, Creator Studio prostori, lekcije *Kreni ovde*, workflows
-5. Install skripte + aktivacija licence u pluginu
-6. `/hvala` + pravne stranice
-7. Test end-to-end u Stripe test modu (kupovina, refund, 3DS kartica)
+2. Cloudflare: `studio.aiprofit.rs`, Worker sa static assets, D1, Queue, Workers Paid plan, secrets
+3. `/api/checkout` + landing CONFIG + datumi + placeholderi
+4. `/api/stripe-webhook` + Queue consumer → Circle + MailerLite + welcome mejl + licenca + WooCommerce porudžbina na vladsdigital.com (proizvodi sa SKU-om, REST ključ, ugašeni Woo mejlovi kupcima) + noćni cron
+5. Circle: access groups (Lab grupa otvara iste prostore kao Lab Paywall), Creator Studio prostori, lekcije *Kreni ovde*, workflows
+6. Install skripte + aktivacija licence u pluginu
+7. `/hvala` + pravne stranice
+8. PostHog + Cloudflare Web Analytics + cookie banner, osnovni događaji i funnel dashboard
+9. Test end-to-end u Stripe test modu (kupovina, chargeback, 3DS kartica, Woo porudžbina, PostHog funnel)
 
 **Faza 2: upsell i bump**
-8. `/ponuda` + `/api/upsell` (one-click, 3DS, zaštita od duplog)
-9. Lab automatika (`invoice.paid`, `subscription.deleted`), onboarding *Prvih 30 dana*
-10. Order bump + Hook Pack sadržaj
-11. Stripe test clock: simulirati 30 dana → naplata 47€ → otkazivanje
+10. `/ponuda` + `/api/upsell` (one-click, 3DS, zaštita od duplog, provera Paywall člana)
+11. Lab automatika (`invoice.paid`, `subscription.deleted`), onboarding *Prvih 30 dana*
+12. Order bump + Hook Pack sadržaj
+13. Stripe test clock: simulirati 30 dana → naplata 47€ → otkazivanje
 
 **Faza 3: promet**
-12. `/besplatno` + MailerLite nurture + lični rok 72h
-13. ManyChat (STUDIO, SKILL)
-14. Pixel + CAPI, UTM tok
+14. `/besplatno` + MailerLite nurture + lični rok 72h
+15. ManyChat (STUDIO, SKILL)
+16. Meta Pixel + CAPI, UTM tok
 
 **Faza 4: evergreen**
-15. Evergreen mod, Lab teaser prostor, referral
+17. Evergreen mod, Lab teaser prostor, referral
 
 ### Predlog kalendara (datumi na landingu su prošli)
 - 2 nedelje izrade + testiranja → **otvaranje pon 9.11. u 9h**
@@ -365,9 +423,13 @@ Jednostavan dashboard: Stripe (prihod) + MailerLite (grupe) + Circle (aktivnost 
 
 ## 13. Otvorena pitanja (za tebe)
 
-1. **Kako sada plaćaju postojeći Lab članovi?** Ako preko Circle Paywall-a, nove pretplate preko direktnog Stripe-a su drugi sistem. Treba odlučiti: oba paralelno (webhook upravlja samo novima) ili sve prebaciti na direktni Stripe.
-2. **Domen za Studio:** `studio.aiprofit.rs` ili poseban domen?
-3. **Za koju firmu je Stripe nalog?** Utiče na porez i fakture.
-4. **Hook Pack:** da li ga praviš ili biramo Premium paket stilova?
-5. **Da li WooCommerce pravi i fakture** (npr. plugin za fakture ili fiskalizaciju)? Ako pravi, porudžbine moraju imati pune podatke o kupcu za fakturu, pa Stripe Checkout treba da prikuplja i adresu.
-6. **Refund Studija kad kupac ima Lab:** Lab ostaje aktivan (predlog) ili se gasi oba?
+1. **Hook Pack:** da li ga praviš ili biramo Premium paket stilova?
+2. **Circle Paywall i Stripe:** kako je Lab Paywall povezan sa Stripe-om (isti nalog kao za Studio ili Stripe Connect)? Proveravamo pri izradi, utiče na filtriranje webhook-a (sekcija 4).
+
+### Rešeno 26.10.
+- Postojeći Lab članovi ostaju na Circle Paywall-u, nove pretplate iz upsella idu direktno preko Stripe-a (oba paralelno).
+- Domen: `studio.aiprofit.rs` na Cloudflare-u. Circle: `aiprofit.rs`. Woo: `vladsdigital.com`.
+- Stripe nalog i porez: rešeno.
+- Woo je samo spisak porudžbina, bez faktura.
+- Analitika: PostHog + Meta Pixel/CAPI, bez TikTok-a.
+- Nema garancije ni povraćaja za Studio. Ako ipak dođe do chargeback-a, Lab ostaje aktivan.

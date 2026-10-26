@@ -1,0 +1,28 @@
+# Kopiraj u .dev.vars i popuni. .dev.vars se ne commit-uje.
+# Za produkciju isto ime: npx wrangler secret put STRIPE_SECRET_KEY
+
+# Stripe (test mode): Developers → API keys
+STRIPE_SECRET_KEY=sk_test_...
+# Lokalno ga ispiše `npm run stripe:listen`, uživo ga daje webhook endpoint u Stripe-u
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Circle: Settings → Developers → Tokens → Admin API V2
+CIRCLE_TOKEN=
+
+# WooCommerce na vladsdigital.com: Settings → Advanced → REST API
+WOO_URL=https://vladsdigital.com
+WOO_KEY=ck_...
+WOO_SECRET=cs_...
+
+# MailerLite: Integrations → API
+MAILERLITE_TOKEN=
+
+# Resend: API Keys
+RESEND_KEY=re_...
+
+# PostHog (EU): Project settings → Project API key
+POSTHOG_KEY=phc_...
+
+# Opciono: obaveštenje o kupovini na Telegram
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=

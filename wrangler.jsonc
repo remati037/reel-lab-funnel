@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "creator-studio",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Stranice iz public/. /ponuda služi ponuda.html. /api/* ide u Worker.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Posle `npx wrangler d1 create creator-studio` upiši pravi database_id.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "creator-studio",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Isporuka posle kupovine ide kroz red, da webhook odgovori Stripe-u odmah.
+  "queues": {
+    "producers": [{ "binding": "JOBS", "queue": "studio-jobs" }],
+    "consumers": [
+      { "queue": "studio-jobs", "max_batch_size": 5, "max_retries": 5, "dead_letter_queue": "studio-jobs-dlq" }
+    ]
+  },
+
+  // Noćna provera: Stripe naplate iz poslednjih 48h moraju da postoje u bazi.
+  "triggers": { "crons": ["0 3 * * *"] },
+
+  "vars": {
+    // launch | evergreen
+    "MODE": "launch",
+    // Do kada važi 67€, i kad se vrata zatvaraju (isto kao CONFIG.deadline u public/script.js)
+    "LAUNCH_UNTIL": "2026-11-11T21:00:00+01:00",
+    "CLOSE_AT": "2026-11-15T21:00:00+01:00",
+    "WORKSHOP_LIMIT": "100",
+    "AUTOMATIC_TAX": "false"
+  },
+
+  "observability": { "enabled": true }
+}

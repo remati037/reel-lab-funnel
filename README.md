@@ -14,26 +14,32 @@ index.html  ──►  checkout.html  ──►  ponuda.html  ──►  hvala.h
 
 ## Pokretanje u lokalu
 
-Treba ti samo Python 3 (na Mac-u je već instaliran). Fajlovi se ne otvaraju duplim klikom, nego preko lokalnog servera, da bi linkovi između stranica i skripte radili kako treba.
+Treba ti Node.js 20 ili noviji. Stranice i API rade u lokalnom Cloudflare Worker-u.
 
 1. Kloniraj repo i uđi u folder:
    ```bash
    git clone https://github.com/remati037/reel-lab-funnel.git
    cd reel-lab-funnel
    ```
-2. Pokreni lokalni server:
+2. Instaliraj pakete i napravi lokalnu bazu (samo prvi put):
    ```bash
-   python3 -m http.server 5500
+   npm install
+   npm run db:local
    ```
-3. Otvori u browseru: **http://localhost:5500**
+3. Kopiraj `.dev.vars.example` u `.dev.vars` i upiši ključeve. Bez Stripe ključa dugmad vode na test checkout, pa sve radi i bez ključeva.
+4. Pokreni:
+   ```bash
+   npm run dev
+   ```
+5. Otvori u browseru: **http://localhost:8787**
 
 Server gasiš sa `Ctrl + C` u terminalu.
 
-> Ako posle izmene fajla u browseru vidiš staru verziju, uradi tvrdi refresh: `Cmd + Shift + R` (Mac) ili `Ctrl + Shift + R` (Windows).
+Plan izrade korak po korak je u [REALIZACIJA.md](REALIZACIJA.md).
 
 ## Kako da prođeš ceo flow
 
-1. **Landing:** na http://localhost:5500 klikni bilo koje dugme **„Neka Claude montira moje rilsove“**.
+1. **Landing:** na http://localhost:8787 klikni bilo koje dugme **„Neka Claude montira moje rilsove“**.
 2. **Checkout:** otvara se test checkout, sa formom i odbrojavanjem levo i karticom „Tvoja porudžbina“ desno.
    - Po želji čekiraj **Viral Hook Pack (+27€)** (order bump). Ukupno u kartici porudžbine se menja sa 97€ na 124€.
    - Upiši bilo koji email (npr. `test@primer.rs`) i čekiraj **uslove**. Polja kartice su zaključana test vrednostima.
@@ -59,39 +65,26 @@ Na dnu checkout-a je okvir **„Simulacija (samo test)“**:
 
 | Šta | Link |
 |---|---|
-| Hvala, osnovna | http://localhost:5500/hvala.html |
-| Hvala, sve kartice | http://localhost:5500/hvala.html?lab=1&bump=1&radionica=1 |
-| Hvala, već Lab član | http://localhost:5500/hvala.html?lab=clan |
-| Ponuda sa odbijenom naplatom | http://localhost:5500/ponuda.html?fail=1 |
+| Hvala, osnovna | http://localhost:8787/hvala |
+| Hvala, sve kartice | http://localhost:8787/hvala?lab=1&bump=1&radionica=1 |
+| Hvala, već Lab član | http://localhost:8787/hvala?lab=clan |
+| Ponuda sa odbijenom naplatom | http://localhost:8787/ponuda?fail=1 |
 
 ## Fajlovi
 
 | Fajl | Šta je |
 |---|---|
-| `index.html` | Landing stranica |
-| `styles.css` | Boje, fontovi i stilovi za sve stranice (promenljive na vrhu: `--orange`, `--cream`...) |
-| `script.js` | Podešavanja landinga: link za checkout, rok za odbrojavanje, cene |
-| `checkout.html` | Test checkout (uživo ga zamenjuje Stripe Checkout) |
-| `ponuda.html` | Upsell: AI Profit Lab, 1€ prvi mesec |
-| `hvala.html` | Stranica posle kupovine |
-| `funnel.css` | Stilovi za checkout, ponudu i hvala stranicu |
-| `funnel.js` | Podešavanja za ponudu i hvala: test mod, Circle link, mejl, cene Lab-a, datum radionice |
-| `landing-standalone.html` | Landing u jednom fajlu, za deljenje (ne vodi kroz funnel) |
-| `assets/` | Ovde idu tvoje slike i videi |
-| `FUNNEL-PLAN.md` | Kompletan plan funnela |
-
-## Šta menjaš gde
-
-- **Cene i rok odbrojavanja na landingu:** `CONFIG` na vrhu `script.js`
-- **Circle link, mejl, cene Lab-a, datum radionice:** `FUNNEL` na vrhu `funnel.js`
-- **Boje i fontovi:** `:root` na vrhu `styles.css`
-- **Slike i videi:** stavi fajl u `assets/` i ubaci `<img>` ili `<video>` u odgovarajući okvir. Pored svakog okvira u HTML-u piše komentar sa primerom.
-
-## Pre puštanja uživo
-
-1. U `script.js` postavi `checkoutUrl` na `/api/checkout` (Stripe Checkout).
-2. U `funnel.js` postavi `demo: false` i upiši pravi `circleUrl`, `email` i `stripeKey`.
-3. Obriši trake „TEST FUNNEL“ sa dna `ponuda.html` i `hvala.html`.
-4. Zameni placeholdere: `[Tvoje Ime]`, `[Tvoj Brend]`, `info@tvojdomen.rs`, imena u utiscima, slike i videe.
-
-Sve ostalo (API rute, webhook, Circle, MailerLite) je opisano u [FUNNEL-PLAN.md](FUNNEL-PLAN.md).
+| `public/index.html` | Landing stranica |
+| `public/styles.css` | Boje, fontovi i stilovi za sve stranice (promenljive na vrhu: `--orange`, `--cream`...) |
+| `public/script.js` | Podešavanja landinga: link za checkout, rok za odbrojavanje, cene |
+| `public/checkout.html` | Test checkout (uživo ga zamenjuje Stripe Checkout) |
+| `public/ponuda.html` | Upsell: AI Profit Lab, 1€ prvi mesec |
+| `public/hvala.html` | Stranica posle kupovine |
+| `public/funnel.css` | Stilovi za checkout, ponudu i hvala stranicu |
+| `public/funnel.js` | Podešavanja za ponudu i hvala: test mod, Circle link, mejl, cene Lab-a, datum radionice |
+| `public/landing-standalone.html` | Landing u jednom fajlu, za deljenje (ne vodi kroz funnel) |
+| `public/assets/` | Ovde idu tvoje slike i videi |
+| `src/` | Cloudflare Worker: `/api/checkout`, `/api/stripe-webhook`, `/api/order`, red za isporuku, noćna provera |
+| `migrations/` | Šema D1 baze |
+| `wrangler.jsonc` | Cloudflare podešavanja: baza, red, cron, datumi cena (`LAUNCH_UNTIL`, `CLOSE_AT`, `MODE`) |
+| `.dev.vars.example` | Šablon za ključeve |
