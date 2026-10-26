@@ -41,6 +41,15 @@ export async function addToAccessGroup(env, email, groupId) {
   await circle(env, "POST", `/access_groups/${groupId}/community_members`, { email });
 }
 
+// Circle ponekad odgovori 201, a člana ne upiše (npr. nalog napravljen sekundu ranije još nije spreman).
+// Ako ga nema u grupi, dodaje ponovo i baca grešku, pa red ponavlja proveru za 30s, 60s...
+export async function ensureInGroup(env, email, groupId) {
+  const inGroup = await circle(env, "GET", `/access_groups/${groupId}/community_member?email=${encodeURIComponent(email)}`);
+  if (inGroup) return;
+  await addToAccessGroup(env, email, groupId);
+  throw new Error(`Circle još nije upisao ${email} u grupu ${groupId}, proveravam ponovo`);
+}
+
 export async function grantAccess(env, member, groupId) {
   await createMemberIfMissing(env, member);
   await addToAccessGroup(env, member.email, groupId);

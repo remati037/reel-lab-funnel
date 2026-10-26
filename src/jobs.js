@@ -1,5 +1,5 @@
 import { stripe } from "./stripe.js";
-import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, initialPassword } from "./circle.js";
+import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, ensureInGroup, initialPassword } from "./circle.js";
 import { addToGroup, removeFromGroup } from "./mailerlite.js";
 import { createOrder, addOrderNote } from "./woo.js";
 import { sendEmail, track, telegram } from "./notify.js";
@@ -72,6 +72,8 @@ const STUDIO_STEPS = [
     (o, env) =>
       telegram(env, `🎬 Studio Reel Lab: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
   ],
+  // Poslednji: potvrda da je Circle stvarno upisao pristup (ne blokira mejl ni Woo)
+  ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_STUDIO_GROUP)],
 ];
 
 // Svaka Lab naplata: 1€ prvi mesec, pa 47€ svakog sledećeg
@@ -101,6 +103,7 @@ const LAB_STEPS = [
       }),
   ],
   ["telegram", (o, env) => telegram(env, `🧪 AI Profit Lab (Studio upsell): ${o.lab_month}. mesec plaćen\n${o.email}\n${euros(o.amount_cents)}€`)],
+  ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_LAB_GROUP)],
 ];
 
 // Pretplata otkazana ili ugašena posle neuspelih naplata
@@ -118,6 +121,9 @@ const LAB_CANCEL_STEPS = [
   ["telegram", (c, env) => telegram(env, `❌ AI Profit Lab (Studio upsell) otkazan\n${c.email}\nplaćenih meseci: ${c.monthsPaid}`)],
 ];
 
+// Isto kao max_retries u wrangler.jsonc (+1 za prvi pokušaj)
+const MAX_ATTEMPTS = 6;
+
 export async function handleBatch(batch, env) {
   for (const msg of batch.messages) {
     try {
@@ -125,6 +131,9 @@ export async function handleBatch(batch, env) {
       msg.ack();
     } catch (e) {
       console.error("posao nije uspeo", msg.body, e);
+      // Posle poslednjeg pokušaja posao ide u studio-jobs-dlq, pa javljamo da treba ručno da se pogleda
+      if (msg.attempts >= MAX_ATTEMPTS)
+        await telegram(env, `🛑 Isporuka zapela posle ${msg.attempts} pokušaja\n${msg.body.type} ${msg.body.object_id}\n${String(e?.message ?? e).slice(0, 300)}`).catch(() => {});
       msg.retry({ delaySeconds: 30 * msg.attempts });
     }
   }
