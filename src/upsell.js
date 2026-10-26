@@ -17,7 +17,11 @@ export async function upsell(request, env) {
 
   const existing = await env.DB.prepare("SELECT status, subscription_id FROM upsells WHERE session_id = ?").bind(session.id).first();
   if (existing?.status === "succeeded") return Response.json({ status: "already" });
-  if (existing?.status === "requires_action") return Response.json(withKey(env, await resume(env, s, session.id, existing.subscription_id)));
+  if (existing?.status === "requires_action") {
+    const r = await resume(env, s, session.id, existing.subscription_id);
+    if (r.status !== "declined") return Response.json(withKey(env, r));
+    // Prethodna potvrda kod banke nije prošla: odmah nov pokušaj, bez dodatnog klika
+  }
 
   if (await isLabMember(env, email)) return Response.json({ status: "already" });
 

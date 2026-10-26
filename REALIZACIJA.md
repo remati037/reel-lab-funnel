@@ -164,8 +164,9 @@ Treba mi pristup repou plugina.
 - [x] Jedan mejl umesto dva: Circle pozivnica je ugašena, novi kupac dobija lozinku u welcome mejlu (računa se iz `CIRCLE_PASSWORD_SECRET` i mejla, nigde se ne čuva); postojeći Circle član dobija „prijavi se svojim nalogom“
 
 **Čeka tebe**
-- [ ] Javni Stripe ključ (`pk_test_...`) za 3DS potvrdu na /ponuda (u wrangler.jsonc, `STRIPE_PUBLISHABLE_KEY`)
 - [ ] Stripe → Settings → Public details: javni naziv firme (sada se u checkout-u vidi „VLADSDIGITAL LLC VLADIMIR STANKOVIC SOLE MBR“)
-- [ ] Stripe → Customer portal → uključiti link za prijavu (za otkazivanje Lab-a bez tebe)
+- [ ] Link za Stripe Customer Portal (`STRIPE_PORTAL_URL`) ubaciti u MailerLite Lab mejlove (otkazivanje bez tebe). Uživo zameniti test link.
 
-**Sledeće (ja):** 3DS test → Stripe test clock (naplata 47€ posle 30 dana, otkazivanje) → pravne stranice → Faza 4 (analitika na stranicama)
+- [x] 3DS test uživo: checkout sa 3DS karticom, upsell sa odbijenom pa potvrđenom 3DS proverom (drugi pokušaj kreće odmah, jednim klikom)
+
+**Sledeće (ja):** Stripe test clock (naplata 47€ posle 30 dana, otkazivanje) → pravne stranice → Faza 4 (analitika na stranicama)

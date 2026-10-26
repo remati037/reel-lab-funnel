@@ -9,6 +9,8 @@ const FUNNEL = {
   email: "podrska@vladsdigital.com",
 
   lab: { first: "1€", monthly: "47€", regular: "57€", trialDays: 30 },
+  // Stripe Customer Portal: otkazivanje Lab-a i promena kartice (uživo zameni test link)
+  portalUrl: "https://billing.stripe.com/p/login/test_4gM7sEea56162wueiKd7q00",
 
 };
 
@@ -98,12 +100,14 @@ if (offer) {
 const mount = document.querySelector("[data-cards]");
 if (mount) {
   document.querySelectorAll("[data-circle]").forEach((a) => (a.href = FUNNEL.circleUrl));
+  const portal = () => mount.querySelectorAll("[data-portal]").forEach((a) => (a.href = FUNNEL.portalUrl));
 
   const show = (flags) => {
     const add = (id) => mount.append(document.getElementById(id).content.cloneNode(true));
     if (flags.labClan) add("card-lab-clan");
     else if (flags.lab) add("card-lab");
     fill(mount);
+    portal();
   };
 
   const fromUrl = () => ({

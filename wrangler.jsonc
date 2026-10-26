@@ -44,7 +44,9 @@
     "CLOSE_AT": "2026-11-15T21:00:00+01:00",
     "AUTOMATIC_TAX": "false",
     // Javni Stripe ključ (pk_...), treba samo za 3DS potvrdu na /ponuda
-    "STRIPE_PUBLISHABLE_KEY": "",
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_51TZnpX3qt764ELv7MvJNdVPxJ6ihgB7gzGlKU0jilxQKb5DTZ2dgLBhXXFQHxDlBG5aTvffg0EjYwWbrQCULv3xI00fjbSaDD2",
+    // Stripe Customer Portal: Lab član sam otkazuje ili menja karticu
+    "STRIPE_PORTAL_URL": "https://billing.stripe.com/p/login/test_4gM7sEea56162wueiKd7q00",
 
     // Circle (aiprofit.rs): access grupe i link kursa
     "CIRCLE_STUDIO_GROUP": "167621",
