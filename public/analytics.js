@@ -3,6 +3,7 @@
    - PostHog (EU) radi uvek, ali bez kolačića dok posetilac ne pristane
      (tada se podaci čuvaju samo u memoriji stranice).
    - Meta Pixel se učitava tek posle pristanka.
+   - Cloudflare Web Analytics broji posete bez kolačića, uvek.
    - Ključevi dolaze sa servera: /api/config.js → window.STUDIO_CONFIG
    Upotreba sa drugih stranica: window.studioTrack("ime_dogadjaja", { ...osobine })
    ========================================================= */
@@ -143,6 +144,17 @@
     );
   }
 
+  /* ---------- Cloudflare Web Analytics (bez kolačića, radi uvek) ---------- */
+  function startCloudflare() {
+    if (!CFG.cfBeacon) return;
+    const s = document.createElement("script");
+    s.defer = true;
+    s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    s.setAttribute("data-cf-beacon", JSON.stringify({ token: CFG.cfBeacon }));
+    document.head.append(s);
+  }
+
+  startCloudflare();
   startPosthog();
   if (getConsent() === "all") startPixel();
   const ready = () => {

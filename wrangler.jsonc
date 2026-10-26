@@ -72,6 +72,9 @@
     "META_PIXEL_ID": "",
     "META_TEST_CODE": "",
 
+    // Cloudflare Web Analytics (javni token, Analytics & Logs → Web Analytics)
+    "CF_BEACON_TOKEN": "a55cf54386fe4f64afd4b3b22b30251c",
+
     // WooCommerce (vladsdigital.com), samo evidencija (scripts/setup.mjs woo)
     "WOO_URL": "https://vladsdigital.com",
     "WOO_PRODUCT_STUDIO": "45406",

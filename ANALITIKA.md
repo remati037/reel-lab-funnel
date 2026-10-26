@@ -70,7 +70,7 @@ Bez pristanka na kolačiće PostHog i dalje broji posete, ali ne pamti posetioca
 4. **Lead → kupac** (Funnel, prozor 14 dana): `lead` → `purchase`.
 5. **Checkout problemi** (Trends): `checkout_error` po `message`.
 
-Ako mi daš PostHog **personal API key** (phx_..., Settings → Personal API keys, scope: insights i dashboards write), dashboard pravim ja.
+Napravljen je skriptom `scripts/posthog-dashboard.mjs` (26.10.): **[Studio Reel Lab: funnel i prihod](https://eu.posthog.com/project/321186/dashboard/1056907)**, 11 grafikona. Pored ovih 5 ima i dnevni pregled, prihod po rilsu (`utm_content`), upsell stopu, otkazivanja, klikove po sekciji i izbor kolačića.
 
 ## 4. Meta Pixel + Conversions API
 
@@ -92,4 +92,4 @@ Sve ide samo ako je posetilac prihvatio kolačiće.
 
 ## 5. Cloudflare Web Analytics (broj poseta i bez kolačića)
 
-**Ti:** Cloudflare → Analytics & Logs → Web Analytics → Add a site → `studio.aiprofit.rs` → Automatic setup. Ništa u kodu ne treba da se menja.
+Uključeno 26.10. Token je u `wrangler.jsonc` (`CF_BEACON_TOKEN`), a skriptu učitava `analytics.js` na svim stranicama. Rezultati: Cloudflare → Analytics & Logs → Web Analytics.

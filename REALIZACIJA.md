@@ -167,6 +167,7 @@ Treba mi pristup repou plugina.
 - [x] Test porudžbine #45409–#45415 u Woo otpadu, test pretplate otkazane
 - [x] Circle rezerva: ako Circle ne upiše kupca u grupu, upisuje se direktno u prostor kursa (provera + ponavljanje + Telegram upozorenje)
 - [x] Faza 4 kod: banner za kolačiće, PostHog na svim stranicama i sa servera, Meta Pixel + Conversions API (čeka Pixel ID i token), `/besplatno` + `/besplatno-hvala`, lični rok 67€ potpisanim linkom. Uputstvo: [ANALITIKA.md](ANALITIKA.md)
+- [x] PostHog dashboard „Studio Reel Lab: funnel i prihod“ (11 grafikona) i Cloudflare Web Analytics
 
 **Čeka tebe**
 - [ ] Stripe → Settings → Public details: javni naziv firme (sada se u checkout-u vidi „VLADSDIGITAL LLC VLADIMIR STANKOVIC SOLE MBR“)
@@ -174,7 +175,7 @@ Treba mi pristup repou plugina.
 
 - [x] 3DS test uživo: checkout sa 3DS karticom, upsell sa odbijenom pa potvrđenom 3DS proverom (drugi pokušaj kreće odmah, jednim klikom)
 
-- [ ] Meta Pixel ID i Conversions API token, PostHog personal API key (za dashboard), Cloudflare Web Analytics (ANALITIKA.md)
+- [ ] Meta Pixel ID i Conversions API token (ANALITIKA.md)
 - [ ] Komande za instalaciju besplatnog skill-a na `/besplatno-hvala`, MailerLite nurture automatizacija sa `{$studio_ponuda_link}`
 
 **Sledeće (ja):** Stripe test clock (naplata 47€ posle 30 dana, otkazivanje) → pravne stranice → Faza 4 (analitika na stranicama)

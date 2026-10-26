@@ -15,7 +15,7 @@ const routes = {
   "POST /api/lead": lead,
   // Javni ključevi za analitiku (PostHog, Meta Pixel), učitava ih analytics.js
   "GET /api/config.js": (_req, env) =>
-    new Response(`window.STUDIO_CONFIG=${JSON.stringify({ posthogKey: env.POSTHOG_KEY || "", pixelId: env.META_PIXEL_ID || "" })};`, {
+    new Response(`window.STUDIO_CONFIG=${JSON.stringify({ posthogKey: env.POSTHOG_KEY || "", pixelId: env.META_PIXEL_ID || "", cfBeacon: env.CF_BEACON_TOKEN || "" })};`, {
       headers: { "Content-Type": "application/javascript; charset=utf-8", "Cache-Control": "public, max-age=300" },
     }),
 };
