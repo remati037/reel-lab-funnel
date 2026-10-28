@@ -44,7 +44,7 @@ function withSession(url, extra = {}) {
 /* =========================================================
    /ponuda — one-click upsell
    ========================================================= */
-const offer = document.querySelector("[data-offer]");
+const offer = document.querySelector("[data-main]");
 if (offer) {
   // datum prve naplate od 47€
   const d = new Date(Date.now() + FUNNEL.lab.trialDays * 86400000);
@@ -57,14 +57,39 @@ if (offer) {
   no.addEventListener("click", () => window.studioTrack?.("upsell_declined"));
   document.addEventListener("DOMContentLoaded", () => window.studioTrack?.("upsell_viewed"));
 
-  const yes = offer.querySelector("[data-yes]");
-  const label = yes.querySelector("span");
+  // Dugme "Da" ima više kopija na stranici. Dok jedna naplata traje, sva su zaključana.
+  const buttons = [...document.querySelectorAll("[data-yes]")];
+  let clicked = buttons[0];
   const setState = (s) => {
-    offer.dataset.state = s;
-    yes.disabled = s === "processing";
-    label.textContent = s === "processing" ? "Obrađujem..." : yes.dataset.label;
+    buttons.forEach((b) => {
+      b.disabled = s === "processing";
+      b.querySelector("span").textContent = s === "processing" && b === clicked ? "Obrađujem..." : b.dataset.label;
+    });
+    document.querySelectorAll("[data-offer]").forEach((o) => delete o.dataset.state);
+    // Poruka o grešci ide uz dugme koje je kliknuto; traka pri dnu nema mesta za nju, pa vodi na ponudu na dnu
+    const box = clicked.closest("[data-offer]");
+    const target = box.querySelector(".fail") ? box : offer;
+    target.dataset.state = s;
+    if (s === "failed" && target !== box) target.scrollIntoView({ behavior: "smooth", block: "center" });
   };
   const done = () => (location.href = withSession("hvala.html", { lab: "1" }));
+
+  // Traka sa dugmetom pri dnu ekrana: vidi se kad hero dugme izađe sa ekrana, a ponuda na dnu još nije stigla
+  const stick = document.querySelector("[data-stick]");
+  if (stick && "IntersectionObserver" in window) {
+    const seen = new Map();
+    const watched = [document.querySelector(".offer-mini"), offer];
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => seen.set(e.target, { visible: e.isIntersecting, above: e.boundingClientRect.top < 0 }));
+      const hero = seen.get(watched[0]), end = seen.get(offer);
+      const on = hero && !hero.visible && hero.above && !(end && (end.visible || end.above));
+      stick.classList.toggle("on", !!on);
+      stick.setAttribute("aria-hidden", on ? "false" : "true");
+      stick.querySelector("[data-yes]").tabIndex = on ? 0 : -1;
+      document.body.classList.toggle("has-stick", !!on);
+    });
+    watched.forEach((el) => el && io.observe(el));
+  }
 
   // Već je Lab član: ponuda nema smisla, ide pravo na hvala
   if (!FUNNEL.demo)
@@ -73,9 +98,14 @@ if (offer) {
       .then((res) => res.labClan && location.replace(withSession("hvala.html")))
       .catch(() => {});
 
-  yes.addEventListener("click", async () => {
+  buttons.forEach((b) => b.addEventListener("click", () => {
+    clicked = b;
+    charge();
+  }));
+
+  const charge = async () => {
     setState("processing");
-    window.studioTrack?.("upsell_click");
+    window.studioTrack?.("upsell_click", { position: clicked.dataset.yes });
     if (FUNNEL.demo) return setTimeout(() => (params.get("fail") === "1" ? setState("failed") : done()), 900);
     try {
       const r = await fetch(FUNNEL.upsellApi, {
@@ -94,7 +124,7 @@ if (offer) {
     } catch (e) {
       setState("failed");
     }
-  });
+  };
 }
 
 /* =========================================================

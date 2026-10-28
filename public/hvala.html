@@ -17,7 +17,8 @@
 <body>
 <!--
   STRANICA: /hvala — poslednji korak (3 od 3). Jedan cilj: da kupac za 10 minuta
-  bude u Circle-u i nalepi install komandu.
+  bude u Circle-u i nalepi install komandu. Zato su tri koraka odmah gore, a dugme
+  "Otvori Circle" je na tri mesta (hero, korak 2, ispod spiska).
   Kartice ispod dugmeta se pojavljuju po porudžbini (u produkciji iz /api/order,
   u pregledu iz URL-a): ?lab=1  ?lab=clan
 -->
@@ -38,112 +39,99 @@
 </div>
 
 <main>
-<!-- ================= UNUTRA SI ================= -->
-<header class="fhero">
+<!-- ================= UNUTRA SI + TRI KORAKA ================= -->
+<header class="fhero th-hero">
   <div class="plate" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="in">
-      <div class="render" aria-hidden="true">
-        <div class="render-row mono"><span>Plaćanje završeno</span><span>100%</span></div>
-        <div class="render-track"><div class="render-fill"></div></div>
+    <div class="th-grid">
+      <div class="th-copy">
+        <div class="render" aria-hidden="true">
+          <div class="render-row mono"><span>Plaćanje završeno</span><span>100%</span></div>
+          <div class="render-track"><div class="render-fill"></div></div>
+        </div>
+
+        <h1 class="display th-h1">Čestitam.<br>Unutra si.</h1>
+        <p class="hero-sub"><b>Dobrodošlica u Creator Studio.</b> Račun ti stiže mejlom. Sve što si kupio čeka te u Circle-u.</p>
+
+        <p class="portal-go">
+          <a class="btn" data-circle href="#">Otvori Circle →</a>
+          <span>Mejl sa podacima za prijavu stiže za minut (pogledaj i Promocije i Spam).</span>
+        </p>
+
+        <!-- Ovde se ubacuje kartica za Lab -->
+        <div data-cards></div>
       </div>
 
-      <h1 class="display h1">Čestitam.<br>Unutra si.</h1>
-      <p class="hero-sub"><b>Dobrodošlica u Creator Studio.</b> Račun ti stiže mejlom. Sve što si kupio čeka te u Circle-u.</p>
-
-      <p class="portal-go">
-        <a class="btn" data-circle href="#">Otvori Circle</a>
-        <span>Mejl sa podacima za prijavu stiže za minut (pogledaj i Promocije i Spam).</span>
-      </p>
-
-      <!-- Ovde se ubacuje kartica za Lab -->
-      <div data-cards></div>
+      <div class="th-steps">
+        <p class="th-k mono">Tri koraka do prvog rilsa</p>
+        <div class="steps">
+          <div class="step"><span class="num">1</span><div><span class="mono">Odmah</span><p><b>Proveri mejl.</b> Stiže ti lozinka za aiprofit.rs. Nema ga? Pogledaj Promocije i Spam.</p></div></div>
+          <div class="step"><span class="num">2</span><div><span class="mono">Za 2 minuta</span><p><b>Uđi u Circle → Kreni ovde.</b> Lekcije, snimci i biblioteka efekata.</p><a class="step-a" data-circle href="#">Otvori Circle →</a></div></div>
+          <div class="step"><span class="num">3</span><div><span class="mono">Jednom</span><p><b>Nalepi install komandu u Claude</b> i montiraj prvi rils. Komanda je u lekciji <i>Instalacija</i>, za Mac i Windows.</p></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- ================= SCENA 01 · ŠTA SAD ================= -->
+<!-- ================= SCENA 01 · PRE PRVOG RILSA ================= -->
 <section class="fsec">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>01</b> <span class="sep">|</span> Šta sad</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>01</b> <span class="sep">|</span> Pre prvog rilsa</div>
 
-    <div class="two">
+    <div class="th-prep">
       <div>
-        <h2 class="display h2">Tri koraka do prvog rilsa.</h2>
-        <p class="lead">Podesi jednom. Onda samo reci kreni.</p>
+        <h2 class="display h3">Snimi tri klipa dok čekaš mejl.</h2>
+        <ul class="th-list">
+          <li><b>Vertikalno</b>, 4K ako telefon može.</li>
+          <li><b>Kamera mirna</b>, na stalku ili naslonjena.</li>
+          <li><b>Pogrešiš rečenicu?</b> Samo je reci ponovo. Claude bira najbolji take.</li>
+        </ul>
+        <p class="need"><b>Treba ti još:</b> Mac ili Windows računar i Claude desktop aplikacija sa plaćenim planom. Pro (20$ mesečno) je dovoljan.</p>
       </div>
-      <div class="steps" style="margin-top:0">
-        <div class="step"><span class="num">1</span><div><span class="mono">Odmah</span><p><b>Proveri mejl.</b> Stiže ti mejl sa lozinkom za aiprofit.rs. Ako ga nema, pogledaj Promocije i Spam.</p></div></div>
-        <div class="step"><span class="num">2</span><div><span class="mono">Za 2 minuta</span><p><b>Uđi u Circle → Kreni ovde.</b> Tamo je sve: lekcije, snimci, biblioteka efekata.</p></div></div>
-        <div class="step"><span class="num">3</span><div><span class="mono">Jednom</span><p><b>Nalepi install komandu u Claude</b> i montiraj prvi rils. Komanda je u lekciji <i>Instalacija</i>, za Mac i Windows.</p></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SCENA 02 · PRVI KLIPOVI ================= -->
-<section class="fsec">
-  <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Tvoji prvi klipovi</div>
-
-    <div class="two">
-      <div>
-        <h2 class="display h2">Snimi tri klipa.</h2>
-        <p class="lead">Vertikalno, 4K ako telefon može, kamera mirna. Pogrešiš rečenicu? Nastavi da snimaš i reci je ponovo. Claude bira najbolji take.</p>
-        <div class="clips" aria-hidden="true">
-          <div class="clip mono">Klip 01</div>
-          <div class="clip mono">Klip 02</div>
-          <div class="clip mono">Klip 03</div>
-        </div>
-        <p class="need"><b>Pripremi i ovo:</b> Mac ili Windows računar, i Claude desktop aplikaciju sa plaćenim Claude planom. Pro plan (20$ mesečno) je dovoljan.</p>
-      </div>
-      <!-- Zameni sa: <img src="assets/stolica.jpg" alt=""> -->
-      <div class="media" style="aspect-ratio:4/5"><div class="ph">Fotografija (set, stolica, lampa)</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SCENA 03 · ŠTA DOBIJAŠ ================= -->
-<section class="fsec">
-  <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>03</b> <span class="sep">|</span> Šta dobijaš</div>
-
-    <div class="sec-head" style="margin-bottom:40px">
-      <h2 class="display h2">Ovo je ceo studio. Devet stvari.</h2>
-      <ul class="ticks mono" style="margin:0">
-        <li>Svih devet je u tvom Circle-u</li>
-        <li>Besplatna ažuriranja zauvek</li>
-      </ul>
-    </div>
-
-    <div class="sheet">
-      <div class="sheet-top mono"><span>Call sheet</span><span>Creator Studio</span></div>
-      <div class="sheet-grid">
-        <div class="item"><span class="n">01</span><div><h3>Look Builder</h3><p>Izaberi izgled titlova koji ti se sviđa, ili daj Claude-u rils koji voliš kao primer. Tvoji rilsovi izlaze u tvom stilu.</p></div></div>
-        <div class="item"><span class="n">02</span><div><h3>FX paket: 46 efekata</h3><p>Izabereš one koje voliš i Claude ih ugradi u tvoj rils.</p></div></div>
-        <div class="item"><span class="n">03</span><div><h3>Probni rilsovi</h3><p>Posle montaže reci „napravi 8 probnih rilsova“. Svaki testira novi hook, titlove ili stil, a Claude ih objavi umesto tebe.</p></div></div>
-        <div class="item"><span class="n">04</span><div><h3>Carousel Studio</h3><p>Reci „pretvori moj poslednji rils u karusel“ ili „napravi karusel o [tvoja tema]“.</p></div></div>
-        <div class="item"><span class="n">05</span><div><h3>Automatsko objavljivanje</h3><p>Reci „objavi“ ili „zakaži za sutra“. Claude objavljuje tvoje videe, probne rilsove i karusele.</p></div></div>
-        <div class="item"><span class="n">06</span><div><h3>Pravila zvuka</h3><p>Moji preporučeni zvukovi, koji ide uz koji efekat i koliko glasno. Claude ih postavi umesto tebe.</p></div></div>
-        <div class="item"><span class="n">07</span><div><h3>GIF Finder</h3><p>Kaži da hoćeš GIF. Claude nađe onaj koji paše uz tvoju rečenicu i ubaci ga u rils.</p></div></div>
-        <div class="item"><span class="n">08</span><div><h3>8 snimaka ekrana: gledaš kako ja radim</h3><p>Kratki videi sa mog ekrana. Jedan je ceo rils od nule.</p></div></div>
-        <div class="item"><span class="n">09</span><div><h3>Podešavanje prvog rilsa</h3><p>Instalacija jednim lepljenjem za Mac i Windows, sa „doctor“ komandom koja nađe i popravi probleme.</p></div></div>
+      <!-- Tri "telefona" su nacrtana u CSS-u. Za pravu fotku seta: <div class="media" style="aspect-ratio:4/5"><img src="assets/stolica.jpg" alt=""></div> -->
+      <div class="th-phones" aria-hidden="true">
+        <div class="phone"><span class="rec mono">Rec</span><span class="mono">Klip 01</span></div>
+        <div class="phone"><span class="rec mono">Rec</span><span class="mono">Klip 02</span></div>
+        <div class="phone"><span class="rec mono">Rec</span><span class="mono">Klip 03</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ================= SCENA 04 · POMOĆ ================= -->
+<!-- ================= SCENA 02 · ŠTA TE ČEKA ================= -->
 <section class="fsec">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>04</b> <span class="sep">|</span> Pomoć</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Šta te čeka</div>
+
+    <div class="sheet th-sheet">
+      <div class="sheet-top mono"><span>Call sheet · sve je u Circle-u</span><span>Ažuriranja besplatno, zauvek</span></div>
+      <ol class="th-nine">
+        <li><span>01</span>Look Builder</li>
+        <li><span>02</span>FX paket: 46 efekata</li>
+        <li><span>03</span>Probni rilsovi</li>
+        <li><span>04</span>Carousel Studio</li>
+        <li><span>05</span>Automatsko objavljivanje</li>
+        <li><span>06</span>Pravila zvuka</li>
+        <li><span>07</span>GIF Finder</li>
+        <li><span>08</span>8 snimaka ekrana: gledaš kako ja radim</li>
+        <li><span>09</span>Podešavanje prvog rilsa</li>
+      </ol>
+      <a class="btn th-sheet-btn" data-circle href="#">Otvori Circle →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 03 · POMOĆ ================= -->
+<section class="fsec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>03</b> <span class="sep">|</span> Pomoć</div>
 
     <div class="gline">
       <aside class="guarantee">
         <h2 class="display h3">Ne ostaješ sam posle kupovine.</h2>
         <p><b>Ako nešto zapne, „doctor“ komanda ti kaže tačno rešenje.</b></p>
-        <p>Ako ni ona ne pomogne, pošalji mejl na <a data-mail href="#"></a> sa screenshot-om i rešavamo zajedno.</p>
-        <p style="margin:0">Ažuriranja i novi efekti stižu besplatno, zauvek.</p>
+        <p style="margin:0">Ako ni ona ne pomogne, pošalji mejl na <a data-mail href="#"></a> sa screenshot-om i rešavamo zajedno.</p>
       </aside>
       <div>
         <p class="help-k mono">Pitanja o porudžbini?</p>
