@@ -541,3 +541,105 @@ footer a { color: var(--taupe); }
   .stickybar .btn { font-size: 18px; padding: 10px 16px; }
   .credits b { font-size: 21px; }
 }
+
+/* ---------- dopune (brief za ažuriranje copyja) ---------- */
+/* [PROVERI] / [UBACI] placeholderi: vidljivi, da ih je lako naći pre objave */
+.todo { outline: 1px dashed var(--orange); outline-offset: 2px; color: var(--orange); font-style: normal; }
+
+.hero .proof { font-size: 14px; color: var(--taupe); margin: 14px 0 0; }
+.price-big { display: flex; align-items: baseline; gap: 14px; }
+.price-old { font-size: .5em; color: var(--taupe); text-decoration-thickness: 3px; }
+.btn-sub { font-size: 10px; color: var(--taupe); margin: 0; }
+.hero .btn-sub { margin-top: 12px; }
+
+.problem-copy .lead + .lead { margin-top: 16px; }
+
+.sheet-group { grid-column: 1 / -1; padding: 26px 0 8px; border-bottom: 2px solid var(--ink); font-weight: 700; color: var(--orange-press); }
+.sheet-group:first-child { padding-top: 6px; }
+
+.stack { margin: 28px 0 0; border-top: 1px solid var(--line); font-size: 15px; }
+.stack-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--cream-2); }
+.stack-row b, .stack-row s { white-space: nowrap; color: var(--cream); font-weight: 600; }
+.stack-row.total { color: var(--taupe); }
+.stack-row.total s { color: var(--taupe); }
+.stack-row.now { font-weight: 700; color: var(--cream); border-bottom: 0; }
+.stack-row.now b { color: var(--orange); font-size: 20px; }
+
+.guarantee hr { border: 0; border-top: 1px solid rgba(22, 9, 3, .2); margin: 24px 0; }
+.guarantee .h4 { color: var(--ink); margin-bottom: 14px; }
+.guarantee .small { font-size: 13px; }
+/* buduća faza sa cenom (ne „vrata se zatvaraju“) zadržava veliku cifru */
+.tl.future:not([data-phase="3"]) .amt { font-family: var(--f-display); font-size: 44px; letter-spacing: 0; display: block; }
+.tl.future:not([data-phase="3"]) .amt::before { display: none; }
+
+/* ---------- montažna traka iza hero dela (kao na originalnoj Creator Studio stranici) ---------- */
+.hero > .wrap { position: relative; z-index: 1; }
+.tl { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: .5; }
+.tl-in { position: absolute; left: 0; right: 0; top: 13%; bottom: 7%; display: flex; flex-direction: column; gap: 5px; }
+.tl-ruler { flex: 0 0 24px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line-2); }
+.tl-ruler .tl-strip { position: relative; height: 100%; padding: 0;
+  background: repeating-linear-gradient(90deg, rgba(244, 237, 224, .5) 0 1px, transparent 1px 20px) 0 100% / auto 7px repeat-x; }
+.tl-ruler b { position: absolute; top: 2px; padding-left: 5px; border-left: 1px solid rgba(244, 237, 224, .7); height: 100%;
+  font-family: var(--f-mono); font-stretch: 78%; font-size: 10px; font-weight: 500; letter-spacing: .06em; color: var(--cream-2); line-height: 1.2; }
+.tl-track { position: relative; overflow: hidden; min-height: 0; background: rgba(244, 237, 224, .035); box-shadow: inset 0 1px 0 rgba(244, 237, 224, .07); }
+.tl-cap { flex: 1 1 0; }
+.tl-fx { flex: 1.1 1 0; }
+.tl-v { flex: 3 1 0; }
+.tl-a { flex: 2 1 0; }
+.tl-m { flex: 1.2 1 0; }
+.tl-strip { display: flex; width: max-content; height: 100%; padding: 4px 0; will-change: transform; animation: tlmove 90s linear infinite; }
+@keyframes tlmove { to { transform: translateX(-50%); } }
+.c { position: relative; flex: none; height: 100%; }
+.c::before { content: ""; position: absolute; inset: 0 3px 0 0; border-radius: 4px; }
+.c-gap::before { display: none; }
+.c-cap::before { background: rgba(244, 237, 224, .55); }
+.c-fx::before { background: rgba(255, 91, 31, .2); box-shadow: inset 0 0 0 1px rgba(255, 91, 31, .95); }
+.c-fx::after {
+  content: attr(data-l); position: absolute; left: 8px; right: 8px; top: 50%; transform: translateY(-50%); overflow: hidden; white-space: nowrap;
+  font-family: var(--f-mono); font-stretch: 78%; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #FF8A5C; line-height: 1;
+}
+.c-v::before {
+  background:
+    linear-gradient(180deg, rgba(244, 237, 224, .3) 0 17px, rgba(244, 237, 224, 0) 17px),
+    repeating-linear-gradient(90deg, rgba(244, 237, 224, 0) 0 53px, rgba(244, 237, 224, .16) 53px 54px),
+    rgba(244, 237, 224, .12);
+  box-shadow: inset 0 0 0 1px rgba(244, 237, 224, .6);
+}
+.c-v::after {
+  content: attr(data-l); position: absolute; left: 7px; right: 10px; top: 4px; overflow: hidden; white-space: nowrap;
+  font-family: var(--f-mono); font-stretch: 78%; font-size: 9.5px; font-weight: 600; letter-spacing: .06em; color: var(--cream); line-height: 1;
+}
+.tl-v + .tl-v .c-v::before { background-color: rgba(180, 170, 152, .2); }
+.c-a::before { background: var(--f) 0 50% / auto 78% repeat-x, rgba(180, 170, 152, .1); box-shadow: inset 0 0 0 1px rgba(180, 170, 152, .45); }
+.c-m::before { background: var(--f) 0 50% / auto 70% repeat-x, rgba(255, 91, 31, .08); box-shadow: inset 0 0 0 1px rgba(255, 91, 31, .4); }
+.tl-head { position: absolute; top: 11%; bottom: 5%; left: 44%; width: 2px; background: var(--orange); box-shadow: 0 0 18px 2px rgba(255, 91, 31, .8); }
+.tl-head::before { content: ""; position: absolute; left: -6px; top: -2px; width: 14px; height: 12px; background: var(--orange); border-radius: 2px 2px 7px 7px; }
+.tl { opacity: .42; }
+/* Telefoni: traka kreće ispod teksta (iza telefona sa rilsom), pa veliki naslov i tekst stoje na čistoj tamnoj pozadini. */
+@media (max-width: 767px) {
+  .tl-in { top: 55%; bottom: 3%; }
+  .tl-head { top: 53%; bottom: 2%; left: 50%; }
+}
+@media (min-width: 1024px) {
+  .tl { opacity: .55; }
+  .tl-in { gap: 7px; top: 15%; }
+  .tl-ruler { flex-basis: 28px; }
+  .tl-head { left: 64.5%; }
+  /* ispod naslova traka je prigušena na trećinu, a puna je na otvorenoj strani */
+  .tl {
+    -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3) 0, rgba(0, 0, 0, .3) 34%, #000 66%);
+            mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3) 0, rgba(0, 0, 0, .3) 34%, #000 66%);
+  }
+}
+@media (prefers-reduced-motion: reduce) { .tl-strip { animation: none; } }
+
+/* podnaslov ispod naslova: isti font kao naslov (League Gothic, velika slova) */
+.hero .kicker {
+  font-family: var(--f-display); font-weight: 400; font-size: clamp(22px, 6.4vw, 30px); line-height: .98;
+  letter-spacing: .02em; text-transform: uppercase; color: var(--cream); margin: 0 0 8px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, .7);
+}
+.hero .sub, .hero .proof { text-shadow: 0 1px 12px rgba(0, 0, 0, .7); }
+
+/* dugme za zvuk je pravo dugme: iznad videa, bez okvira */
+.phone .sound { z-index: 2; border: 0; cursor: pointer; }

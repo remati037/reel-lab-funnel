@@ -22,8 +22,8 @@
 <!-- ================= TRAKA: ROK ================= -->
 <div class="co-top">
   <div class="wrap">
-    <span class="lamp">Vrata se zatvaraju</span>
-    <span>Zatvaramo za <span data-cd-days>2 dana</span>.</span>
+    <span class="lamp" data-label="lamp">Cena raste</span>
+    <span><span data-label="short">Cena raste za</span> <span data-cd-days>2 dana</span>.</span>
     <span class="sep"></span>
     <span class="left" data-cd-left>0D 00H 00M</span>
   </div>
@@ -45,7 +45,7 @@
       <h1 class="display h-co">Uđi pre nego što se vrata zatvore.</h1>
 
       <div class="co-cd">
-        <span class="mono">Vrata se zatvaraju za</span>
+        <span class="mono" data-label="long">Cena raste na 97€ za</span>
         <div class="row">
           <div class="u"><div class="v" data-cd="d">00</div><div class="l">DANA</div></div><span class="c">:</span>
           <div class="u"><div class="v" data-cd="h">00</div><div class="l">SATI</div></div><span class="c">:</span>
@@ -86,7 +86,7 @@
           </select>
         </label>
 
-        <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš [Tvoj Brend] da sačuva karticu za eventualne naredne kupovine kod nas.</p>
+        <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš AI Profit Lab-u da sačuva karticu za eventualne naredne kupovine kod nas.</p>
 
         <!-- ORDER BUMP (uživo: optional_items u Stripe Checkout-u) -->
         <label class="co-bump">
@@ -120,7 +120,8 @@
         <p style="margin:0">Tvojih 7 dana počinje onog dana kad kupiš.</p>
       </aside>
 
-      <blockquote class="co-q">Ovo je bilo toliko dobro da sam morao da <b>otpustim montažera...</b>
+      <!-- Sakriveno dok se ne potvrdi pravi autor utiska -->
+      <blockquote class="co-q" hidden>Ovo je bilo toliko dobro da sam morao da <b>otpustim montažera...</b>
         <cite>MEJLOM, OD <b>IME PREZIME</b></cite>
       </blockquote>
 
@@ -140,7 +141,6 @@
       <!-- SIMULACIJA: šta server zna o kupcu (samo test, obriši uživo) -->
       <fieldset class="co-sim">
         <legend class="mono">Simulacija (samo test)</legend>
-        <label><input type="checkbox" data-sim="radionica" checked> Kupac je među prvih 100 (radionica)</label>
         <label><input type="checkbox" data-sim="labClan"> Kupac je već AI Profit Lab član (preskače ponudu)</label>
         <label><input type="checkbox" data-sim="fail"> Banka odbija upsell naplatu</label>
       </fieldset>
@@ -151,7 +151,7 @@
       <div class="co-order" data-order>
         <div class="top">Tvoja porudžbina <span>Jedna uplata, bez pretplate</span></div>
         <h2>Creator Studio</h2>
-        <div class="pr"><span class="n">97€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 25. OKT</span></div>
+        <div class="pr"><span class="n" data-price>67€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 3. NOV</span></div>
 
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
@@ -162,19 +162,20 @@
           <li><span>05</span>Automatsko objavljivanje i zakazivanje</li>
           <li><span>06</span>Pravila zvuka</li>
           <li><span>07</span>GIF Finder</li>
-          <li><span>08</span>8 snimaka „preko ramena“</li>
+          <li><span>08</span>8 snimaka ekrana: gledaš kako ja radim</li>
           <li><span>09</span>Podešavanje prvog rilsa</li>
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
 
         <div class="addon"><span>+ Viral Hook Pack</span><b>27€</b></div>
-        <div class="sum"><span>Ukupno</span><b data-total>97€</b></div>
+        <div class="sum"><span>Ukupno</span><b data-total>67€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes">Zatvaramo u nedelju, 25. oktobra u 21h. Posle toga, jedini način da uđeš je lista čekanja.</p>
+        <p class="closes">Cena je 67€ do petka, 30. oktobra u 21h, a onda 97€. Zatvaramo u utorak, 3. novembra u 21h. Posle toga u Studio ulaziš samo preko liste čekanja.</p>
       </div>
 
-      <blockquote class="co-q co-order-q">Ludilo, napravio sam 4 rilsa sa ovim za manje od sat vremena i <b>imali su 4x više pregleda nego obično.</b>
+      <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
+      <blockquote class="co-q co-order-q" hidden>Ludilo, napravio sam 4 rilsa sa ovim za manje od sat vremena i <b>imali su 4x više pregleda nego obično.</b>
         <cite>MEJLOM, OD <b>IME PREZIME</b></cite>
       </blockquote>
     </aside>
@@ -182,17 +183,37 @@
 </div>
 
 <footer class="ffoot">
-  <div class="wrap">© [Tvoj Brend] · <a href="#">Uslovi korišćenja</a> · <a href="#">Privatnost</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+  <div class="wrap">© AI Profit Lab · <a href="#">Uslovi korišćenja</a> · <a href="#">Privatnost</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
 </footer>
 
 <script>
-  // Isti rok kao na landingu (script.js → CONFIG.deadline)
-  const DEADLINE = new Date("2026-10-25T21:00:00+01:00").getTime();
-  const STUDIO = 97, BUMP = 27;
+  // Iste faze kao na landingu (script.js → CONFIG.phases): tajmer broji do kraja trenutne faze.
+  const PHASES = [
+    { until: new Date("2026-10-30T21:00:00+01:00").getTime(), price: 67 }, // faza 1: cena za lansiranje
+    { until: new Date("2026-11-03T21:00:00+01:00").getTime(), price: 97 }, // faza 2: redovna cena
+  ];
+  const LABELS = {
+    lamp: ["Cena raste", "Vrata se zatvaraju", "Vrata su zatvorena"],
+    short: ["Cena raste za", "Zatvaramo za", "Vrata su zatvorena"],
+    long: ["Cena raste na 97€ za", "Vrata se zatvaraju za", "Vrata su zatvorena"],
+  };
+  const BUMP = 27;
+  let STUDIO = 97;
+  const phaseNow = () => { const i = PHASES.findIndex((p) => Date.now() < p.until); return i === -1 ? PHASES.length : i; };
+  function applyPhase() {
+    const ph = phaseNow();
+    STUDIO = ph < PHASES.length ? PHASES[ph].price : 97;
+    document.querySelectorAll("[data-price]").forEach((el) => (el.textContent = STUDIO + "€"));
+    document.querySelector("[data-total]").textContent = STUDIO + (document.querySelector("[data-bump]").checked ? BUMP : 0) + "€";
+    document.querySelectorAll("[data-label]").forEach((el) => (el.textContent = LABELS[el.dataset.label][Math.min(ph, 2)]));
+    return PHASES[Math.min(ph, PHASES.length - 1)].until;
+  }
+  let DEADLINE = applyPhase();
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");
   function tick() {
+    DEADLINE = applyPhase();
     const s = Math.max(0, Math.floor((DEADLINE - Date.now()) / 1000));
     const p = { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 };
     document.querySelectorAll("[data-cd]").forEach((el) => (el.textContent = pad(p[el.dataset.cd])));
@@ -226,7 +247,6 @@
     // isto što bi Stripe vratio u success_url: /ponuda?session_id=...
     const q = new URLSearchParams({ session_id: "cs_test_" + Math.random().toString(36).slice(2, 10) });
     if (bump.checked) q.set("bump", "1");
-    if (sim("radionica")) q.set("radionica", "1");
     if (sim("fail")) q.set("fail", "1");
     // već Lab član: server preskače ponudu i šalje direktno na hvala
     if (sim("labClan")) q.set("lab", "clan");
