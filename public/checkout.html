@@ -26,8 +26,8 @@
 <!-- ================= TRAKA: ROK ================= -->
 <div class="co-top">
   <div class="wrap">
-    <span class="lamp">Vrata se zatvaraju</span>
-    <span>Zatvaramo za <span data-cd-days>2 dana</span>.</span>
+    <span class="lamp" data-label="lamp">Cena raste</span>
+    <span><span data-label="short">Cena raste za</span> <span data-cd-days>2 dana</span>.</span>
     <span class="sep"></span>
     <span class="left" data-cd-left>0D 00H 00M</span>
   </div>
@@ -49,7 +49,7 @@
       <h1 class="display h-co">Uđi pre nego što se vrata zatvore.</h1>
 
       <div class="co-cd">
-        <span class="mono">Vrata se zatvaraju za</span>
+        <span class="mono" data-label="long">Cena raste na 97€ za</span>
         <div class="row">
           <div class="u"><div class="v" data-cd="d">00</div><div class="l">DANA</div></div><span class="c">:</span>
           <div class="u"><div class="v" data-cd="h">00</div><div class="l">SATI</div></div><span class="c">:</span>
@@ -102,7 +102,8 @@
         <p style="margin:0">Ažuriranja i novi efekti stižu besplatno, zauvek.</p>
       </aside>
 
-      <blockquote class="co-q">Ovo je bilo toliko dobro da sam morao da <b>otpustim montažera...</b>
+      <!-- Sakriveno dok se ne potvrdi pravi autor utiska -->
+      <blockquote class="co-q" hidden>Ovo je bilo toliko dobro da sam morao da <b>otpustim montažera...</b>
         <cite>MEJLOM, OD <b>IME PREZIME</b></cite>
       </blockquote>
 
@@ -132,7 +133,7 @@
       <div class="co-order" data-order>
         <div class="top">Tvoja porudžbina <span>Jedna uplata, bez pretplate</span></div>
         <h2>Creator Studio</h2>
-        <div class="pr"><span class="n" data-total>97€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 25. OKT</span></div>
+        <div class="pr"><span class="n" data-total>67€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 15. NOV</span></div>
 
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
@@ -143,17 +144,18 @@
           <li><span>05</span>Automatsko objavljivanje i zakazivanje</li>
           <li><span>06</span>Pravila zvuka</li>
           <li><span>07</span>GIF Finder</li>
-          <li><span>08</span>8 snimaka „preko ramena“</li>
+          <li><span>08</span>8 snimaka ekrana: gledaš kako ja radim</li>
           <li><span>09</span>Podešavanje prvog rilsa</li>
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
-        <div class="sum"><span>Ukupno</span><b data-total>97€</b></div>
+        <div class="sum"><span>Ukupno</span><b data-total>67€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes">Zatvaramo u nedelju, 25. oktobra u 21h. Posle toga, jedini način da uđeš je lista čekanja.</p>
+        <p class="closes">Cena je 67€ do srede, 11. novembra u 21h, a onda 97€. Zatvaramo u nedelju, 15. novembra u 21h. Posle toga u Studio ulaziš samo preko liste čekanja.</p>
       </div>
 
-      <blockquote class="co-q co-order-q">Ludilo, napravio sam 4 rilsa sa ovim za manje od sat vremena i <b>imali su 4x više pregleda nego obično.</b>
+      <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
+      <blockquote class="co-q co-order-q" hidden>Ludilo, napravio sam 4 rilsa sa ovim za manje od sat vremena i <b>imali su 4x više pregleda nego obično.</b>
         <cite>MEJLOM, OD <b>IME PREZIME</b></cite>
       </blockquote>
     </aside>
@@ -161,12 +163,26 @@
 </div>
 
 <footer class="ffoot">
-  <div class="wrap">© Studio Reel Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+  <div class="wrap">© AI Profit Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
 </footer>
 
 <script>
-  // Isti rok kao na landingu (script.js → CONFIG.deadline)
-  let DEADLINE = new Date("2026-10-25T21:00:00+01:00").getTime();
+  // Iste faze kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL, CLOSE_AT u wrangler.jsonc).
+  // Tajmer broji do kraja trenutne faze. Pravi iznos uvek dolazi iz Stripe sesije.
+  const PHASES = [
+    { until: new Date("2026-11-11T21:00:00+01:00").getTime(), price: "67€" }, // faza 1: cena za lansiranje
+    { until: new Date("2026-11-15T21:00:00+01:00").getTime(), price: "97€" }, // faza 2: redovna cena
+  ];
+  const LABELS = {
+    lamp: ["Cena raste", "Vrata se zatvaraju", "Vrata su zatvorena"],
+    short: ["Cena raste za", "Zatvaramo za", "Vrata su zatvorena"],
+    long: ["Cena raste na 97€ za", "Vrata se zatvaraju za", "Vrata su zatvorena"],
+  };
+  const phaseIdx = PHASES.findIndex((p) => Date.now() < p.until);
+  const ph = phaseIdx === -1 ? PHASES.length : phaseIdx; // 0 = faza 1, 1 = faza 2, 2 = zatvoreno
+  document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = PHASES[Math.min(ph, PHASES.length - 1)].price));
+  document.querySelectorAll("[data-label]").forEach((el) => (el.textContent = LABELS[el.dataset.label][Math.min(ph, 2)]));
+  let DEADLINE = PHASES[Math.min(ph, PHASES.length - 1)].until;
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Creator Studio: Ti snimaš. Claude montira.</title>
-  <meta name="description" content="Bez programa za montažu. 46 efekata, neograničeno probnih rilsova koje Claude objavljuje za tebe i karuseli od bilo kog videa.">
+  <meta name="description" content="Bez programa za montažu. Ubaciš klipove, kažeš „montiraj ga“ i dobiješ gotov rils. 46 efekata, koliko god probnih verzija hoćeš od jednog videa i karuseli od bilo kog videa.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
@@ -26,33 +26,39 @@
 
 <!-- ================= GORNJA TRAKA ================= -->
 <div class="topbar mono">
-  <span class="dot"></span> Zatvaramo za <span class="t" data-countdown="hms">00:00:00</span>
+  <span class="dot"></span> <span data-label="short">Cena raste za</span> <span class="t" data-countdown="hms">00:00:00</span>
 </div>
 
 <!-- ================= SCENA 01 · HERO ================= -->
 <header class="hero" id="top">
+  <!-- Montažna traka iza hero dela: crta je script.js (buildTimeline) -->
+  <div class="tl" id="tl" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div>
-      <div class="mono brand">Creator Studio</div>
+      <div class="mono brand">Creator Studio · Vladimir Stanković</div>
       <h1 class="display h1">Ti snimaš.<br>Claude montira.</h1>
       <p class="kicker">Bez programa za montažu.</p>
-      <p class="sub">46 efekata. Neograničeno probnih rilsova, objavljenih umesto tebe. Karuseli od bilo kog videa. <span>Besplatna ažuriranja zauvek.</span></p>
+      <!-- A/B test: ?v=b u linku prikazuje verziju B (novac), sve ostalo A (vreme) -->
+      <p class="sub" data-variant="a">Ubaciš sirove klipove sa telefona, napišeš „montiraj ga“ i dobiješ gotov rils sa titlovima, efektima i zvukom. Bez CapCut-a, bez montažera, bez sati na timeline-u.</p>
+      <p class="sub" data-variant="b" hidden>Montažer ti naplaćuje svaki rils. Ovo plaćaš jednom. Ubaciš klipove, kažeš „montiraj ga“, Claude odradi ostalo.</p>
+      <p class="proof">Od autora Biznis priča. Preko 500.000 pratilaca na mrežama.</p>
       <div class="price-row">
-        <div class="price-big" data-t="price">97€</div>
+        <div class="price-big"><span data-t="price">67€</span><s class="price-old" data-phase-only="1" data-t="regularPrice">97€</s></div>
         <div class="clock">
-          <span class="mono">Zatvaramo za</span>
+          <span class="mono" data-label="short">Cena raste za</span>
           <span class="time" data-countdown="hms">00:00:00</span>
         </div>
       </div>
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
     </div>
 
     <div class="phone">
       <div class="badge mono"><span class="dot"></span> 100% montirao Claude</div>
       <div class="frame">
-        <!-- Zameni sa: <video src="assets/hero.mp4" autoplay muted loop playsinline></video> -->
-        <div class="media"><div class="ph">Hero video 9:16</div></div>
-        <div class="sound">▶ Pusti zvuk</div>
+        <!-- Hero rils: assets/demo/hero.mp4 (iz „primer vlada.mp4“) -->
+        <div class="media"><video id="heroVid" src="assets/demo/hero.mp4" poster="assets/demo/hero.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+        <button class="sound" type="button" id="heroSound">▶ Pusti zvuk</button>
       </div>
       <div class="cap mono">Bez CapCut-a. Bez ponovne montaže<br>istog videa 10 puta.</div>
     </div>
@@ -60,86 +66,24 @@
   <div class="wrap slate mono">
     <span><span class="dot"></span> Reel TC 00:00:00:26</span>
     <span>Scena 01 / Take 1 / Mac + Windows</span>
-    <span>Zatvaramo za <span data-countdown="hms">00:00:00</span></span>
+    <span><span data-label="short">Cena raste za</span> <span data-countdown="hms">00:00:00</span></span>
   </div>
 </header>
 
 <main>
 
-<!-- ================= SCENA 02 · ŠTA DOBIJAŠ ================= -->
-<section class="sec" id="sta-dobijas">
+<!-- ================= SCENA 02 · PROBLEM ================= -->
+<section class="sec" id="problem">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Šta dobijaš</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>02</b> <span class="sep">|</span> Problem</div>
 
     <div class="sec-head reveal">
-      <h2 class="display h2">Ovo je ceo studio.<br>Devet stvari.</h2>
-      <div>
-        <p class="lead">Montiraj rils. Pretvori ga u probne rilsove. Napravi od njega karusel. <b>Jedan video unutra, nedelja sadržaja napolju.</b></p>
-        <ul class="ticks mono">
-          <li>Odmah pristup svih devet</li>
-          <li>Besplatna ažuriranja zauvek</li>
-        </ul>
+      <h2 class="display h2">Klipovi ti stoje u galeriji.<br>Nije problem u snimanju.</h2>
+      <div class="problem-copy">
+        <p class="lead">Snimio si pet klipova. Stoje u galeriji od utorka. Ne zato što nemaš šta da kažeš, nego zato što te montaža jednog rilsa košta sat i po. Pa ga odložiš. Pa sutra snimiš novi. Pa i on završi u galeriji.</p>
+        <p class="lead">Montažer rešava problem, dok ne vidiš račun na kraju meseca. CapCut ga rešava, dok ne shvatiš da isti video montiraš po treći put.</p>
+        <p class="lead"><b>Creator Studio skida montažu sa tebe. Ti snimaš, Claude montira.</b></p>
       </div>
-    </div>
-
-    <div class="sheet reveal">
-      <div class="sheet-top mono"><span>Call sheet</span><span>Creator Studio</span></div>
-      <div class="sheet-grid">
-        <div class="item"><span class="n">01</span><div>
-          <h3>Look Builder: 9 stilova, 20 titlova</h3>
-          <p>9 gotovih stilova montaže, 5 za njega i 4 za nju, plus 20 stilova titlova. Izaberi šta ti se sviđa. <b>Ili daj Claude-u rils koji voliš i on napravi stil koji je samo tvoj.</b></p>
-        </div></div>
-        <div class="item"><span class="n">02</span><div>
-          <h3>FX paket: 46 efekata</h3>
-          <p>46 vizuelnih efekata, kao ogromne reči iza tebe ili ekran aplikacije preko celog kadra. <b>Ti izabereš koje voliš, a Claude ih ugradi u tvoj rils.</b></p>
-        </div></div>
-        <div class="item"><span class="n">03</span><div>
-          <h3>Probni rilsovi <span class="new">NOVO</span></h3>
-          <p>Pretvori jedan video u koliko god hoćeš probnih rilsova. Svaki dobija svoj hook, titlove ili stil, plus svoju brzinu, kadriranje i boju. <b>Onda ih Claude objavi umesto tebe.</b></p>
-        </div></div>
-        <div class="item"><span class="n">04</span><div>
-          <h3>Carousel Studio <span class="new">NOVO</span></h3>
-          <p>Pretvori bilo koji video u karusel, ili napravi jedan od nule na bilo koju temu. <b>Claude napiše svaki slajd, ti odobriš, a on ih dizajnira u tvom stilu.</b></p>
-        </div></div>
-        <div class="item"><span class="n">05</span><div>
-          <h3>Automatsko objavljivanje i zakazivanje <span class="new">NOVO</span></h3>
-          <p>Claude i ChatGPT objavljuju tvoje videe, probne rilsove i karusele na platformi po tvom izboru (TikTok, Instagram, YouTube, LinkedIn itd.). <b>Objavi odmah ili zakaži, bez otvaranja ijedne aplikacije.</b></p>
-        </div></div>
-        <div class="item"><span class="n">06</span><div>
-          <h3>Pravila zvuka</h3>
-          <p>Moji preporučeni zvukovi, koji ide uz koji efekat i koliko glasno stoji ispod tvog glasa. <b>Claude ih postavi umesto tebe, i zna kad da ne stavi nijedan.</b></p>
-        </div></div>
-        <div class="item"><span class="n">07</span><div>
-          <h3>GIF Finder</h3>
-          <p>Kaži da hoćeš GIF-ove i Claude ih nađe na Giphy-ju i Tenor-u, iste one koje šalješ u grupnim četovima. <b>Izabere onaj koji paše uz tvoju rečenicu i ubaci ga u rils.</b></p>
-        </div></div>
-        <div class="item"><span class="n">08</span><div>
-          <h3>8 snimaka „preko ramena“</h3>
-          <p>8 kratkih videa u kojima gledaš kako ga koristim na svom ekranu: podešavanje, biranje efekata i titlova, zvukovi, probni rilsovi, objavljivanje, rešavanje problema i moji omiljeni AI alati. <b>Jedan je ceo rils od nule, sa greškama koje nisam izbacio.</b></p>
-        </div></div>
-        <div class="item"><span class="n">09</span><div>
-          <h3>Podešavanje prvog rilsa</h3>
-          <p>Instalacija jednim lepljenjem za Mac i Windows. <b>Ako ti se podešavanje pokvari, „doctor“ komanda nađe problem i popravi ga.</b></p>
-        </div></div>
-      </div>
-    </div>
-
-    <div class="extras reveal">
-      <div class="extra">
-        <span class="mono">Plus</span>
-        <h3 class="display h4">Besplatna ažuriranja zauvek.</h3>
-        <p>Svaki novi efekat, stil i funkciju koju dodam, dobijaš i ti. Bez pretplate. Bez naplate za nadogradnju.</p>
-      </div>
-      <div class="extra">
-        <span class="mono">Stiže ove nedelje</span>
-        <h3 class="display h4">Radi i sa ChatGPT-jem.</h3>
-        <p>Više voliš ChatGPT? Creator Studio dobija punu podršku za ChatGPT: iste montaže, isti stilovi, isto objavljivanje. Stiže kao besplatno ažuriranje, pa ga dobijaš automatski.</p>
-      </div>
-    </div>
-
-    <div class="cta reveal">
-      <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note"><b data-t="price">97€</b>. Jedna uplata. Zatvaramo <span>u nedelju, 25. oktobra u 21h</span>.</p>
     </div>
   </div>
 </section>
@@ -151,38 +95,38 @@
 
     <div class="reveal">
       <h2 class="display h2">Ti biraš. Claude montira.</h2>
-      <p class="lead" style="margin-top:20px">Izaberi gotov stil montaže ili napravi svoj. Posle toga, svaki rils je jedna rečenica: <b>montiraj ga.</b></p>
+      <p class="lead" style="margin-top:20px">Izaberi gotov stil montaže ili napravi svoj. Posle toga je svaki rils jedna rečenica: <b>montiraj ga.</b></p>
     </div>
 
     <div class="screen-grid" style="margin-top:56px">
       <div class="reveal">
-        <h3 class="display h3" style="margin-bottom:24px">Snimak ulazi sirov.<br>Ovo izlazi.</h3>
+        <h3 class="display h3" style="margin-bottom:24px">Ulazi sirov snimak.<br>Izlazi ovo.</h3>
 
         <div class="pair">
           <figure>
-            <div class="media"><div class="ph">Sirov klip</div><span class="play"></span></div>
-            <figcaption><b>Šta sam snimio</b>Jedan od 5 sirovih klipova sa telefona. Ništa nije rađeno.</figcaption>
+            <div class="media"><video src="assets/demo/raw-1.mp4" poster="assets/demo/raw-1.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+            <figcaption><b>Šta sam snimio</b>Jedan sirov klip sa telefona, u jednom potezu. Ništa nije rađeno.</figcaption>
           </figure>
           <span class="arrow">→</span>
           <figure>
-            <div class="media"><div class="ph">Gotov rils</div><span class="play"></span></div>
-            <figcaption><b>Šta je Claude napravio</b>Gotov rils. 25 sekundi.</figcaption>
+            <div class="media"><video src="assets/demo/reel-1.mp4" poster="assets/demo/reel-1.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+            <figcaption><b>Šta je Claude napravio</b>Gotov rils u Fireside stilu. 13 sekundi.</figcaption>
           </figure>
         </div>
-        <p class="pair-note">Ovaj rils je 100% montirao Claude. 25 sekundi, isečeno iz 5 sirovih klipova sa telefona. Nisam ni otvorio program za montažu.</p>
+        <p class="pair-note">Ovaj rils je 100% montirao Claude. 13 sekundi, iz jednog sirovog klipa sa telefona: topla boja, polagan prilaz licu i titlovi. Nisam ni otvorio program za montažu.</p>
 
         <div class="pair">
           <figure>
-            <div class="media"><div class="ph">Sirov klip</div><span class="play"></span></div>
+            <div class="media"><video src="assets/demo/raw-2.mp4" poster="assets/demo/raw-2.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
             <figcaption><b>Šta sam snimio</b>Jedan sirov klip za stolom. Ništa nije rađeno.</figcaption>
           </figure>
           <span class="arrow">→</span>
           <figure>
-            <div class="media"><div class="ph">Green Screen efekat</div><span class="play"></span></div>
-            <figcaption><b>Šta je Claude napravio</b>Green Screen efekat. Prve 22 sekunde rilsa.</figcaption>
+            <div class="media"><video src="assets/demo/reel-2.mp4" poster="assets/demo/reel-2.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+            <figcaption><b>Šta je Claude napravio</b>Gotov rils u Chalk Talk stilu. 11 sekundi.</figcaption>
           </figure>
         </div>
-        <p class="pair-note">Isto i sa Green Screen efektom. Jedan sirov klip unutra. Claude me je isekao iz sobe i stavio preko onoga o čemu pričam.</p>
+        <p class="pair-note">Isto i sa Chalk Talk stilom. Jedan sirov klip unutra. Claude me je isekao iz sobe, stavio na tamnu pozadinu i brojeve ispisao markerom.</p>
       </div>
 
       <div class="reveal">
@@ -192,10 +136,11 @@
           <div class="step"><span class="num">2</span><div><span class="mono">Ili jednom, na tvoj način</span><p>Napravi svoj: kombinuj 46 efekata i 20 stilova titlova, ili daj Claude-u rils koji voliš i on prepozna stil.</p></div></div>
           <div class="step"><span class="num">3</span><div><span class="mono">Svaki rils</span><p>Ubaci klipove i reci <b><i>„montiraj ga“</i></b>. Claude odradi ostalo.</p></div></div>
         </div>
-        <p class="muted" style="font-size:15px">Hoćeš nešto da promeniš? Napiši poruku kao <i>„povećaj titlove“</i> i Claude ponovo renderuje za oko dva minuta.</p>
+        <p class="muted" style="font-size:15px">Hoćeš nešto da promeniš? Napiši <i>„povećaj titlove“</i> i Claude za oko dva minuta napravi novu verziju.</p>
         <h3 class="display h4" style="margin-top:28px">Bez timeline-a. Bez keyframe-ova. Bez podešavanja za export.</h3>
 
-        <blockquote class="quote">
+        <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brief, tačka 7) -->
+        <blockquote class="quote" hidden>
           Mnogo bolje nego što sam mislila. Izbacilo je sve moje greške i montiralo u mom stilu, <b>a ja sam samo morala da podesim i kažem „montiraj ga“.</b>
           <cite class="mono">Mejlom, od <b>Ime Prezime</b></cite>
         </blockquote>
@@ -211,21 +156,21 @@
     <div class="styles-row reveal">
       <div class="label"><div class="display">Za njega</div><div class="mono">5 stilova</div></div>
       <div class="cards">
-        <div class="card"><div class="media"><div class="ph">Stil 1</div></div><h4>Chalk Talk</h4><p>Ti na tamnoj studijskoj pozadini, sa naslovima i crtežima markerom.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 2</div></div><h4>Fireside</h4><p>Jedan fiksni kadar, toplo svetlo lampe, bez rezova. Reči rade posao.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 3</div></div><h4>Raw Tape</h4><p>Širok kadar dok sediš, izbledeli filmski izgled i mali žuti titlovi.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 4</div></div><h4>Viral Guy</h4><p>Miran, premium talking head. Tamno-tirkizna soba, jedna tiha reč po reč, kartice sa rečima na bitovima.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 5</div></div><h4>Show and Tell</h4><p>Ti u prozoru na dnu, čist prostor iznad za screenshot-ove, promptove i strelice.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/01-chalk-talk.mp4" poster="assets/stilovi/01-chalk-talk.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Chalk Talk</h4><p>Ti na tamnoj studijskoj pozadini, sa naslovima i crtežima markerom.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/02-fireside.mp4" poster="assets/stilovi/02-fireside.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Fireside</h4><p>Jedan fiksni kadar, toplo svetlo lampe, bez rezova. Reči rade posao.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/03-raw-tape.mp4" poster="assets/stilovi/03-raw-tape.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Raw Tape</h4><p>Širok kadar dok sediš, izbledeli filmski izgled i mali žuti titlovi.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/04-viral-guy.mp4" poster="assets/stilovi/04-viral-guy.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Viral Guy</h4><p>Miran, premium talking head. Tamno-tirkizna soba, jedna tiha reč po reč, kartice sa rečima na bitovima.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/05-show-and-tell.mp4" poster="assets/stilovi/05-show-and-tell.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Show and Tell</h4><p>Ti u prozoru na dnu, čist prostor iznad za screenshot-ove, promptove i strelice.</p></div>
       </div>
     </div>
 
     <div class="styles-row reveal">
       <div class="label"><div class="display">Za nju</div><div class="mono">4 stila</div></div>
       <div class="cards four">
-        <div class="card"><div class="media"><div class="ph">Stil 6</div></div><h4>Naziv stila</h4><p>Kratak opis stila.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 7</div></div><h4>Naziv stila</h4><p>Kratak opis stila.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 8</div></div><h4>Naziv stila</h4><p>Kratak opis stila.</p></div>
-        <div class="card"><div class="media"><div class="ph">Stil 9</div></div><h4>Naziv stila</h4><p>Kratak opis stila.</p></div>
+        <div class="card"><div class="media"><video src="assets/stilovi/06-glam-cam.mp4" poster="assets/stilovi/06-glam-cam.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Glam Cam</h4><p>Svetao studijski krupni kadar. Skok zuma na svaku novu misao, jedna serifna reč po reč.</p></div>
+        <div class="card"><div class="media"><div class="ph">Stil 7</div></div><h4>Soft Hours</h4><p>Prijatno i sporo. Prigušena topla soba i mekani titlovi koji se kucaju. Radi i bez lica.</p></div>
+        <div class="card"><div class="media"><div class="ph">Stil 8</div></div><h4>Color Block</h4><p>Dan iz života u delovima, prekinut karticama u boji i ogromnim rečima malim slovima.</p></div>
+        <div class="card"><div class="media"><div class="ph">Stil 9</div></div><h4>Camera Shy</h4><p>Lista saveta. Brzi rezovi, zakačen naslov, a tvoje stavke se kucaju na ekranu. Radi i bez lica.</p></div>
       </div>
     </div>
 
@@ -304,19 +249,102 @@
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note"><b data-t="price">97€</b>. Zatvaramo za <span data-countdown="days">2 dana</span>.</p>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
     </div>
   </div>
 </section>
 
-<!-- ================= SCENA 04 · PROBNI RILSOVI ================= -->
-<section class="sec" id="probni-rilsovi">
+<!-- ================= SCENA 04 · ŠTA DOBIJAŠ ================= -->
+<section class="sec" id="sta-dobijas">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>04</b> <span class="sep">|</span> Probni rilsovi</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>04</b> <span class="sep">|</span> Šta dobijaš</div>
 
     <div class="sec-head reveal">
-      <h2 class="display h2">Jedan video. Koliko god hoćeš probnih rilsova.</h2>
-      <p class="lead">Probni rilsovi (trial reels) idu ljudima koji te još ne prate. Što više verzija testiraš, brže nađeš onu koja eksplodira. Niko nema vremena da montira 8 verzija istog videa. <b>Sad ne moraš.</b></p>
+      <h2 class="display h2">Jedan video unutra.<br>Nedelja sadržaja napolju.</h2>
+      <div>
+        <p class="lead">Montiraj rils. Napravi od njega probne verzije i karusel. Objavi sve bez otvaranja ijedne aplikacije. <b>Devet alata, jedna uplata.</b></p>
+        <ul class="ticks mono">
+          <li>Odmah dobijaš pristup svemu</li>
+          <li>Besplatna ažuriranja zauvek</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sheet reveal">
+      <div class="sheet-top mono"><span>Call sheet</span><span>Creator Studio</span></div>
+      <div class="sheet-grid">
+        <div class="sheet-group mono">Montaža</div>
+        <div class="item"><span class="n">01</span><div>
+          <h3>Look Builder: 9 stilova, 20 titlova</h3>
+          <p>9 gotovih stilova montaže, 5 za njega i 4 za nju, plus 20 stilova titlova. Izaberi šta ti se sviđa. <b>Ili daj Claude-u rils koji voliš i on napravi stil samo za tebe.</b></p>
+        </div></div>
+        <div class="item"><span class="n">02</span><div>
+          <h3>FX paket: 46 efekata</h3>
+          <p>46 vizuelnih efekata, na primer ogromne reči iza tebe ili ekran aplikacije preko celog kadra. <b>Izabereš one koji ti se sviđaju, a Claude ih ugradi u rils.</b></p>
+        </div></div>
+        <div class="item"><span class="n">03</span><div>
+          <h3>Pravila zvuka</h3>
+          <p>Moji preporučeni zvukovi: koji ide uz koji efekat i koliko glasno stoji ispod tvog glasa. <b>Claude ih postavlja umesto tebe i zna kad je bolje bez zvuka.</b></p>
+        </div></div>
+        <div class="item"><span class="n">04</span><div>
+          <h3>GIF Finder</h3>
+          <p>Reci da hoćeš GIF-ove i Claude ih nađe na Giphy-ju i Tenor-u, iste one koje šalješ u grupama. <b>Izabere onaj koji ide uz tvoju rečenicu i ubaci ga u rils.</b></p>
+        </div></div>
+        <div class="sheet-group mono">Testiranje i objava</div>
+        <div class="item"><span class="n">05</span><div>
+          <h3>Probni rilsovi <span class="new">NOVO</span></h3>
+          <p>Od jednog videa napraviš koliko god hoćeš probnih verzija. Svaka dobija svoj hook, titlove ili stil, plus svoju brzinu, kadriranje i boju. <b>Claude ih objavi kao probne rilsove na Instagramu.</b></p>
+        </div></div>
+        <div class="item"><span class="n">06</span><div>
+          <h3>Automatsko objavljivanje i zakazivanje <span class="new">NOVO</span></h3>
+          <p>Claude objavljuje tvoje videe, probne rilsove i karusele na mreže koje izabereš: Instagram, TikTok, YouTube Shorts i Facebook, a na zahtev i LinkedIn, Threads i X. Probni rilsovi idu samo na Instagram, jer samo Instagram ih ima. <b>Objavi odmah ili zakaži, bez otvaranja ijedne aplikacije.</b></p>
+        </div></div>
+        <div class="item"><span class="n">07</span><div>
+          <h3>Carousel Studio <span class="new">NOVO</span></h3>
+          <p>Pretvori bilo koji video u karusel, ili napravi jedan od nule na bilo koju temu. <b>Claude napiše svaki slajd, ti odobriš, a on ih dizajnira u tvom stilu.</b></p>
+        </div></div>
+        <div class="sheet-group mono">Da ne zapneš</div>
+        <div class="item"><span class="n">08</span><div>
+          <h3>8 snimaka ekrana: gledaš kako ja radim</h3>
+          <p>8 kratkih videa sa mog ekrana: podešavanje, biranje efekata i titlova, zvukovi, probni rilsovi, objavljivanje, rešavanje problema i moji omiljeni AI alati. <b>Jedan je ceo rils od nule, sa greškama koje nisam izbacio.</b></p>
+        </div></div>
+        <div class="item"><span class="n">09</span><div>
+          <h3>Podešavanje prvog rilsa</h3>
+          <p>Instalacija za Mac i Windows: nalepiš jednu liniju i to je to. <b>Ako nešto ne radi, komanda „doctor“ nađe problem i popravi ga.</b></p>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="extras reveal">
+      <div class="extra">
+        <span class="mono">Plus</span>
+        <h3 class="display h4">Besplatna ažuriranja zauvek.</h3>
+        <p>Svaki novi efekat, stil i funkciju koju dodam dobijaš i ti. Bez pretplate i bez doplate.</p>
+      </div>
+      <div class="extra">
+        <span class="mono">Stiže ove nedelje</span>
+        <h3 class="display h4">Radi i sa ChatGPT-jem.</h3>
+        <p>Više voliš ChatGPT? Creator Studio dobija punu podršku za ChatGPT: iste montaže, isti stilovi, isto objavljivanje. Stiže kao besplatno ažuriranje, sam od sebe.</p>
+      </div>
+    </div>
+
+    <div class="cta reveal">
+      <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note"><b data-t="price">67€</b>. Zatvaramo <span>u nedelju, 15. novembra u 21h</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 05 · PROBNI RILSOVI ================= -->
+<section class="sec" id="probni-rilsovi">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>05</b> <span class="sep">|</span> Probni rilsovi</div>
+
+    <div class="sec-head reveal">
+      <h2 class="display h2">Jedan video. Koliko god hoćeš probnih verzija.</h2>
+      <p class="lead">Probni rilsovi (trial reels) su Instagramova opcija: rils prvo vide ljudi koji te još ne prate. Što više verzija testiraš, brže nađeš onu koja pali. Niko nema vremena da montira 8 verzija istog videa. <b>Sad ne moraš.</b></p>
     </div>
 
     <div class="trials reveal">
@@ -330,20 +358,20 @@
       <div><span class="mono">Korak 1</span><p>Montiraj rils kao i uvek. Ubaci klipove, reci <b>montiraj ga</b>.</p></div>
       <div><span class="mono">Korak 2</span><p>Reci <b>napravi 8 probnih rilsova</b>. Ili 3. Ili 20. Ti odlučuješ.</p></div>
       <div><span class="mono">Korak 3</span><p>Svaki testira pravu promenu: novi hook, nove titlove, nove efekte ili novi stil. I svaki dobija svoju brzinu, kadriranje i boju, pa nijedan nije kopija drugog.</p></div>
-      <div><span class="mono">Korak 4</span><p>Claude ih objavi umesto tebe. Ti gledaš koji pobeđuje.</p></div>
+      <div><span class="mono">Korak 4</span><p>Claude ih objavi kao probne rilsove na Instagramu. Ti gledaš koja pobeđuje. Na ostale mreže objavljuje obične videe.</p></div>
     </div>
 
     <div class="punch reveal">
-      <h3 class="display h4">Jedna montaža. Gomila probnih rilsova. Objavljeni umesto tebe dok snimaš sledeći.</h3>
-      <p class="muted">Reci Claude-u koju verziju si objavio i ona ostaje tačno takva kakva jeste. Sledeća tura je zadržava i dodaje sveže verzije.</p>
+      <h3 class="display h4">Jedna montaža. Gomila probnih verzija. Objavljene na Instagramu dok ti snimaš sledeći rils.</h3>
+      <p class="muted">Reci Claude-u koju verziju si objavio i on je više ne dira. U sledećoj turi pravi nove verzije pored nje.</p>
     </div>
   </div>
 </section>
 
-<!-- ================= SCENA 05 · CAROUSEL STUDIO ================= -->
+<!-- ================= SCENA 06 · CAROUSEL STUDIO ================= -->
 <section class="sec" id="karuseli">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>05</b> <span class="sep">|</span> Carousel Studio</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>06</b> <span class="sep">|</span> Carousel Studio</div>
 
     <div class="reveal" style="margin-bottom:48px">
       <h2 class="display h2">Imaš video? Sad imaš i karusel.</h2>
@@ -373,14 +401,17 @@
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note">Probni rilsovi i Carousel Studio su uključeni. Bez dodataka.</p>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note">Probni rilsovi i Carousel Studio su uključeni. Bez doplate.</p>
     </div>
   </div>
 </section>
 
 <!-- ================= UTISCI ================= -->
-<!-- Ovde ubaci PRAVE utiske svojih kupaca (ime + tekst). -->
-<section class="sec" id="utisci">
+<!-- SAKRIVENO dok se ne potvrdi koji su utisci pravi (brief, tačka 7).
+     Ostaju samo utisci sa imenom i prezimenom ili Instagram handle-om i slikom. Brojke (npr. „4x više pregleda“) zadrži.
+     Kad potvrdiš: upiši prava imena, obriši one bez imena i skini atribut hidden. -->
+<section class="sec" id="utisci" hidden>
   <div class="wrap">
     <div class="reveal" style="margin-bottom:48px">
       <h2 class="display h2">Ljudi već montiraju sa njim.</h2>
@@ -388,7 +419,6 @@
     </div>
 
     <div class="replies-grid">
-      <div class="mail reveal"><div class="who"><span class="av">K</span><div><b>Ime P.</b><span>meni ▾</span></div></div><p>Vrednost u tvom studiju je LUDA, nadam se da ćeš prodati brdo jer je iskreno promenio igru za mene. Broj reklamnih kreativa koje mogu da napravim za dan je NEVEROVATAN.</p></div>
       <div class="mail reveal"><div class="who"><span class="av">R</span><div><b>Ime P.</b><span>meni ▾</span></div></div><p>Claude mi je pomogao da napravim i zakažem 11 probnih rilsova za proizvod sa raznim hookovima i titlovima. Primetila sam da je već objavio šest! Htela sam da istražim šta može, a sad sam potpuno navučena. Već mi je uštedeo sate za jedan dan, pa mogu da se fokusiram na strategiju i kreativni pravac. Toplo preporučujem svima koji snimaju videe i objavljuju rilsove.</p></div>
       <div class="mail reveal"><div class="who"><span class="av">A</span><div><b>Ime P.</b><span>meni ▾</span></div></div><p>Ne želim da dramim, ali ovo mi je promenilo život. Počela sam sa kreiranjem sadržaja pre 2 meseca da bih zaradila nešto sa strane za porodicu, ali nisam shvatala koliko vremena i rada to zapravo traži. U početku nisam spavala, jer sam imala toliko toga da montiram. Zahvaljujući Claude Code-u, montirala sam 10 reklama za različite brendove i još stigla na kafu sa mužem i da se igram sa detetom popodne. Bilo je divno!</p></div>
       <div class="mail reveal"><div class="who"><span class="av">J</span><div><b>Ime P.</b><span>meni ▾</span></div></div><p>Ti si super! Obožavam editor i baš mi je drago zbog tvog uspeha, zasluženo!</p></div>
@@ -403,89 +433,28 @@
   </div>
 </section>
 
-<!-- ================= SCENA 06 · LANSIRANJE ================= -->
-<section class="sec" id="lansiranje">
+<!-- ================= SCENA 07 · AUTOR ================= -->
+<section class="sec" id="autor">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>06</b> <span class="sep">|</span> Nedelja lansiranja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>07</b> <span class="sep">|</span> Ko stoji iza ovoga</div>
 
-    <div class="launch-grid">
-      <div class="reveal">
-        <h2 class="display h2"><span data-t="launchPrice">67€</span> za 48 sati.<br>Onda <span data-t="price">97€</span>.<br>Onda se vrata zatvaraju.</h2>
-        <p class="lead">Nema lažnog tajmera. Kad sat dođe do nule, cena raste. <b><span>U nedelju, 25. oktobra u 21h</span> vrata se zatvaraju</b>, i ne znam kad će se ponovo otvoriti.</p>
+    <div class="close-grid">
+      <div class="close-photo reveal">
+        <div class="display">Ti snimaš.</div>
+        <!-- [UBACI pravu fotografiju]: <img src="assets/autor.jpg" alt="Vladimir Stanković"> -->
+        <div class="media"><div class="ph">[UBACI fotografiju Vladimira]</div></div>
       </div>
-      <div class="timeline reveal">
-        <div class="tl past"><div><h4>Cena za lansiranje</h4><div class="mono">Do <span>četvrtka, 22. oktobra u 21h</span></div></div><div class="amt" data-t="launchPrice">67€</div></div>
-        <div class="tl now"><div><h4>Redovna cena</h4><div class="mono">Do <span>nedelje, 25. oktobra u 21h</span></div></div><div class="amt"><span data-t="price">97€</span><small>Ti si ovde</small></div></div>
-        <div class="tl future"><div><h4>Vrata se zatvaraju</h4><div class="mono"><span>Nedelja, 25. oktobar u 21h</span></div></div><div class="amt">Samo lista čekanja</div></div>
-      </div>
-    </div>
-
-    <div class="cta reveal">
-      <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note"><b data-t="price">97€</b>. Zatvaramo za <span data-countdown="days">2 dana</span>. Odmah pristup.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SCENA 07 · CENA ================= -->
-<section class="sec price-sec" id="cena">
-  <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>07</b> <span class="sep">|</span> Cena</div>
-
-    <div class="price-grid">
-      <div class="reveal">
-        <h2 class="display h2">Uđi pre nego što se vrata zatvore.</h2>
-        <div class="mega"><span class="n" data-t="price">97€</span><span class="mono">Jedna uplata<br>Zatvaramo 25. okt</span></div>
-        <p style="font-weight:600;font-size:19px"><span data-t="price">97€</span> jednom. Vrata se zatvaraju za <span data-countdown="days">2 dana</span>, i ne znam kad će se ponovo otvoriti.</p>
-        <ul class="list">
-          <li><b>Look Builder:</b> 9 stilova montaže, 20 stilova titlova, ili tvoj</li>
-          <li><b>FX paket:</b> 46 video efekata</li>
-          <li><b>Probni rilsovi:</b> koliko god verzija hoćeš, objavljeni umesto tebe</li>
-          <li><b>Carousel Studio:</b> 8 izgleda, ili nalepi link i napravi svoj</li>
-          <li><b>Automatsko objavljivanje i zakazivanje:</b> TikTok, Instagram, YouTube, LinkedIn i više</li>
-          <li><b>Pravila zvuka + GIF Finder</b></li>
-          <li><b>8 snimaka</b> + Podešavanje prvog rilsa za Mac i Windows</li>
-          <li><b>Besplatna ažuriranja zauvek</b></li>
-        </ul>
-      </div>
-
-      <div class="guarantee reveal">
-        <h3 class="display h3">Ne ostaješ sam posle kupovine.</h3>
-        <p><b>Ako nešto zapne, „doctor“ komanda ti kaže tačno rešenje.</b></p>
-        <p>Ako ni ona ne pomogne, pošalji mejl na <a href="mailto:info@tvojdomen.rs">info@tvojdomen.rs</a> sa screenshot-om i rešavamo zajedno.</p>
-        <p style="margin:0">Ažuriranja i novi efekti stižu besplatno, zauvek.</p>
-      </div>
-    </div>
-
-    <div class="bigq reveal">
-      <div class="display">„Ovo je bilo toliko dobro da sam morao da otpustim montažera...“</div>
-      <cite class="mono">Mejlom, od <b>Ime Prezime</b></cite>
-    </div>
-
-    <div class="countdown reveal">
-      <span class="mono">Vrata se zatvaraju za</span>
-      <div class="cd">
-        <div class="u"><div class="v" data-cd="d">00</div><div class="l mono">Dana</div></div><span class="c">:</span>
-        <div class="u"><div class="v" data-cd="h">00</div><div class="l mono">Sati</div></div><span class="c">:</span>
-        <div class="u"><div class="v" data-cd="m">00</div><div class="l mono">Min</div></div><span class="c">:</span>
-        <div class="u"><div class="v" data-cd="s">00</div><div class="l mono">Sek</div></div>
-      </div>
-      <div class="cd-notes">
-        <h3 class="display h4">Vrata se zatvaraju <span>u nedelju, 25. oktobra u 21h</span>.</h3>
-        <p>Creator Studio je aktivan, pa dobijaš pristup istog trenutka kad platiš. Vrata se zatvaraju <span>u nedelju, 25. oktobra u 21h</span>. Posle toga, jedini način da uđeš je lista čekanja za sledeće otvaranje.</p>
-        <p><b>Montažer obično košta 50€ do 150€ po videu. Dva rilsa i ovo se isplatilo.</b></p>
-        <p class="small">Šta ti još treba: Mac ili Windows računar, i Claude desktop aplikacija sa plaćenim Claude planom. Pro plan (20$ mesečno) je dovoljan.</p>
-      </div>
-      <div class="cta center">
-        <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-        <p class="note">Jedna uplata. Pristup odmah.</p>
+      <div class="close-bio reveal">
+        <p>Ja sam Vladimir Stanković. Vodim Biznis priče, najpopularniji biznis podkast u Jugoistočnoj Evropi, i AI Profit Lab, zajednicu preduzetnika koji AI koriste u poslu. Na mrežama me prati preko 500.000 ljudi, pa rilsove ne snimam iz hobija.</p>
+        <p>Montaža mi je bila usko grlo. Snimim za deset minuta, a onda klipovi čekaju montažu danima. <span class="todo">[PROVERI: zameni konkretnim detaljem ako postoji]</span></p>
+        <p>Napravio sam ovaj skill da to rešim za sebe. Sad snimim, ubacim klipove i pregledam gotov rils na telefonu. Creator Studio je isti sistem, sa svim što sam u međuvremenu dodao.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ================= SCENA 08 · ZA KOGA JE ================= -->
-<section class="sec forwho">
+<section class="sec forwho" id="za-koga">
   <div class="wrap">
     <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>08</b> <span class="sep">|</span> Za koga je</div>
 
@@ -507,7 +476,7 @@
       <div class="fw-col no reveal">
         <span class="mono">Nije za tebe ako</span>
         <ul>
-          <li><b>Želiš drag-and-drop aplikaciju.</b><span>Ovo radi unutar Claude Code-a na tvom računaru, i ti pričaš sa njim.</span></li>
+          <li><b>Želiš drag-and-drop aplikaciju.</b><span>Ovo radi u Claude desktop aplikaciji (Claude Code) na tvom računaru, i ti mu pišeš šta hoćeš. <span class="todo">[PROVERI]</span></span></li>
           <li><b>Montiraš samo na telefonu.</b><span>Treba ti Mac ili Windows računar.</span></li>
           <li><b>Želiš filmske, kinematografske videe.</b><span>Ovo je napravljeno za videe u kojima pričaš u kameru: rilsove, shorts, čak i YouTube videe.</span></li>
           <li><b>Nemaš plaćeni Claude plan i ne želiš ga.</b></li>
@@ -517,70 +486,162 @@
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note">Jedna uplata. Pristup odmah.</p>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
     </div>
   </div>
 </section>
 
-<!-- ================= SCENA 09 · PITANJA ================= -->
-<section class="sec faqs">
+<!-- ================= SCENA 09 · CENA ================= -->
+<section class="sec price-sec" id="cena">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Pitanja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Cena</div>
 
-    <div class="faq-grid">
-      <h2 class="display h2">Iskreni odgovori pre kupovine.</h2>
-      <div class="faq">
-        <details><summary>Kada ga dobijam?</summary><p>Odmah. Čim platiš, tvoj Studio se otvara sa svih devet delova unutra. Podatke za prijavu dobijaš na mejl odmah posle kupovine.</p></details>
-        <details><summary><span>Koliko traje cena od <span data-t="launchPrice">67€</span>?</span></summary><p>48 sati. Cena je <span data-t="launchPrice">67€</span> do <span>četvrtka, 22. oktobra u 21h</span>. Onda je <span data-t="price">97€</span> do <span>nedelje, 25. oktobra u 21h</span>, a onda se vrata zatvaraju. Jedna uplata u oba slučaja, bez pretplate.</p></details>
-        <details><summary>Kako rade probni rilsovi?</summary><p>Montiraj rils, pa reci napravi 8 probnih rilsova (ili bilo koji broj). Svaka verzija testira jednu pravu promenu: novi hook, nove titlove, nove efekte ili novi stil. Svaka dobija i svoju brzinu, kadriranje i boju, pa nijedna nije kopija druge. Onda ih Claude objavi umesto tebe kao probne rilsove.</p></details>
-        <details><summary>Može li da napravi karusel od videa koji nisam montirao sa njim?</summary><p>Da. Bilo koji video fajl, link, ili rils koji je Studio montirao. Ili preskoči video i daj mu temu. Prvo napiše svaki slajd, čeka tvoje odobrenje, pa ih dizajnira u tvom stilu.</p></details>
-        <details><summary>Da li radi na Windows-u?</summary><p>Da. Mac i Windows. Instaler prepozna tvoj računar i podesi se za njega.</p></details>
-        <details><summary>Šta mi treba na računaru?</summary><p>Mac ili Windows računar, Claude desktop aplikacija i plaćeni Claude plan. To je to. Studio će ti sam instalirati besplatne dodatke ako ih još nemaš.</p></details>
-        <details><summary>Da li moram da znam da programiram?</summary><p>Ne. Nalepiš jednu liniju da ga instaliraš i onda pričaš sa Claude-om običnim rečima. Ako se nešto pokvari, „doctor“ komanda ti kaže tačno rešenje.</p></details>
-        <details><summary>Koji Claude plan mi treba?</summary><p>Radi bilo koji plaćeni plan. Pro (20$ mesečno) je dovoljan za rilsove: računaj na otprilike 10 do 20 kratkih mesečno, u zavisnosti od dužine i koliko izmena tražiš. Dugi videi troše mnogo više, pa je Max bolji plan za njih.</p></details>
-        <details><summary>Kakve videe montira?</summary><p>Talking-head, b-roll, green screen, čak i YouTube videe. Ti u kadru, snimci preko onoga što pričaš, ili ti isečen i postavljen preko onoga o čemu pričaš.</p></details>
-        <details><summary>Može li da montira duge YouTube videe?</summary><p>Da. Iseca prazan hod i zadržava najčistiji take kad ponoviš rečenicu, isto kao kod rilsa. Kvaka je potrošnja: video od 10 minuta troši mnogo više tvog Claude plana nego rils od 30 sekundi, pa za duge videe koristi Max plan.</p></details>
-        <details><summary>Da li radi na srpskom?</summary><p>Da. Transkripcija radi na Whisper-u, koji podržava oko 100 jezika, pa rezovi i titlovi prate ono što zaista kažeš.</p></details>
-        <details><summary>Da li će moji rilsovi izgledati kao tvoji?</summary><p>Samo ako to želiš. Ima 9 gotovih stilova montaže i 20 stilova titlova za biranje, ili daš Claude-u rils koji voliš i Look Builder napravi tvoj, sa tvojim fontovima i bojama.</p></details>
-        <details><summary>Po čemu se ovo razlikuje od skill-a iz tvog rilsa?</summary><p>Skill iz mog rilsa je originalni. Ima tri izgleda i možeš da nastaviš da ga koristiš. Studio je ono što su ljudi tražili posle: 46 efekata, 20 stilova titlova i 9 stilova montaže, Look Builder (daš Claude-u rils koji voliš i on napravi tvoj stil), probni rilsovi objavljeni umesto tebe, Carousel Studio, zvuk postavljen umesto tebe, GIF finder i snimci kako ja montiram. Ako ti je original dovoljan, zadrži njega.</p></details>
-        <details><summary>Zar ne mogu sam da ovo napravim sa Claude-om?</summary><p>Možeš, ali verovatno nećeš dobiti ovako dobre rezultate, jer sam proveo preko 40 sati praveći i testirajući ovo na pravim klipovima da bi zvukovi, titlovi i efekti izgledali kako treba. Plaćaš da preskočiš tu nedelju rada.</p></details>
-        <details><summary>Da li je ovo kurs?</summary><p>Ne. Postoje kratki snimci da me gledaš dok radim, a ostalo su alati. Ne učiš da montiraš.</p></details>
-        <details><summary>Mogu li da probam pre kupovine?</summary><p>Nema probnog perioda ni povraćaja novca, jer kad ga kupiš, ceo Studio je instaliran na tvom računaru i ne može da se vrati. Zato prvo isprobaj besplatni skill iz mog rilsa: Studio radi na isti način, samo sa mnogo više. Ako imaš pitanje pre kupovine, pošalji mejl na <a href="mailto:info@tvojdomen.rs">info@tvojdomen.rs</a>.</p></details>
-        <details><summary>Da li dobijam ažuriranja, i pomoć ako zapnem?</summary><p>Da, besplatno zauvek. Svaka ispravka, novi efekat i nova funkcija stižu kao ažuriranje plugina, a tvoji izbori i tvoj stil ostaju sačuvani. Probni rilsovi i Carousel Studio su stigli baš tako. Ako zapneš, pošalji mejl na <a href="mailto:info@tvojdomen.rs">info@tvojdomen.rs</a> sa screenshot-om onoga što vidiš i pomoći ću ti.</p></details>
+    <div class="price-grid">
+      <div class="reveal">
+        <h2 class="display h2">Uđi pre nego što se vrata zatvore.</h2>
+        <!-- Value stack: vrednosti su placeholderi dok ih ne potvrdiš (brief, tačka 12) -->
+        <div class="stack">
+          <div class="stack-row"><span>Look Builder: 9 stilova montaže i 20 stilova titlova</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>FX paket: 46 efekata</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>Probni rilsovi</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>Carousel Studio</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>Automatsko objavljivanje i zakazivanje</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>Pravila zvuka i GIF Finder</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row"><span>8 snimaka ekrana i podešavanje prvog rilsa</span><b><span class="todo">[PROVERI €]</span></b></div>
+          <div class="stack-row total"><span>Ukupna vrednost</span><s><span class="todo">[PROVERI €]</span></s></div>
+          <div class="stack-row now"><span>Danas plaćaš</span><b data-t="price">67€</b></div>
+        </div>
+        <div class="mega"><span class="n" data-t="price">67€</span><span class="mono">Jedna uplata<br>Zatvaramo 15. nov</span></div>
+        <p style="font-weight:600;font-size:19px"><span data-t="price">67€</span> jednom, bez pretplate. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
+        <ul class="list">
+          <li><b>Look Builder:</b> 9 stilova montaže, 20 stilova titlova, ili tvoj</li>
+          <li><b>FX paket:</b> 46 video efekata</li>
+          <li><b>Probni rilsovi:</b> koliko god verzija hoćeš, objavljene kao probni rilsovi na Instagramu</li>
+          <li><b>Carousel Studio:</b> 8 izgleda, ili nalepi link i napravi svoj</li>
+          <li><b>Automatsko objavljivanje i zakazivanje:</b> Instagram, TikTok, YouTube Shorts, Facebook i druge mreže</li>
+          <li><b>Pravila zvuka + GIF Finder</b></li>
+          <li><b>8 snimaka ekrana:</b> gledaš kako ja radim, plus podešavanje prvog rilsa za Mac i Windows</li>
+          <li><b>Besplatna ažuriranja zauvek</b></li>
+        </ul>
+      </div>
+
+      <div class="guarantee reveal">
+        <h3 class="display h3">Garancija prvog rilsa.</h3>
+        <p>Ako u prvih 48 sati ne montiraš prvi rils, pošalji mejl na <a class="js-mail todo" href="#">[UBACI mejl za podršku]</a> i rešavamo zajedno dok ne proradi.</p>
+        <p><b>Ako nešto zapne, „doctor“ komanda ti kaže tačno rešenje.</b></p>
+        <p style="margin:0">Ažuriranja i novi efekti stižu besplatno, zauvek.</p>
+      </div>
+    </div>
+
+    <!-- Sakriveno dok se ne potvrdi pravi autor citata (brief, tačka 7) -->
+    <div class="bigq reveal" hidden>
+      <div class="display">„Ovo je bilo toliko dobro da sam morao da otpustim montažera...“</div>
+      <cite class="mono">Mejlom, od <b>Ime Prezime</b></cite>
+    </div>
+
+    <div class="countdown reveal">
+      <span class="mono" data-label="long">Cena raste na 97€ za</span>
+      <div class="cd">
+        <div class="u"><div class="v" data-cd="d">00</div><div class="l mono">Dana</div></div><span class="c">:</span>
+        <div class="u"><div class="v" data-cd="h">00</div><div class="l mono">Sati</div></div><span class="c">:</span>
+        <div class="u"><div class="v" data-cd="m">00</div><div class="l mono">Min</div></div><span class="c">:</span>
+        <div class="u"><div class="v" data-cd="s">00</div><div class="l mono">Sek</div></div>
+      </div>
+      <div class="cd-notes">
+        <h3 class="display h4">Vrata se zatvaraju <span>u nedelju, 15. novembra u 21h</span>.</h3>
+        <p>Pristup dobijaš istog trenutka kad platiš. Do srede, 11. novembra u 21h cena je <span data-t="launchPrice">67€</span>, a onda <span data-t="regularPrice">97€</span>. Vrata se zatvaraju <span>u nedelju, 15. novembra u 21h</span>. Posle toga u Studio ulaziš samo preko liste čekanja za sledeće otvaranje.</p>
+        <p><b>Montažer u regionu uzima 20 do 30€ po rilsu. Ako objavljuješ tri rilsa nedeljno, to je 240 do 360€ svakog meseca. Creator Studio plaćaš jednom. Manje od pet rilsova kod montažera i već se isplatio.</b></p>
+        <p class="small">Šta ti još treba: Mac ili Windows računar i Claude desktop aplikacija (Claude Code) sa plaćenim Claude planom. Pro plan (20$ mesečno) je dovoljan za početak. <span class="todo">[PROVERI]</span></p>
+      </div>
+      <div class="cta center">
+        <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+        <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 10 · LANSIRANJE ================= -->
+<section class="sec" id="lansiranje">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Nedelja lansiranja</div>
+
+    <div class="launch-grid">
+      <div class="reveal">
+        <h2 class="display h2"><span data-t="launchPrice">67€</span> do petka.<br>Onda <span data-t="regularPrice">97€</span>.<br>Onda se vrata zatvaraju.</h2>
+        <p class="lead">Nema lažnog tajmera. Kad sat dođe do nule, cena raste. <b><span>U nedelju, 15. novembra u 21h</span> vrata se zatvaraju</b>, i ne znam kad će se ponovo otvoriti.</p>
+      </div>
+      <div class="timeline reveal">
+        <!-- past / now / future i „Ti si ovde“ postavlja script.js po datumu -->
+        <div class="tl now" data-phase="1"><div><h4>Cena za lansiranje</h4><div class="mono">Do <span>srede, 11. novembra u 21h</span></div></div><div class="amt"><span data-t="launchPrice">67€</span></div></div>
+        <div class="tl future" data-phase="2"><div><h4>Redovna cena</h4><div class="mono">Do <span>nedelje, 15. novembra u 21h</span></div></div><div class="amt"><span data-t="regularPrice">97€</span></div></div>
+        <div class="tl future" data-phase="3"><div><h4>Vrata se zatvaraju</h4><div class="mono"><span>Nedelja, 15. novembar u 21h</span></div></div><div class="amt">Samo lista čekanja</div></div>
       </div>
     </div>
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-      <p class="note">Jedna uplata. Bez pretplate.</p>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
     </div>
   </div>
 </section>
 
-<!-- ================= SCENA 10 · POSLEDNJI KADAR ================= -->
-<section class="sec">
+<!-- ================= SCENA 11 · PITANJA ================= -->
+<section class="sec faqs" id="pitanja">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Poslednji kadar</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>11</b> <span class="sep">|</span> Pitanja</div>
 
-    <div class="close-grid">
-      <div class="close-photo reveal">
-        <div class="display">Ti snimaš.</div>
-        <!-- Zameni sa: <img src="assets/autor.jpg" alt="Tvoje ime"> -->
-        <div class="media"><div class="ph">Tvoja fotografija</div></div>
-      </div>
-      <div class="close-bio reveal">
-        <p>Ja sam [Tvoje Ime]. Vodim [Tvoj Brend] i učim obične ljude i vlasnike biznisa kako da koriste AI da grade i rastu.</p>
-        <p>Nisam tech lik i loš sam u dizajnu. U tome je poenta. Ako ja mogu da dobijem ovakve rilsove od Claude-a, možeš i ti.</p>
-        <p>Napravio sam ovaj skill jer sam gubio sate na montažu. Sad snimim, ubacim klipove i pregledam rezultat na telefonu.</p>
+    <div class="faq-grid">
+      <h2 class="display h2">Iskreni odgovori pre kupovine.</h2>
+      <div class="faq">
+        <details><summary>Kada ga dobijam?</summary><p>Odmah. Čim platiš, tvoj Studio se otvara sa svih devet delova unutra. Podatke za prijavu dobijaš na mejl odmah posle kupovine.</p></details>
+        <details><summary><span>Koliko traje cena od <span data-t="launchPrice">67€</span>?</span></summary><p>Do srede, 11. novembra u 21h. Onda je <span data-t="regularPrice">97€</span> do nedelje, 15. novembra u 21h, a onda se vrata zatvaraju. Jedna uplata u oba slučaja, bez pretplate.</p></details>
+        <details><summary>Kako rade probni rilsovi?</summary><p>Montiraj rils, pa reci napravi 8 probnih rilsova (ili bilo koji broj). Svaka verzija testira jednu pravu promenu: novi hook, nove titlove, nove efekte ili novi stil. Svaka dobija i svoju brzinu, kadriranje i boju, pa nijedna nije kopija druge. Onda ih Claude objavi kao probne rilsove na Instagramu. Probni rilsovi postoje samo na Instagramu, pa na ostale mreže Claude objavljuje obične videe i karusele.</p></details>
+        <details><summary>Može li da napravi karusel od videa koji nisam montirao sa njim?</summary><p>Da. Bilo koji video fajl, link, ili rils koji je Studio montirao. Ili preskoči video i daj mu temu. Prvo napiše svaki slajd, čeka tvoje odobrenje, pa ih dizajnira u tvom stilu.</p></details>
+        <details><summary>Da li radi na Windows-u?</summary><p>Da. Mac i Windows. Instaler prepozna tvoj računar i podesi se za njega.</p></details>
+        <details><summary>Šta mi treba na računaru?</summary><p>Mac ili Windows računar, Claude desktop aplikacija (Claude Code) i plaćeni Claude plan. <span class="todo">[PROVERI]</span> To je to. Besplatne dodatke koji fale Studio instalira sam.</p></details>
+        <details><summary>Da li moram da znam da programiram?</summary><p>Ne. Nalepiš jednu liniju da ga instaliraš i onda pričaš sa Claude-om običnim rečima. Ako se nešto pokvari, „doctor“ komanda ti kaže tačno rešenje.</p></details>
+        <details><summary>Koji Claude plan mi treba?</summary><p>Radi sa bilo kojim plaćenim Claude planom. Pro (20$ mesečno) je dovoljan da kreneš i pokriva otprilike <span class="todo">[PROVERI: broj]</span> kratkih rilsova mesečno. Ako objavljuješ svaki dan ili montiraš duge YouTube videe, Max plan ti daje mnogo više prostora.</p></details>
+        <details><summary>Kakve videe montira?</summary><p>Videe u kojima pričaš u kameru, snimke preko tvog glasa i green screen, gde te Claude iseče iz sobe i postavi preko onoga o čemu pričaš. Radi i sa dugim YouTube videima.</p></details>
+        <details><summary>Može li da montira duge YouTube videe?</summary><p>Da. Iseca prazan hod i zadržava najčistiji take kad ponoviš rečenicu, isto kao kod rilsa. Kvaka je potrošnja: video od 10 minuta troši mnogo više tvog Claude plana nego rils od 30 sekundi, pa za duge videe koristi Max plan.</p></details>
+        <details><summary>Da li radi na srpskom?</summary><!-- PROVERI: Studio 2.6.2 prepisuje govor engleskim modelima (small.en i medium.en). Na srpskim snimcima za ovu stranicu prepis je izašao na engleskom i morao je da se uradi posebnim modelom. -->
+        <p>Da. Transkripcija radi na Whisper-u, koji podržava oko 100 jezika, pa rezovi i titlovi prate ono što zaista kažeš. <span class="todo">[PROVERI]</span></p></details>
+        <details><summary>Da li će moji rilsovi izgledati kao tvoji?</summary><p>Samo ako to želiš. Ima 9 gotovih stilova montaže i 20 stilova titlova za biranje, ili daš Claude-u rils koji voliš i Look Builder napravi tvoj, sa tvojim fontovima i bojama.</p></details>
+        <details><summary>Po čemu se ovo razlikuje od skill-a iz tvog rilsa?</summary><p>Skill iz mog rilsa je originalni. Ima tri izgleda i možeš da nastaviš da ga koristiš. Studio je ono što su ljudi tražili posle: 46 efekata, 20 stilova titlova i 9 stilova montaže, Look Builder (daš Claude-u rils koji voliš i on napravi tvoj stil), probni rilsovi objavljeni umesto tebe, Carousel Studio, zvuk postavljen umesto tebe, GIF finder i snimci kako ja montiram. Ako ti je original dovoljan, zadrži njega.</p></details>
+        <details><summary>Zar ne mogu sam da ovo napravim sa Claude-om?</summary><p>Možeš, ali verovatno nećeš dobiti ovako dobre rezultate. Proveo sam preko 40 sati praveći i testirajući ovo na pravim klipovima da bi zvukovi, titlovi i efekti izgledali kako treba. Plaćaš da preskočiš tu nedelju rada.</p></details>
+        <details><summary>Da li je ovo kurs?</summary><p>Ne. Postoje kratki snimci da me gledaš dok radim, a ostalo su alati. Ne učiš da montiraš.</p></details>
+        <details><summary>Mogu li da probam pre kupovine?</summary><p>Nema probnog perioda ni povraćaja novca, jer kad ga kupiš, ceo Studio je instaliran na tvom računaru i ne može da se vrati. Zato prvo isprobaj besplatni skill iz mog rilsa: Studio radi na isti način, samo sa mnogo više. Ako imaš pitanje pre kupovine, pošalji mejl na <a class="js-mail todo" href="#">[UBACI mejl za podršku]</a>.</p></details>
+        <details><summary>Da li moji snimci odlaze nekome?</summary><p>Sečenje, titlovi i render rade se na tvom računaru. Claude preko tvog Claude naloga vidi tekst onoga što si rekao i sličice iz snimka, da bi znao gde da seče i gde da stavi titlove. Ja tvoje snimke ne vidim. <span class="todo">[PROVERI]</span></p></details>
+        <details><summary>Može li Instagram da mi ugasi nalog zbog automatskog objavljivanja?</summary><p>Objava ide preko servisa Zernio, koji se sa Instagramom povezuje zvaničnim putem: prijaviš se na Instagramovoj stranici, a Studio nikad ne vidi tvoju lozinku. Za Instagram ti treba profesionalni nalog (Creator ili Business). Prva dva povezana naloga na Zernio-u su besplatna, svaki sledeći je 6$ mesečno. <span class="todo">[PROVERI]</span></p></details>
+        <details><summary>Da li titlovi mogu na ćirilici?</summary><p>Latinica sa č, ć, š i ž radi, videćeš je na primerima stilova na ovoj stranici. <span class="todo">[PROVERI: ćirilica i slovo đ]</span></p></details>
+        <details><summary>Koliko traje montaža jednog rilsa, od klipova do gotovog?</summary><p>Za rils od 15 do 30 sekundi računaj nekoliko minuta. Stilovi koji te iseku iz pozadine, kao Chalk Talk i Show and Tell, traju duže, do desetak minuta. <span class="todo">[PROVERI]</span></p></details>
+        <details><summary>Šta ako otkažem Claude plan?</summary><p>Studio ostaje na tvom računaru i tvoji stilovi ostaju sačuvani, ali za montažu ti treba aktivan plaćeni Claude plan. Kad ga ponovo uključiš, nastavljaš gde si stao. <span class="todo">[PROVERI]</span></p></details>
+        <details><summary>Da li dobijam ažuriranja, i pomoć ako zapnem?</summary><p>Da, besplatno zauvek. Svaka ispravka, novi efekat i nova funkcija stižu kao ažuriranje plugina, a tvoji izbori i tvoj stil ostaju sačuvani. Probni rilsovi i Carousel Studio su stigli baš tako. Ako zapneš, pošalji mejl na <a class="js-mail todo" href="#">[UBACI mejl za podršku]</a> sa screenshot-om onoga što vidiš i pomoći ću ti.</p></details>
       </div>
     </div>
 
+    <div class="cta reveal">
+      <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+      <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+      <p class="note">Bez pretplate. Besplatna ažuriranja zauvek.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 12 · POSLEDNJI KADAR ================= -->
+<section class="sec">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>12</b> <span class="sep">|</span> Poslednji kadar</div>
+
     <div class="finale reveal">
       <h2 class="display"><span>Ubaci klipove.</span><span>Reci kreni.</span><span>Objavi rils.</span></h2>
-      <p class="lead"><span data-t="price">97€</span>. Zatvaramo za <b data-countdown="short">2d 15h</b>. Jedna uplata, pristup odmah.</p>
+      <p class="lead"><span data-t="price">67€</span>. <span data-label="short">Cena raste za</span> <b data-countdown="short">2d 15h</b>. Jedna uplata, pristup odmah.</p>
       <div class="cta" style="margin-top:28px">
         <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
-        <p class="note mono" style="font-size:10px">Ideš na sigurnu stranicu za plaćanje. Pristup dobijaš odmah.</p>
+        <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
+        <p class="note mono" style="font-size:10px">Ideš na sigurnu stranicu za plaćanje.</p>
       </div>
     </div>
 
@@ -593,7 +654,7 @@
       <div><span class="mono">Karuseli</span><b>Carousel Studio</b></div>
       <div><span class="mono">Zvuk</span><b>Pravila zvuka</b></div>
       <div><span class="mono">GIF-ovi</span><b>GIF Finder</b></div>
-      <div><span class="mono">Prikazano u</span><b>8 snimaka</b></div>
+      <div><span class="mono">Prikazano u</span><b>8 snimaka ekrana</b></div>
       <div><span class="mono">Instalirao</span><b>Podešavanje prvog rilsa</b></div>
     </div>
   </div>
@@ -602,15 +663,15 @@
 </main>
 
 <footer>
-  <div class="wrap">© [Tvoj Brend] · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
+  <div class="wrap">© AI Profit Lab · <a href="/uslovi">Uslovi korišćenja</a> · <a href="/privatnost">Privatnost</a> · <a href="#" data-cookie-settings>Kolačići</a> · Ovaj proizvod nije povezan sa niti odobren od strane Anthropic-a ili Instagram-a.</div>
 </footer>
 
 <!-- ================= STICKY DONJA TRAKA ================= -->
 <div class="stickybar" id="stickybar">
   <div class="wrap">
     <div class="left">
-      <span class="p" data-t="price">97€</span>
-      <span class="mono">Zatvaramo</span>
+      <span class="p" data-t="price">67€</span>
+      <span class="mono" data-label="short">Cena raste za</span>
       <span class="time" data-countdown="hms">00:00:00</span>
     </div>
     <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
