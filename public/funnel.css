@@ -229,7 +229,6 @@
 .stick-t b { font-family: var(--f-display); font-weight: 400; font-size: 22px; text-transform: uppercase; color: var(--cream); }
 .stick-t > span > span { color: var(--orange); font-weight: 700; }
 .stick .btn { min-height: 48px; font-size: 21px; padding: 10px 24px; }
-.has-stick .demo { bottom: 84px; }
 
 @media (max-width: 1020px) {
   .up-grid, .close-grid, .vs-wrap { grid-template-columns: 1fr; gap: 36px; }
@@ -325,9 +324,6 @@
 .ffoot { background: var(--black); border-top: 1px solid var(--line); padding: 30px 0; font-size: 12px; color: var(--taupe); }
 .ffoot a { color: var(--taupe); }
 
-/* demo traka (samo za pregled, sakrij kad pustiš uživo) */
-.demo { position: fixed; right: 12px; bottom: 12px; z-index: 80; background: var(--ground-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 10px 12px; font-family: var(--f-mono); font-size: 10px; color: var(--taupe); display: flex; gap: 10px; flex-wrap: wrap; max-width: calc(100vw - 24px); }
-.demo a { color: var(--cream); }
 
 @media (max-width: 1020px) {
   .two, .vs, .inside, .gline { grid-template-columns: 1fr; }

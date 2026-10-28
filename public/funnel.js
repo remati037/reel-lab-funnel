@@ -9,8 +9,8 @@ const FUNNEL = {
   email: "podrska@vladsdigital.com",
 
   lab: { first: "1€", monthly: "57€", trialDays: 30 },
-  // Stripe Customer Portal: otkazivanje Lab-a i promena kartice (uživo zameni test link)
-  portalUrl: "https://billing.stripe.com/p/login/test_4gM7sEea56162wueiKd7q00",
+  // Stripe Customer Portal: otkazivanje Lab-a i promena kartice (live)
+  portalUrl: "https://billing.stripe.com/p/login/4gM7sEea56162wueiKd7q00",
 
 };
 

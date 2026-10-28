@@ -3,6 +3,7 @@
 //   node scripts/setup.mjs woo          proizvodi sa SKU-om u WooCommerce-u
 //   node scripts/setup.mjs mailerlite   grupe i polja u MailerLite-u
 // Ključeve čita iz .dev.vars. Na kraju ispiše ID-jeve za wrangler.jsonc.
+// Live Stripe bez menjanja .dev.vars: STRIPE_SECRET_KEY=rk_live_... node scripts/setup.mjs stripe
 import { readFileSync } from "node:fs";
 import Stripe from "stripe";
 
@@ -12,12 +13,13 @@ const env = Object.fromEntries(
     .filter((l) => /^[A-Z_]+=/.test(l))
     .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).trim()])
 );
+if (process.env.STRIPE_SECRET_KEY) env.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 const PRODUCT_NAME = "AI Video Editor";
 
 async function setupStripe() {
   const s = new Stripe(env.STRIPE_SECRET_KEY);
-  const mode = env.STRIPE_SECRET_KEY.startsWith("sk_live") ? "LIVE" : "test";
+  const mode = env.STRIPE_SECRET_KEY.includes("_live_") ? "LIVE" : "test"; // sk_live_ ili restricted rk_live_
   console.log(`Stripe (${mode})`);
 
   const product = async (name, key) => {
