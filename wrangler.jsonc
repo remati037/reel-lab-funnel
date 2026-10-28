@@ -68,7 +68,7 @@
 
     // Meta Pixel ID (javan). Conversions API token ide kao secret META_CAPI_TOKEN.
     // META_TEST_CODE: kod iz Events Manager → Test events, samo dok testiraš.
-    "META_PIXEL_ID": "",
+    "META_PIXEL_ID": "539402290072454",
     "META_TEST_CODE": "",
 
     // Cloudflare Web Analytics (javni token, Analytics & Logs → Web Analytics)
