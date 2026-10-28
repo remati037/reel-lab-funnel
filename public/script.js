@@ -108,7 +108,8 @@ function tick() {
   const sec = s % 60;
 
   const formats = {
-    hms: `${pad(Math.floor(s / 3600))}:${pad(m)}:${pad(sec)}`,
+    // sa danima, da 345 sati ne izgleda kao 345 dana
+    hms: `${d > 0 ? `${d}d ` : ""}${pad(h)}:${pad(m)}:${pad(sec)}`,
     days: d > 0 ? daysLabel(d) : `${h}h ${m}min`,
     short: `${d}d ${h}h`,
   };
