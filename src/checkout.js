@@ -11,17 +11,16 @@ export function checkoutRedirect(request) {
   return Response.redirect(`${url.origin}/checkout${url.search}`, 303);
 }
 
-// POST /api/checkout { params: { utm_... } } → { clientSecret, publishableKey } | { test: true } | { closed: true }
+// POST /api/checkout { params: { utm_... } } → { clientSecret, publishableKey } | { test: true }
 // Pravi Stripe Checkout Session za našu dizajniranu stranicu: polja za karticu daje Stripe Payment Element.
 export async function checkout(request, env) {
   // Dok Stripe ključ nije podešen, stranica radi u test modu (simulacija)
   if (!env.STRIPE_SECRET_KEY) return Response.json({ test: true });
 
   const { params = {} } = await request.json().catch(() => ({}));
-  // Lični link iz mejla (67€ do roka) važi i kad su vrata zatvorena
+  // Lični link iz mejla (67€ do roka) važi i posle LAUNCH_UNTIL
   const offer = await readOffer(env, params.ponuda);
   const priceKey = offer ? "studio_lead" : currentPriceKey(env);
-  if (!priceKey) return Response.json({ closed: true });
 
   const metadata = { source: SOURCE, price_type: priceKey };
   for (const k of TRACKED) if (typeof params[k] === "string" && params[k]) metadata[k] = params[k].slice(0, 200);

@@ -43,6 +43,7 @@ body {
   overflow-x: hidden;
 }
 img, video { display: block; max-width: 100%; }
+[hidden] { display: none !important; } /* da hidden radi i na elementima kojima klasa daje display (tajmer posle lansiranja) */
 a { color: inherit; }
 b, strong { font-weight: 700; color: inherit; }
 p { margin: 0 0 1em; }

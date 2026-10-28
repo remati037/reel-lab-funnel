@@ -5,16 +5,13 @@ const CONFIG = {
   // Svako dugme vodi na našu checkout stranicu. UTM parametri sa landinga idu dalje.
   checkoutUrl: "/checkout",
 
-  // Posle zatvaranja dugmad vode ovde (lista čekanja). Prazno = dugmad ostaju kakva jesu.
-  waitlistUrl: "", // [UBACI link ka listi čekanja]
-
   // Mejl za podršku. Prazno = na stranici stoji vidljiv placeholder.
-  supportEmail: "", // [UBACI pravu mejl adresu za podršku]
+  supportEmail: "podrska@vladsdigital.com",
 
   // Faze cene. +01:00 = srednjoevropsko vreme. Tajmer broji do kraja TRENUTNE faze i nikad se ne resetuje.
+  // Posle poslednje faze važi regularPrice zauvek: prodaja se ne zatvara, a tajmer i sve sa data-launch-only nestaje.
   phases: [
-    { until: "2026-11-11T21:00:00+01:00", price: "67€" }, // faza 1: cena za lansiranje (do srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
-    { until: "2026-11-15T21:00:00+01:00", price: "97€" }, // faza 2: redovna cena, pa vrata zatvorena (CLOSE_AT)
+    { until: "2026-11-11T21:00:00+01:00", price: "67€" }, // cena za lansiranje (do srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
   ],
 
   // Fiksni tekstovi: upisuju se svuda gde u HTML-u piše data-t="...". data-t="price" je cena trenutne faze.
@@ -23,10 +20,10 @@ const CONFIG = {
     launchPrice: "67€",
   },
 
-  // Natpisi uz tajmer, po fazi: [faza 1, faza 2, zatvoreno]
+  // Natpisi uz tajmer, po fazi
   labels: {
-    short: ["Cena raste za", "Zatvaramo za", "Vrata su zatvorena"],
-    long: ["Cena raste na 97€ za", "Vrata se zatvaraju za", "Vrata su zatvorena"],
+    short: ["Cena raste za"],
+    long: ["Cena raste na 97€ za"],
   },
 };
 
@@ -52,7 +49,7 @@ document.querySelectorAll(".js-mail").forEach((a) => {
 /* ---------- faze cene ---------- */
 const phaseEnds = CONFIG.phases.map((p) => new Date(p.until).getTime());
 
-// 0 = faza 1, 1 = faza 2, 2 = zatvoreno
+// 0 = faza 1, ..., phases.length = posle lansiranja (redovna cena)
 function currentPhase(now) {
   const i = phaseEnds.findIndex((t) => now < t);
   return i === -1 ? CONFIG.phases.length : i;
@@ -62,14 +59,16 @@ let shownPhase = null;
 function applyPhase(phase) {
   if (phase === shownPhase) return;
   shownPhase = phase;
-  const closed = phase >= CONFIG.phases.length;
-  const price = closed ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
+  const after = phase >= CONFIG.phases.length;
+  const price = after ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
 
   document.querySelectorAll('[data-t="price"]').forEach((el) => (el.textContent = price));
   document.querySelectorAll("[data-phase-only]").forEach((el) => (el.hidden = Number(el.dataset.phaseOnly) !== phase + 1));
   document.querySelectorAll("[data-label]").forEach((el) => {
-    el.textContent = CONFIG.labels[el.dataset.label][Math.min(phase, 2)];
+    const l = CONFIG.labels[el.dataset.label];
+    el.textContent = l[Math.min(phase, l.length - 1)];
   });
+  document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = after));
 
   // timeline u sekciji "Nedelja lansiranja": past / now / future i "Ti si ovde"
   document.querySelectorAll(".tl[data-phase]").forEach((el) => {
@@ -85,13 +84,6 @@ function applyPhase(phase) {
       el.querySelector(".amt").append(here);
     }
   });
-
-  if (closed && CONFIG.waitlistUrl) {
-    document.querySelectorAll(".js-buy").forEach((a) => {
-      a.href = CONFIG.waitlistUrl;
-      a.textContent = "Prijavi se na listu čekanja";
-    });
-  }
 }
 
 /* ---------- odbrojavanje ---------- */

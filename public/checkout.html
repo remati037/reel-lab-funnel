@@ -24,10 +24,10 @@
 -->
 
 <!-- ================= TRAKA: ROK ================= -->
-<div class="co-top">
+<div class="co-top" data-launch-only>
   <div class="wrap">
-    <span class="lamp" data-label="lamp">Cena raste</span>
-    <span><span data-label="short">Cena raste za</span> <span data-cd-days>2 dana</span>.</span>
+    <span class="lamp">Cena raste</span>
+    <span>Cena raste za <span data-cd-days>2 dana</span>.</span>
     <span class="sep"></span>
     <span class="left" data-cd-left>0D 00H 00M</span>
   </div>
@@ -46,10 +46,10 @@
   <div class="wrap co-grid">
     <!-- ================= LEVO: FORMA ================= -->
     <main class="co-main">
-      <h1 class="display h-co">Uđi pre nego što se vrata zatvore.</h1>
+      <h1 class="display h-co">Još jedan korak do tvog studija.</h1>
 
-      <div class="co-cd">
-        <span class="mono" data-label="long">Cena raste na 97€ za</span>
+      <div class="co-cd" data-launch-only>
+        <span class="mono">Cena raste na 97€ za</span>
         <div class="row">
           <div class="u"><div class="v" data-cd="d">00</div><div class="l">DANA</div></div><span class="c">:</span>
           <div class="u"><div class="v" data-cd="h">00</div><div class="l">SATI</div></div><span class="c">:</span>
@@ -92,7 +92,7 @@
 
         <p class="co-err" data-err></p>
         <button class="btn co-submit" type="submit"><span data-pay-label>Završi porudžbinu</span></button>
-        <p class="co-notes">Uđi pre nego što se vrata zatvore. Pristup dobijaš odmah.<br>Plaćanje obrađuje Stripe. Ja nikad ne vidim broj tvoje kartice.</p>
+        <p class="co-notes">Pristup dobijaš odmah.<br>Plaćanje obrađuje Stripe. Ja nikad ne vidim broj tvoje kartice.</p>
       </form>
 
       <aside class="guarantee">
@@ -133,7 +133,7 @@
       <div class="co-order" data-order>
         <div class="top">Tvoja porudžbina <span>Jedna uplata, bez pretplate</span></div>
         <h2>Creator Studio</h2>
-        <div class="pr"><span class="n" data-total>67€</span><span class="mono">JEDNA UPLATA<br>ZATVARAMO 15. NOV</span></div>
+        <div class="pr"><span class="n" data-total>67€</span><span class="mono">JEDNA UPLATA<br>BEZ PRETPLATE</span></div>
 
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
@@ -151,7 +151,7 @@
         <div class="sum"><span>Ukupno</span><b data-total>67€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes">Cena je 67€ do srede, 11. novembra u 21h, a onda 97€. Zatvaramo u nedelju, 15. novembra u 21h. Posle toga u Studio ulaziš samo preko liste čekanja.</p>
+        <p class="closes" data-launch-only>Cena je 67€ do srede, 11. novembra u 21h, a posle toga 97€.</p>
       </div>
 
       <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
@@ -167,22 +167,13 @@
 </footer>
 
 <script>
-  // Iste faze kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL, CLOSE_AT u wrangler.jsonc).
-  // Tajmer broji do kraja trenutne faze. Pravi iznos uvek dolazi iz Stripe sesije.
-  const PHASES = [
-    { until: new Date("2026-11-11T21:00:00+01:00").getTime(), price: "67€" }, // faza 1: cena za lansiranje
-    { until: new Date("2026-11-15T21:00:00+01:00").getTime(), price: "97€" }, // faza 2: redovna cena
-  ];
-  const LABELS = {
-    lamp: ["Cena raste", "Vrata se zatvaraju", "Vrata su zatvorena"],
-    short: ["Cena raste za", "Zatvaramo za", "Vrata su zatvorena"],
-    long: ["Cena raste na 97€ za", "Vrata se zatvaraju za", "Vrata su zatvorena"],
-  };
-  const phaseIdx = PHASES.findIndex((p) => Date.now() < p.until);
-  const ph = phaseIdx === -1 ? PHASES.length : phaseIdx; // 0 = faza 1, 1 = faza 2, 2 = zatvoreno
-  document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = PHASES[Math.min(ph, PHASES.length - 1)].price));
-  document.querySelectorAll("[data-label]").forEach((el) => (el.textContent = LABELS[el.dataset.label][Math.min(ph, 2)]));
-  let DEADLINE = PHASES[Math.min(ph, PHASES.length - 1)].until;
+  // Ista cena kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL u wrangler.jsonc):
+  // 67€ do 11. novembra u 21h, posle toga 97€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
+  const LAUNCH_UNTIL = new Date("2026-11-11T21:00:00+01:00").getTime();
+  const launch = Date.now() < LAUNCH_UNTIL;
+  document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "67€" : "97€"));
+  document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = !launch));
+  let DEADLINE = LAUNCH_UNTIL;
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -224,7 +215,6 @@
     .then((r) => r.json())
     .then((res) => {
       if (res.test) return testMode();
-      if (res.closed) return (location.href = "/?zatvoreno=1");
       if (!res.clientSecret) throw new Error("bez sesije");
       sessionId = res.sessionId || res.clientSecret.split("_secret_")[0];
       if (res.offer) personalOffer(res.offer);
@@ -275,6 +265,7 @@
   // Lični rok iz mejla: odbrojavanje do njega i mejl unapred upisan
   function personalOffer(offer) {
     DEADLINE = offer.until;
+    document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = false));
     tick();
     if (offer.email && !form.email.value) form.email.value = offer.email;
     document.querySelector(".co-top .lamp").textContent = "Tvoja lična cena";

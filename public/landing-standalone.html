@@ -54,6 +54,7 @@ body {
   overflow-x: hidden;
 }
 img, video { display: block; max-width: 100%; }
+[hidden] { display: none !important; } /* da hidden radi i na elementima kojima klasa daje display (tajmer posle lansiranja) */
 a { color: inherit; }
 b, strong { font-weight: 700; color: inherit; }
 p { margin: 0 0 1em; }
@@ -654,8 +655,7 @@ footer a { color: var(--taupe); }
 
 /* dugme za zvuk je pravo dugme: iznad videa, bez okvira */
 .phone .sound { z-index: 2; border: 0; cursor: pointer; }
-
-</style>
+  </style>
 </head>
 <body>
 
@@ -669,7 +669,7 @@ footer a { color: var(--taupe); }
 </svg>
 
 <!-- ================= GORNJA TRAKA ================= -->
-<div class="topbar mono">
+<div class="topbar mono" data-launch-only>
   <span class="dot"></span> <span data-label="short">Cena raste za</span> <span class="t" data-countdown="hms">00:00:00</span>
 </div>
 
@@ -688,7 +688,7 @@ footer a { color: var(--taupe); }
       <p class="proof">Od autora Biznis priča. Preko 500.000 pratilaca na mrežama.</p>
       <div class="price-row">
         <div class="price-big"><span data-t="price">67€</span><s class="price-old" data-phase-only="1" data-t="regularPrice">97€</s></div>
-        <div class="clock">
+        <div class="clock" data-launch-only>
           <span class="mono" data-label="short">Cena raste za</span>
           <span class="time" data-countdown="hms">00:00:00</span>
         </div>
@@ -710,7 +710,7 @@ footer a { color: var(--taupe); }
   <div class="wrap slate mono">
     <span><span class="dot"></span> Reel TC 00:00:00:26</span>
     <span>Scena 01 / Take 1 / Mac + Windows</span>
-    <span><span data-label="short">Cena raste za</span> <span data-countdown="hms">00:00:00</span></span>
+    <span data-launch-only><span><span data-label="short">Cena raste za</span> <span data-countdown="hms">00:00:00</span></span></span>
   </div>
 </header>
 
@@ -894,7 +894,7 @@ footer a { color: var(--taupe); }
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
       <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
-      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-launch-only><span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</span></p>
     </div>
   </div>
 </section>
@@ -976,7 +976,7 @@ footer a { color: var(--taupe); }
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
       <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
-      <p class="note"><b data-t="price">67€</b>. Zatvaramo <span>u nedelju, 15. novembra u 21h</span>.</p>
+      <p class="note"><b data-t="price">67€</b>.<span data-launch-only> Cena raste na <span data-t="regularPrice">97€</span> u sredu, 11. novembra u 21h.</span></p>
     </div>
   </div>
 </section>
@@ -1131,7 +1131,7 @@ footer a { color: var(--taupe); }
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
       <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
-      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-launch-only><span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</span></p>
     </div>
   </div>
 </section>
@@ -1143,21 +1143,21 @@ footer a { color: var(--taupe); }
 
     <div class="price-grid">
       <div class="reveal">
-        <h2 class="display h2">Uđi pre nego što se vrata zatvore.</h2>
-        <!-- Value stack: vrednosti su placeholderi dok ih ne potvrdiš (brief, tačka 12) -->
+        <h2 class="display h2">Ceo studio. Jedna uplata.</h2>
+        <!-- Value stack: procena vrednosti, menjaj slobodno -->
         <div class="stack">
-          <div class="stack-row"><span>Look Builder: 9 stilova montaže i 20 stilova titlova</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>FX paket: 46 efekata</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>Probni rilsovi</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>Carousel Studio</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>Automatsko objavljivanje i zakazivanje</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>Pravila zvuka i GIF Finder</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row"><span>8 snimaka ekrana i podešavanje prvog rilsa</span><b><span class="todo">[PROVERI €]</span></b></div>
-          <div class="stack-row total"><span>Ukupna vrednost</span><s><span class="todo">[PROVERI €]</span></s></div>
+          <div class="stack-row"><span>Look Builder: 9 stilova montaže i 20 stilova titlova</span><b>97€</b></div>
+          <div class="stack-row"><span>FX paket: 46 efekata</span><b>67€</b></div>
+          <div class="stack-row"><span>Probni rilsovi</span><b>47€</b></div>
+          <div class="stack-row"><span>Carousel Studio</span><b>47€</b></div>
+          <div class="stack-row"><span>Automatsko objavljivanje i zakazivanje</span><b>37€</b></div>
+          <div class="stack-row"><span>Pravila zvuka i GIF Finder</span><b>27€</b></div>
+          <div class="stack-row"><span>8 snimaka ekrana i podešavanje prvog rilsa</span><b>47€</b></div>
+          <div class="stack-row total"><span>Ukupna vrednost</span><s>369€</s></div>
           <div class="stack-row now"><span>Danas plaćaš</span><b data-t="price">67€</b></div>
         </div>
-        <div class="mega"><span class="n" data-t="price">67€</span><span class="mono">Jedna uplata<br>Zatvaramo 15. nov</span></div>
-        <p style="font-weight:600;font-size:19px"><span data-t="price">67€</span> jednom, bez pretplate. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
+        <div class="mega"><span class="n" data-t="price">67€</span><span class="mono">Jedna uplata<br>Bez pretplate</span></div>
+        <p style="font-weight:600;font-size:19px"><span data-t="price">67€</span> jednom, bez pretplate. <span data-launch-only><span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</span></p>
         <ul class="list">
           <li><b>Look Builder:</b> 9 stilova montaže, 20 stilova titlova, ili tvoj</li>
           <li><b>FX paket:</b> 46 video efekata</li>
@@ -1185,16 +1185,16 @@ footer a { color: var(--taupe); }
     </div>
 
     <div class="countdown reveal">
-      <span class="mono" data-label="long">Cena raste na 97€ za</span>
-      <div class="cd">
+      <span class="mono" data-label="long" data-launch-only>Cena raste na 97€ za</span>
+      <div class="cd" data-launch-only>
         <div class="u"><div class="v" data-cd="d">00</div><div class="l mono">Dana</div></div><span class="c">:</span>
         <div class="u"><div class="v" data-cd="h">00</div><div class="l mono">Sati</div></div><span class="c">:</span>
         <div class="u"><div class="v" data-cd="m">00</div><div class="l mono">Min</div></div><span class="c">:</span>
         <div class="u"><div class="v" data-cd="s">00</div><div class="l mono">Sek</div></div>
       </div>
       <div class="cd-notes">
-        <h3 class="display h4">Vrata se zatvaraju <span>u nedelju, 15. novembra u 21h</span>.</h3>
-        <p>Pristup dobijaš istog trenutka kad platiš. Do srede, 11. novembra u 21h cena je <span data-t="launchPrice">67€</span>, a onda <span data-t="regularPrice">97€</span>. Vrata se zatvaraju <span>u nedelju, 15. novembra u 21h</span>. Posle toga u Studio ulaziš samo preko liste čekanja za sledeće otvaranje.</p>
+        <h3 class="display h4" data-launch-only>Cena raste <span>u sredu, 11. novembra u 21h</span>.</h3>
+        <p>Pristup dobijaš istog trenutka kad platiš.<span data-launch-only> Do srede, 11. novembra u 21h cena je <span data-t="launchPrice">67€</span>, a posle toga <span data-t="regularPrice">97€</span>.</span></p>
         <p><b>Montažer u regionu uzima 20 do 30€ po rilsu. Ako objavljuješ tri rilsa nedeljno, to je 240 do 360€ svakog meseca. Creator Studio plaćaš jednom. Manje od pet rilsova kod montažera i već se isplatio.</b></p>
         <p class="small">Šta ti još treba: Mac ili Windows računar i Claude desktop aplikacija (Claude Code) sa plaćenim Claude planom. Pro plan (20$ mesečno) je dovoljan za početak. <span class="todo">[PROVERI]</span></p>
       </div>
@@ -1207,27 +1207,26 @@ footer a { color: var(--taupe); }
 </section>
 
 <!-- ================= SCENA 10 · LANSIRANJE ================= -->
-<section class="sec" id="lansiranje">
+<section class="sec" id="lansiranje" data-launch-only>
   <div class="wrap">
     <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Nedelja lansiranja</div>
 
     <div class="launch-grid">
       <div class="reveal">
-        <h2 class="display h2"><span data-t="launchPrice">67€</span> do petka.<br>Onda <span data-t="regularPrice">97€</span>.<br>Onda se vrata zatvaraju.</h2>
-        <p class="lead">Nema lažnog tajmera. Kad sat dođe do nule, cena raste. <b><span>U nedelju, 15. novembra u 21h</span> vrata se zatvaraju</b>, i ne znam kad će se ponovo otvoriti.</p>
+        <h2 class="display h2"><span data-t="launchPrice">67€</span> do srede.<br>Onda <span data-t="regularPrice">97€</span>.</h2>
+        <p class="lead">Nema lažnog tajmera. Kad sat dođe do nule, <b>u sredu, 11. novembra u 21h</b>, cena raste na <span data-t="regularPrice">97€</span> i tu ostaje.</p>
       </div>
       <div class="timeline reveal">
         <!-- past / now / future i „Ti si ovde“ postavlja script.js po datumu -->
         <div class="tl now" data-phase="1"><div><h4>Cena za lansiranje</h4><div class="mono">Do <span>srede, 11. novembra u 21h</span></div></div><div class="amt"><span data-t="launchPrice">67€</span></div></div>
-        <div class="tl future" data-phase="2"><div><h4>Redovna cena</h4><div class="mono">Do <span>nedelje, 15. novembra u 21h</span></div></div><div class="amt"><span data-t="regularPrice">97€</span></div></div>
-        <div class="tl future" data-phase="3"><div><h4>Vrata se zatvaraju</h4><div class="mono"><span>Nedelja, 15. novembar u 21h</span></div></div><div class="amt">Samo lista čekanja</div></div>
+        <div class="tl future" data-phase="2"><div><h4>Redovna cena</h4><div class="mono">Od <span>srede, 11. novembra u 21h</span></div></div><div class="amt"><span data-t="regularPrice">97€</span></div></div>
       </div>
     </div>
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
       <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
-      <p class="note"><b data-t="price">67€</b>. <span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</p>
+      <p class="note"><b data-t="price">67€</b>. <span data-launch-only><span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</span></p>
     </div>
   </div>
 </section>
@@ -1241,7 +1240,7 @@ footer a { color: var(--taupe); }
       <h2 class="display h2">Iskreni odgovori pre kupovine.</h2>
       <div class="faq">
         <details><summary>Kada ga dobijam?</summary><p>Odmah. Čim platiš, tvoj Studio se otvara sa svih devet delova unutra. Podatke za prijavu dobijaš na mejl odmah posle kupovine.</p></details>
-        <details><summary><span>Koliko traje cena od <span data-t="launchPrice">67€</span>?</span></summary><p>Do srede, 11. novembra u 21h. Onda je <span data-t="regularPrice">97€</span> do nedelje, 15. novembra u 21h, a onda se vrata zatvaraju. Jedna uplata u oba slučaja, bez pretplate.</p></details>
+        <details><summary><span>Koliko traje cena od <span data-t="launchPrice">67€</span>?</span></summary><p>Do srede, 11. novembra u 21h. Posle toga je <span data-t="regularPrice">97€</span>. Jedna uplata u oba slučaja, bez pretplate.</p></details>
         <details><summary>Kako rade probni rilsovi?</summary><p>Montiraj rils, pa reci napravi 8 probnih rilsova (ili bilo koji broj). Svaka verzija testira jednu pravu promenu: novi hook, nove titlove, nove efekte ili novi stil. Svaka dobija i svoju brzinu, kadriranje i boju, pa nijedna nije kopija druge. Onda ih Claude objavi kao probne rilsove na Instagramu. Probni rilsovi postoje samo na Instagramu, pa na ostale mreže Claude objavljuje obične videe i karusele.</p></details>
         <details><summary>Može li da napravi karusel od videa koji nisam montirao sa njim?</summary><p>Da. Bilo koji video fajl, link, ili rils koji je Studio montirao. Ili preskoči video i daj mu temu. Prvo napiše svaki slajd, čeka tvoje odobrenje, pa ih dizajnira u tvom stilu.</p></details>
         <details><summary>Da li radi na Windows-u?</summary><p>Da. Mac i Windows. Instaler prepozna tvoj računar i podesi se za njega.</p></details>
@@ -1281,7 +1280,7 @@ footer a { color: var(--taupe); }
 
     <div class="finale reveal">
       <h2 class="display"><span>Ubaci klipove.</span><span>Reci kreni.</span><span>Objavi rils.</span></h2>
-      <p class="lead"><span data-t="price">67€</span>. <span data-label="short">Cena raste za</span> <b data-countdown="short">2d 15h</b>. Jedna uplata, pristup odmah.</p>
+      <p class="lead"><span data-t="price">67€</span>. <span data-launch-only><span data-label="short">Cena raste za</span> <b data-countdown="short">2d 15h</b>.</span> Jedna uplata, pristup odmah.</p>
       <div class="cta" style="margin-top:28px">
         <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
         <p class="btn-sub mono">Jedna uplata. Pristup odmah.</p>
@@ -1315,8 +1314,8 @@ footer a { color: var(--taupe); }
   <div class="wrap">
     <div class="left">
       <span class="p" data-t="price">67€</span>
-      <span class="mono" data-label="short">Cena raste za</span>
-      <span class="time" data-countdown="hms">00:00:00</span>
+      <span class="mono" data-label="short" data-launch-only>Cena raste za</span>
+      <span class="time" data-countdown="hms" data-launch-only>00:00:00</span>
     </div>
     <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
   </div>
@@ -1327,19 +1326,16 @@ footer a { color: var(--taupe); }
    PODEŠAVANJA: menjaj ovde
    ========================================================= */
 const CONFIG = {
-  // Link ka stranici za plaćanje (Stripe, Paddle, ThriveCart...). Svako dugme vodi ovde.
+  // Standalone ne vodi kroz funnel: dugmad skroluju do cene.
   checkoutUrl: "#cena",
 
-  // Posle zatvaranja dugmad vode ovde (lista čekanja). Prazno = dugmad ostaju kakva jesu.
-  waitlistUrl: "", // [UBACI link ka listi čekanja]
-
   // Mejl za podršku. Prazno = na stranici stoji vidljiv placeholder.
-  supportEmail: "", // [UBACI pravu mejl adresu za podršku]
+  supportEmail: "podrska@vladsdigital.com",
 
   // Faze cene. +01:00 = srednjoevropsko vreme. Tajmer broji do kraja TRENUTNE faze i nikad se ne resetuje.
+  // Posle poslednje faze važi regularPrice zauvek: prodaja se ne zatvara, a tajmer i sve sa data-launch-only nestaje.
   phases: [
-    { until: "2026-11-11T21:00:00+01:00", price: "67€" }, // faza 1: cena za lansiranje (do srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
-    { until: "2026-11-15T21:00:00+01:00", price: "97€" }, // faza 2: redovna cena, pa vrata zatvorena (CLOSE_AT)
+    { until: "2026-11-11T21:00:00+01:00", price: "67€" }, // cena za lansiranje (do srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
   ],
 
   // Fiksni tekstovi: upisuju se svuda gde u HTML-u piše data-t="...". data-t="price" je cena trenutne faze.
@@ -1348,10 +1344,10 @@ const CONFIG = {
     launchPrice: "67€",
   },
 
-  // Natpisi uz tajmer, po fazi: [faza 1, faza 2, zatvoreno]
+  // Natpisi uz tajmer, po fazi
   labels: {
-    short: ["Cena raste za", "Zatvaramo za", "Vrata su zatvorena"],
-    long: ["Cena raste na 97€ za", "Vrata se zatvaraju za", "Vrata su zatvorena"],
+    short: ["Cena raste za"],
+    long: ["Cena raste na 97€ za"],
   },
 };
 
@@ -1377,7 +1373,7 @@ document.querySelectorAll(".js-mail").forEach((a) => {
 /* ---------- faze cene ---------- */
 const phaseEnds = CONFIG.phases.map((p) => new Date(p.until).getTime());
 
-// 0 = faza 1, 1 = faza 2, 2 = zatvoreno
+// 0 = faza 1, ..., phases.length = posle lansiranja (redovna cena)
 function currentPhase(now) {
   const i = phaseEnds.findIndex((t) => now < t);
   return i === -1 ? CONFIG.phases.length : i;
@@ -1387,14 +1383,16 @@ let shownPhase = null;
 function applyPhase(phase) {
   if (phase === shownPhase) return;
   shownPhase = phase;
-  const closed = phase >= CONFIG.phases.length;
-  const price = closed ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
+  const after = phase >= CONFIG.phases.length;
+  const price = after ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
 
   document.querySelectorAll('[data-t="price"]').forEach((el) => (el.textContent = price));
   document.querySelectorAll("[data-phase-only]").forEach((el) => (el.hidden = Number(el.dataset.phaseOnly) !== phase + 1));
   document.querySelectorAll("[data-label]").forEach((el) => {
-    el.textContent = CONFIG.labels[el.dataset.label][Math.min(phase, 2)];
+    const l = CONFIG.labels[el.dataset.label];
+    el.textContent = l[Math.min(phase, l.length - 1)];
   });
+  document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = after));
 
   // timeline u sekciji "Nedelja lansiranja": past / now / future i "Ti si ovde"
   document.querySelectorAll(".tl[data-phase]").forEach((el) => {
@@ -1410,13 +1408,6 @@ function applyPhase(phase) {
       el.querySelector(".amt").append(here);
     }
   });
-
-  if (closed && CONFIG.waitlistUrl) {
-    document.querySelectorAll(".js-buy").forEach((a) => {
-      a.href = CONFIG.waitlistUrl;
-      a.textContent = "Prijavi se na listu čekanja";
-    });
-  }
 }
 
 /* ---------- odbrojavanje ---------- */
@@ -1536,7 +1527,6 @@ const io = new IntersectionObserver(
   { rootMargin: "0px 0px -8% 0px" }
 );
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-
 </script>
 </body>
 </html>

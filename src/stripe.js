@@ -12,10 +12,9 @@ export function stripe(env) {
 // Sve što funnel pravi u Stripe-u nosi source=studio. Circle Paywall naplate na istom nalogu nemaju tu oznaku.
 export const SOURCE = "studio";
 
-// Koja Studio cena važi sada. null = vrata su zatvorena.
+// Koja Studio cena važi sada: 67€ do LAUNCH_UNTIL, posle toga 97€. Prodaja se ne zatvara.
 export function currentPriceKey(env, now = Date.now()) {
   if (env.MODE === "evergreen") return "studio_regular";
   if (now < Date.parse(env.LAUNCH_UNTIL)) return "studio_launch";
-  if (now < Date.parse(env.CLOSE_AT)) return "studio_regular";
-  return null;
+  return "studio_regular";
 }

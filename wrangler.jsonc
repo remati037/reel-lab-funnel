@@ -39,9 +39,8 @@
   "vars": {
     // launch | evergreen
     "MODE": "launch",
-    // Do kada važi 67€, i kad se vrata zatvaraju (isto kao CONFIG.phases u public/script.js i PHASES u public/checkout.html)
+    // Do kada važi 67€, posle toga 97€ bez roka (isto kao CONFIG.phases u public/script.js i LAUNCH_UNTIL u public/checkout.html)
     "LAUNCH_UNTIL": "2026-11-11T21:00:00+01:00",
-    "CLOSE_AT": "2026-11-15T21:00:00+01:00",
     "AUTOMATIC_TAX": "false",
     // Javni Stripe ključ (pk_...), treba samo za 3DS potvrdu na /ponuda
     "STRIPE_PUBLISHABLE_KEY": "pk_test_51TZnpX3qt764ELv7MvJNdVPxJ6ihgB7gzGlKU0jilxQKb5DTZ2dgLBhXXFQHxDlBG5aTvffg0EjYwWbrQCULv3xI00fjbSaDD2",

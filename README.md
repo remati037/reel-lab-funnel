@@ -86,5 +86,5 @@ Na dnu checkout-a je okvir **„Simulacija (samo test)“**:
 | `public/assets/` | Ovde idu tvoje slike i videi |
 | `src/` | Cloudflare Worker: `/api/checkout`, `/api/stripe-webhook`, `/api/order`, red za isporuku, noćna provera |
 | `migrations/` | Šema D1 baze |
-| `wrangler.jsonc` | Cloudflare podešavanja: baza, red, cron, datumi cena (`LAUNCH_UNTIL`, `CLOSE_AT`, `MODE`) |
+| `wrangler.jsonc` | Cloudflare podešavanja: baza, red, cron, do kada važi cena za lansiranje (`LAUNCH_UNTIL`, `MODE`) |
 | `.dev.vars.example` | Šablon za ključeve |
