@@ -3,6 +3,7 @@ import { webhook } from "./webhook.js";
 import { order } from "./order.js";
 import { upsell } from "./upsell.js";
 import { lead } from "./lead.js";
+import { licenseCode, licenseActivate, licenseVerify, licenseDeactivate } from "./license.js";
 import { handleBatch, reconcile } from "./jobs.js";
 
 const routes = {
@@ -13,6 +14,11 @@ const routes = {
   "GET /api/order": order,
   "POST /api/upsell": upsell,
   "POST /api/lead": lead,
+  // Licenca za AI Video Editor plugin (poziva ga plugin, ne stranice)
+  "POST /api/license/code": licenseCode,
+  "POST /api/license/activate": licenseActivate,
+  "POST /api/license/verify": licenseVerify,
+  "POST /api/license/deactivate": licenseDeactivate,
   // Javni ključevi za analitiku (PostHog, Meta Pixel), učitava ih analytics.js
   "GET /api/config.js": (_req, env) =>
     new Response(`window.STUDIO_CONFIG=${JSON.stringify({ posthogKey: env.POSTHOG_KEY || "", pixelId: env.META_PIXEL_ID || "", cfBeacon: env.CF_BEACON_TOKEN || "" })};`, {

@@ -40,7 +40,7 @@ utm_source=meta-ads&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={
    - `studio_ponuda_link`: lični link za checkout sa cenom **67€**,
    - `studio_ponuda_do`: datum do kog važi (7 dana od prijave).
 3. U nurture mejlovima D4, D6 i D7 dugme vodi na `{$studio_ponuda_link}`. Link je potpisan: radi samo do roka, ne može da se izmeni, a na checkout-u pokazuje „Tvoja lična cena“ sa odbrojavanjem i unapred upisanim mejlom.
-4. **Ti:** u MailerLite-u napravi automatizaciju „kad se pridruži grupi → D0…D7“ (tekstovi su u FUNNEL-PLAN.md, sekcija 1). Kad lead kupi, izbaci ga iz automatizacije (uslov: član grupe „Studio Reel Lab (kupci ✅)“).
+4. **Ti:** u MailerLite-u napravi automatizaciju „kad se pridruži grupi → D0…D7“ (tekstovi su u FUNNEL-PLAN.md, sekcija 1). Kad lead kupi, izbaci ga iz automatizacije (uslov: član grupe „AI Video Editor (kupci ✅)“).
 5. **Ti:** na `/besplatno-hvala` upiši prave komande za instalaciju skill-a (`public/besplatno-hvala.html`, objekat `SKILL` na dnu).
 
 ## 3. PostHog: šta se šalje

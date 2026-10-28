@@ -1,6 +1,6 @@
-# Creator Studio: funnel (srpska verzija)
+# AI Video Editor: funnel (srpska verzija)
 
-Landing stranica i stranice posle kupovine za Creator Studio. Čist HTML, CSS i JavaScript, bez build koraka i bez instalacije paketa.
+Landing stranica i stranice posle kupovine za AI Video Editor. Čist HTML, CSS i JavaScript, bez build koraka i bez instalacije paketa.
 
 Trenutno je sve u **test modu**: plaćanje je simulirano i ništa se ne naplaćuje. Plan za pravu verziju (Stripe, Circle, MailerLite, webhook-ovi) je u [FUNNEL-PLAN.md](FUNNEL-PLAN.md).
 
@@ -88,3 +88,24 @@ Na dnu checkout-a je okvir **„Simulacija (samo test)“**:
 | `migrations/` | Šema D1 baze |
 | `wrangler.jsonc` | Cloudflare podešavanja: baza, red, cron, do kada važi cena za lansiranje (`LAUNCH_UNTIL`, `MODE`) |
 | `.dev.vars.example` | Šablon za ključeve |
+
+## Licenca za AI Video Editor plugin
+
+Plugin radi samo za mejl kojim je plaćen Studio, na jednom računaru (`LICENSE_MAX_DEVICES` u `wrangler.jsonc`).
+Kod je u `src/license.js` (server) i `scripts/license.py` u repou `vladsdigital/ai-video-editor` (plugin).
+
+- Licencu ima mejl sa plaćenom Studio porudžbinom (`orders`, `status = 'paid'`). Chargeback menja status u `disputed`, pa licenca prestaje sama.
+- API: `POST /api/license/code` (kod na mejl), `/activate` (kod → token za računar), `/verify` (plugin pita na početku četa), `/deactivate` (oslobađa računar).
+
+Ručne komande (lokalno umesto `--remote` stavi `--local`):
+
+```bash
+# Daj licencu mejlu bez kupovine (tim, tester, poklon)
+npx wrangler d1 execute creator-studio --remote --command "INSERT INTO license_grants (email, note) VALUES ('ime@primer.rs', 'tester')"
+
+# Na kojim računarima je aktiviran neki mejl
+npx wrangler d1 execute creator-studio --remote --command "SELECT device_name, activated_at, last_seen FROM license_devices WHERE email = 'ime@primer.rs'"
+
+# Oslobodi sve računare tog mejla (kupac promenio računar, a stari više nema)
+npx wrangler d1 execute creator-studio --remote --command "DELETE FROM license_devices WHERE email = 'ime@primer.rs'"
+```

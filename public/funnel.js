@@ -5,7 +5,7 @@ const FUNNEL = {
   upsellApi: "/api/upsell",  // POST { session_id } → { status: "succeeded" | "requires_action" | "declined" | "already", client_secret?, publishable_key? }
   orderApi: "/api/order",    // GET ?session_id= → { ready: bool, lab: bool, labClan: bool }
 
-  circleUrl: "https://www.aiprofit.rs/c/studio-reel-lab-kurs", // Circle prostor kursa
+  circleUrl: "https://www.aiprofit.rs/c/ai-video-editor", // Circle prostor kursa
   email: "podrska@vladsdigital.com",
 
   lab: { first: "1€", monthly: "47€", regular: "57€", trialDays: 30 },

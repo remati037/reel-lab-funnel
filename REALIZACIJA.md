@@ -1,4 +1,4 @@
-# Creator Studio: realizacija korak po korak
+# AI Video Editor: realizacija korak po korak
 
 Šta se gradi i zašto je u [FUNNEL-PLAN.md](FUNNEL-PLAN.md). Ovde je **redosled rada**: šta radiš ti (nalozi, ključevi, sadržaj) i šta radim ja (kod).
 
@@ -35,16 +35,16 @@ Sve u **test modu** gde postoji. Live ključevi tek u Fazi 5.
 ### 0.3 Circle [TI]
 1. **Settings → Developers → Tokens → Admin API V2:** napravi token, upiši u `.dev.vars` kao `CIRCLE_TOKEN`.
 2. Napravi **access groups** (Members → Access groups):
-   - `Creator Studio`
+   - `AI Video Editor`
    - `Viral Hook Pack`
    - `Radionica`
    - `AI Profit Lab (Studio)`: dodaj mu **iste prostore** koje otvara Lab Paywall.
-3. Napravi prostore iz plana (sekcija 7), za početak makar prazne: *Kreni ovde*, *Pitanja i pomoć*, *Ažuriranja*. Dodaj ih u access group `Creator Studio`.
+3. Napravi prostore iz plana (sekcija 7), za početak makar prazne: *Kreni ovde*, *Pitanja i pomoć*, *Ažuriranja*. Dodaj ih u access group `AI Video Editor`.
 4. **Settings → Paywalls → AI Profit Lab:** zapiši koji Stripe nalog je povezan (za 0.2, korak 7).
 5. ID-jeve grupa i prostora **čitam ja** preko API-ja, ne moraš da ih tražiš.
 
 ### 0.4 WooCommerce na vladsdigital.com [TI]
-1. **WooCommerce → Settings → Advanced → REST API → Add key:** opis „Creator Studio“, permisije **Read/Write**. Upiši `Consumer key` i `Consumer secret` u `.dev.vars`.
+1. **WooCommerce → Settings → Advanced → REST API → Add key:** opis „AI Video Editor“, permisije **Read/Write**. Upiši `Consumer key` i `Consumer secret` u `.dev.vars`.
 2. **Woo mejlovi:** ne gase se globalno (sajt prodaje i druge proizvode). Umesto toga instaliraš snippet `wordpress/studio-funnel-tihi-mejlovi.php`, koji ih gasi samo za porudžbine iz funnela.
 3. Proizvode sa SKU-ovima (`CS-STUDIO`, `LAB-MESECNO`) **pravim ja** preko API-ja, kao virtuelne i sakrivene iz prodavnice.
 4. Ako sajt ima Wordfence, iThemes ili sličan plugin: dozvoli `/wp-json/wc/v3`. Proverim ja prvim pozivom.
@@ -57,7 +57,7 @@ Sve u **test modu** gde postoji. Live ključevi tek u Fazi 5.
    - API key upiši kao `RESEND_KEY`.
 
 ### 0.6 Analitika [TI]
-1. **PostHog:** nalog na **eu.posthog.com** (EU server, zbog GDPR-a), projekat „Creator Studio“. Kopiraj **Project API key** (phc_...) kao `POSTHOG_KEY`. Ovaj ključ je javan i sme u HTML.
+1. **PostHog:** nalog na **eu.posthog.com** (EU server, zbog GDPR-a), projekat „AI Video Editor“. Kopiraj **Project API key** (phc_...) kao `POSTHOG_KEY`. Ovaj ključ je javan i sme u HTML.
 2. **Meta Pixel + CAPI** (Faza 3): Events Manager → Pixel ID + Conversions API access token.
 3. **Cloudflare Web Analytics** uključujem ja kad je sajt na Cloudflare-u.
 4. **Obaveštenja o kupovini** (opciono): Telegram bot (@BotFather → token) + tvoj chat ID.
@@ -65,7 +65,7 @@ Sve u **test modu** gde postoji. Live ključevi tek u Fazi 5.
 ### 0.7 Podešavanje preko skripti [JA]
 Kad su ključevi u `.dev.vars`, pokrećem skripte (sve u test modu):
 - **Stripe:**
-  - proizvodi: Creator Studio (cene `studio_launch` 67€, `studio_regular` 97€, `studio_lead` 67€), Viral Hook Pack (`hookpack` 27€), AI Profit Lab (`lab_monthly` 47€/mes)
+  - proizvodi: AI Video Editor (cene `studio_launch` 67€, `studio_regular` 97€, `studio_lead` 67€), Viral Hook Pack (`hookpack` 27€), AI Profit Lab (`lab_monthly` 47€/mes)
   - kupon `PRVI_MESEC_1E` (46€ popusta, jednom)
 - **Woo:** 3 proizvoda sa SKU-ovima.
 - **MailerLite:** grupe `Lead – Free skill`, `Kupci – Studio`, `Lab – član`, `Lab – bivši`, `Radionica`, `Refund` + polja.
@@ -81,7 +81,7 @@ Kad su ključevi u `.dev.vars`, pokrećem skripte (sve u test modu):
 | 1.2 | **`/api/checkout`** [JA]: pravi Stripe Checkout sesiju. Cenu bira server po datumu (launch/regular/evergreen), plus bump, čuvanje kartice, pristanak „bez povraćaja“, UTM i PostHog ID u `metadata`, `source: studio`. Landing dugmad vode ovde. | klik na dugme otvara Stripe test checkout |
 | 1.3 | **`/api/stripe-webhook`** [JA]: proverava potpis, preskače sve bez `source: studio`, upisuje event u D1 (bez duplikata), šalje posao u Queue. | `stripe trigger` stiže i upisuje se |
 | 1.4 | **Queue consumer** [JA]: za `checkout.session.completed` upisuje porudžbinu u D1, dodeljuje broj kupca (radionica ≤ 100), pa radi korake: Circle → MailerLite → welcome mejl → Woo → PostHog → obaveštenje. Svaki korak ima svoj status i ponavlja se sam ako padne. | test kupovina prođe sve korake |
-| 1.5 | **Circle** [JA]: nađi ili napravi člana po mejlu, dodaj u `Creator Studio` (+ Hook Pack, + Radionica). | test kupac vidi prostor u Circle-u |
+| 1.5 | **Circle** [JA]: nađi ili napravi člana po mejlu, dodaj u `AI Video Editor` (+ Hook Pack, + Radionica). | test kupac vidi prostor u Circle-u |
 | 1.6 | **MailerLite + Resend** [JA]: upis u grupe sa poljima, welcome mejl sa linkom za Circle. | mejl stiže za < 1 min |
 | 1.7 | **Woo** [JA]: kupac po mejlu, porudžbina `completed` sa SKU-ovima, stvarnom cenom, PaymentIntent ID-om, UTM-om. Bez duplikata. | porudžbina se vidi na vladsdigital.com |
 | 1.8 | **`/api/order`** [JA]: hvala stranica pita server šta je kupljeno (bump, radionica, Lab) umesto test parametara iz URL-a. | hvala prikazuje prave kartice |
@@ -107,10 +107,10 @@ Treba mi pristup repou plugina.
 
 | # | Korak |
 |---|---|
-| 3.1 | [JA] `/api/license/activate` (mejl → 6-cifreni kod na mejl → aktivacija, max 2 uređaja) i `/api/license/verify`. |
+| 3.1 | [JA] ✅ `/api/license/code`, `/activate`, `/verify`, `/deactivate` (mejl → 6-cifreni kod → token za računar, 1 računar po licenci). |
 | 3.2 | [JA] Paket plugina u privatnom **Cloudflare R2** bucket-u. Server ga daje tek posle provere licence. |
 | 3.3 | [JA] `install.sh` (Mac) i `install.ps1` (Windows) na `studio.aiprofit.rs`. |
-| 3.4 | [JA] U pluginu: pitanje za mejl i kod pri prvom pokretanju, licenca i u `doctor` komandi. |
+| 3.4 | [JA] ✅ U pluginu: `scripts/license.py`, provera u setup-u (svaki čet), u montaži i karuselima; 14 dana rada bez interneta. (`doctor` komanda ne postoji, provera je u setup-u.) |
 | 3.5 | [TI] Circle lekcije 03/04 sa install komandom i snimkom. |
 
 ## Faza 4: analitika i promet (~3 dana)
@@ -150,9 +150,9 @@ Treba mi pristup repou plugina.
 
 **Urađeno**
 - [x] Cloudflare: Worker na https://studio.aiprofit.rs, D1 baza, redovi, noćni cron
-- [x] Circle: grupe „Reel Lab Studio“ (167621) i „AI Profit Lab (Studio Reel Lab Upsell)“ (167622), prostor „Studio Reel Lab Kurs“
+- [x] Circle: grupe „Reel Lab Studio“ (167621) i „AI Profit Lab (Studio Reel Lab Upsell)“ (167622), prostor kursa (/c/ai-video-editor)
 - [x] Woo: proizvodi `CS-STUDIO` (#45406) i `LAB-MESECNO` (#45407), privatni i sakriveni
-- [x] MailerLite: grupe „Studio Reel Lab (kupci ✅)“, „AI Profit Lab - Studio upsell (aktivni / otkazali)“ i polja `studio_datum`, `studio_cena`, `studio_izvor`
+- [x] MailerLite: grupe „AI Video Editor (kupci ✅)“, „AI Profit Lab - Studio upsell (aktivni / otkazali)“ i polja `studio_datum`, `studio_cena`, `studio_izvor`
 - [x] Kod isporuke posle kupovine: Circle (nalog + grupa) → MailerLite → welcome mejl (Resend) → Woo porudžbina → PostHog `purchase` → Telegram
 - [x] Snippet za Woo mejlove: [wordpress/studio-funnel-tihi-mejlovi.php](wordpress/studio-funnel-tihi-mejlovi.php)
 

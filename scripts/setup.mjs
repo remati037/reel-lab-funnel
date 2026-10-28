@@ -13,7 +13,7 @@ const env = Object.fromEntries(
     .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).trim()])
 );
 
-const PRODUCT_NAME = "Studio Reel Lab";
+const PRODUCT_NAME = "AI Video Editor";
 
 async function setupStripe() {
   const s = new Stripe(env.STRIPE_SECRET_KEY);
@@ -22,7 +22,12 @@ async function setupStripe() {
 
   const product = async (name, key) => {
     // list umesto search: search vidi nove proizvode tek posle par minuta
-    for await (const p of s.products.list({ active: true, limit: 100 })) if (p.metadata.key === key) return p;
+    for await (const p of s.products.list({ active: true, limit: 100 }))
+      if (p.metadata.key === key) {
+        // Ime se vidi na naplati i računu: posle preimenovanja proizvoda samo ga ažuriraj
+        if (p.name !== name) console.log(`  ~ proizvod ${p.name} → ${name}`), (p.name = (await s.products.update(p.id, { name })).name);
+        return p;
+      }
     return s.products.create({ name, metadata: { key, source: "studio" } });
   };
   const price = async (lookup_key, params) => {
@@ -64,12 +69,13 @@ async function setupWoo() {
   const ids = {};
   for (const [sku, name, price] of [
     ["CS-STUDIO", PRODUCT_NAME, "97"],
-    ["LAB-MESECNO", "AI Profit Lab (Studio upsell, mesečno)", "47"],
+    ["LAB-MESECNO", "AI Profit Lab (AI Video Editor upsell, mesečno)", "47"],
   ]) {
     const [found] = await woo("GET", `/products?sku=${sku}&status=any`);
     if (found) {
       ids[sku] = found.id;
-      console.log(`  ✓ ${sku} postoji (#${found.id})`);
+      if (found.name !== name) await woo("PUT", `/products/${found.id}`, { name });
+      console.log(`  ✓ ${sku} postoji (#${found.id})${found.name !== name ? `, preimenovan u ${name}` : ""}`);
       continue;
     }
     // Privatan i sakriven: postoji samo za evidenciju, ne vidi se u prodavnici

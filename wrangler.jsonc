@@ -52,12 +52,12 @@
     "CIRCLE_LAB_GROUP": "167622",
     // Grupa koju daje Circle Paywall postojećim Lab članovima (za proveru "već je član")
     "CIRCLE_PAYWALL_LAB_GROUP": "124997",
-    // Prostor "Studio Reel Lab Kurs": rezerva ako Circle ne upiše člana u grupu
+    // Prostor kursa (/c/ai-video-editor): rezerva ako Circle ne upiše člana u grupu
     "CIRCLE_STUDIO_SPACE": "2924801",
-    "CIRCLE_STUDIO_URL": "https://www.aiprofit.rs/c/studio-reel-lab-kurs",
+    "CIRCLE_STUDIO_URL": "https://www.aiprofit.rs/c/ai-video-editor",
 
     // Transakcioni mejlovi (Resend). Domen pošiljaoca mora biti potvrđen u Resend-u.
-    "MAIL_FROM": "Studio Reel Lab <studio@aiprofit.rs>",
+    "MAIL_FROM": "AI Video Editor <studio@aiprofit.rs>",
     "MAIL_REPLY_TO": "podrska@vladsdigital.com",
 
     // MailerLite grupe (napravio scripts/setup.mjs mailerlite)
@@ -77,7 +77,10 @@
     // WooCommerce (vladsdigital.com), samo evidencija (scripts/setup.mjs woo)
     "WOO_URL": "https://vladsdigital.com",
     "WOO_PRODUCT_STUDIO": "45406",
-    "WOO_PRODUCT_LAB": "45407"
+    "WOO_PRODUCT_LAB": "45407",
+
+    // AI Video Editor licenca: na koliko računara jedan mejl može da aktivira plugin
+    "LICENSE_MAX_DEVICES": "1"
   },
 
   "observability": { "enabled": true }

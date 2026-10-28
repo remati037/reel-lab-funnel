@@ -71,7 +71,7 @@ const STUDIO_STEPS = [
   [
     "telegram",
     (o, env) =>
-      telegram(env, `🎬 Studio Reel Lab: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
+      telegram(env, `🎬 AI Video Editor: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
   ],
   [
     "meta",
@@ -118,7 +118,7 @@ const LAB_STEPS = [
         properties: { product: "lab", month: o.lab_month, revenue: o.amount_cents / 100, currency: o.currency, utm_source: o.utm_source, utm_campaign: o.utm_campaign, $set: { email: o.email } },
       }),
   ],
-  ["telegram", (o, env) => telegram(env, `🧪 AI Profit Lab (Studio upsell): ${o.lab_month}. mesec plaćen\n${o.email}\n${euros(o.amount_cents)}€`)],
+  ["telegram", (o, env) => telegram(env, `🧪 AI Profit Lab (AI Video Editor upsell): ${o.lab_month}. mesec plaćen\n${o.email}\n${euros(o.amount_cents)}€`)],
   ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_LAB_GROUP)],
 ];
 
@@ -134,7 +134,7 @@ const LAB_CANCEL_STEPS = [
   ],
   ["woo", (c, env) => c.lastWooOrder && addOrderNote(env, c.lastWooOrder, `Pretplata otkazana (${c.subscriptionId}).`)],
   ["posthog", (c, env) => track(env, "lab_canceled", { distinctId: c.email, insertId: `${c.subscriptionId}-canceled`, properties: { months_paid: c.monthsPaid } })],
-  ["telegram", (c, env) => telegram(env, `❌ AI Profit Lab (Studio upsell) otkazan\n${c.email}\nplaćenih meseci: ${c.monthsPaid}`)],
+  ["telegram", (c, env) => telegram(env, `❌ AI Profit Lab (AI Video Editor upsell) otkazan\n${c.email}\nplaćenih meseci: ${c.monthsPaid}`)],
 ];
 
 // Isto kao max_retries u wrangler.jsonc (+1 za prvi pokušaj)
@@ -274,12 +274,12 @@ async function labCanceled(subscriptionId, env) {
   await runSteps(`${sub.id}-canceled`, ctx, LAB_CANCEL_STEPS, env);
 }
 
-// Chargeback za Studio: pristup Studiju se gasi, Lab ostaje
+// Chargeback za AI Video Editor: pristup AI Video Editoru se gasi, Lab ostaje
 async function dispute(disputeId, env) {
   const s = stripe(env);
   const d = await s.disputes.retrieve(disputeId);
   const order = await env.DB.prepare("SELECT * FROM orders WHERE payment_intent = ? AND kind = 'studio'").bind(d.payment_intent).first();
-  if (!order) return; // nije Studio kupovina iz ovog funnela
+  if (!order) return; // nije AI Video Editor kupovina iz ovog funnela
 
   await runSteps(d.id, order, [
     ["status", (o, env) => env.DB.prepare("UPDATE orders SET status = 'disputed' WHERE id = ?").bind(o.id).run()],
@@ -291,9 +291,9 @@ async function dispute(disputeId, env) {
         await removeFromSpace(env, o.email, env.CIRCLE_STUDIO_SPACE);
       },
     ],
-    ["woo", (o, env) => o.woo_order_id && addOrderNote(env, o.woo_order_id, `Chargeback (${d.id}, razlog: ${d.reason}). Pristup Studiju ugašen.`)],
+    ["woo", (o, env) => o.woo_order_id && addOrderNote(env, o.woo_order_id, `Chargeback (${d.id}, razlog: ${d.reason}). Pristup AI Video Editoru ugašen.`)],
     ["posthog", (o, env) => track(env, "chargeback", { distinctId: o.ph_id || o.email, insertId: d.id, properties: { reason: d.reason, amount: d.amount / 100 } })],
-    ["telegram", (o, env) => telegram(env, `🚨 Chargeback za Studio\n${o.email}\n${euros(d.amount)}€, razlog: ${d.reason}. Pristup Studiju ugašen, Lab ostaje.`)],
+    ["telegram", (o, env) => telegram(env, `🚨 Chargeback za AI Video Editor\n${o.email}\n${euros(d.amount)}€, razlog: ${d.reason}. Pristup AI Video Editoru ugašen, Lab ostaje.`)],
   ], env);
 }
 

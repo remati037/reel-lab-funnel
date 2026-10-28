@@ -1,10 +1,10 @@
-# Creator Studio: kompletan funnel plan
+# AI Video Editor: kompletan funnel plan
 
 Od prvog rilsa do 2. meseca u AI Profit Lab-u.
 
 **Stack:** Cloudflare Workers na `studio.aiprofit.rs` (stranice + API + D1 baza + Queues) · Stripe Checkout (custom one-click upsell) · Circle Business na `aiprofit.rs` (isporuka + zajednica) · WooCommerce na `vladsdigital.com` (samo spisak porudžbina) · MailerLite (mejlovi) · ManyChat (DM iz rilsova) · PostHog + Meta Pixel/CAPI (analitika)
 
-**Za sada isključeno (26.10.):** order bump (Viral Hook Pack) i radionica za prvih 100. Delovi plana o njima ostaju kao ideje za kasnije, ali nisu u kodu ni na stranicama. Proizvod se zove **Studio Reel Lab** (Circle grupa „Reel Lab Studio“, prostor „Studio Reel Lab Kurs“).
+**Za sada isključeno (26.10.):** order bump (Viral Hook Pack) i radionica za prvih 100. Delovi plana o njima ostaju kao ideje za kasnije, ali nisu u kodu ni na stranicama. Proizvod se zove **AI Video Editor** (Circle grupa „Reel Lab Studio“, prostor kursa (/c/ai-video-editor)).
 
 **Odluke (26.10.):** bez garancije i bez povraćaja za Studio · Woo je samo evidencija, ne pravi fakture · Stripe nalog i porez su rešeni · bez TikTok oglasa · postojeći Lab članovi ostaju na Circle Paywall-u, nove Lab pretplate iz upsella idu direktno preko Stripe-a
 
@@ -36,7 +36,7 @@ Od prvog rilsa do 2. meseca u AI Profit Lab-u.
  ISPORUKA (webhook, automatski) ────────────────────┤
    Circle član + access group ▸ licenca ▸ MailerLite grupa ▸ welcome mejl ▸ CAPI
                                                     ▼
- CIRCLE: Creator Studio prostor ──► prvi rils za 48h ──► Pokaži svoj rils
+ CIRCLE: AI Video Editor prostor ──► prvi rils za 48h ──► Pokaži svoj rils
          AI Profit Lab prostor (ako je uzeo) ──► 30 dana onboarding ──► 47€/mes
          Lab "pogledaj unutra" (ako nije) ──► downsell mejlovi D3 / D10
 ```
@@ -100,7 +100,7 @@ Struktura je jaka. Pre puštanja:
 | Podešavanje | Vrednost | Zašto |
 |---|---|---|
 | `mode` | `payment` | jednokratno 97€ / 67€ |
-| `line_items` | Creator Studio (price koji važi u tom trenutku: launch / regular / lead-72h) | cena se bira na serveru, ne u browseru |
+| `line_items` | AI Video Editor (price koji važi u tom trenutku: launch / regular / lead-72h) | cena se bira na serveru, ne u browseru |
 | `optional_items` | Viral Hook Pack 27€ | order bump direktno u Stripe Checkout-u |
 | `customer_creation` | `always` | treba nam Customer za upsell |
 | `payment_intent_data.setup_future_usage` | `off_session` | **ovo omogućava one-click upsell** |
@@ -164,7 +164,7 @@ Postojeći Lab članovi kupuju preko Lab landinga na Circle-u i Circle Paywall-a
 
 Jedan cilj: **da kupac u roku od 10 minuta bude u Circle-u i nalepi install komandu.**
 
-1. „Dobrodošao u Creator Studio 🎬“
+1. „Dobrodošao u AI Video Editor 🎬“
 2. Tri koraka sa velikim brojevima:
    1. Proveri mejl (pozivnica za Circle stiže za 1 minut, pogledaj i Promocije/Spam)
    2. Uđi u Circle → *Kreni ovde*
@@ -195,18 +195,18 @@ Treba **Workers Paid plan (5$ mesečno)** zbog Queues, cron-a i CPU limita.
 
 | Stripe event | Šta se dešava |
 |---|---|
-| `checkout.session.completed` | 1. Circle: kreira/nađe člana, doda u access group **Creator Studio** (+ **Hook Pack** ako je bump)<br>2. Kupac broj ≤ 100 → access group **Radionica**<br>3. Kreira licencu (vezana za mejl)<br>4. MailerLite: upsert, grupa `Kupci – Studio`, izbaci iz `Lead`, polja (datum, bump, radionica, cena)<br>5. Welcome mejl (transakcioni)<br>6. WooCommerce porudžbina<br>7. PostHog `purchase` + Meta CAPI `Purchase`<br>8. Obaveštenje tebi (Telegram/Slack) |
+| `checkout.session.completed` | 1. Circle: kreira/nađe člana, doda u access group **AI Video Editor** (+ **Hook Pack** ako je bump)<br>2. Kupac broj ≤ 100 → access group **Radionica**<br>3. Kreira licencu (vezana za mejl)<br>4. MailerLite: upsert, grupa `Kupci – Studio`, izbaci iz `Lead`, polja (datum, bump, radionica, cena)<br>5. Welcome mejl (transakcioni)<br>6. WooCommerce porudžbina<br>7. PostHog `purchase` + Meta CAPI `Purchase`<br>8. Obaveštenje tebi (Telegram/Slack) |
 | `invoice.paid` (Lab, `source: studio`) | Circle access group **AI Profit Lab** dodat/ostaje · MailerLite grupa `Lab – član` · Woo porudžbina · PostHog `lab_payment` (1. ili n-ti mesec) |
 | `invoice.payment_failed` | Stripe Smart Retries + mejl za ažuriranje kartice (pristup ostaje tokom retry perioda) |
 | `customer.subscription.deleted` | Ukloni iz **AI Profit Lab** access group-a · MailerLite `Lab – bivši` · PostHog `lab_canceled` |
-| `charge.dispute.created` / ručni `charge.refunded` | Povraćaja nema, ali chargeback ili izuzetak koji ti ručno uradiš i dalje mogu da se dese: ukloni **Creator Studio** access, opozovi licencu, MailerLite `Refund`. **Lab ostaje aktivan.** |
+| `charge.dispute.created` / ručni `charge.refunded` | Povraćaja nema, ali chargeback ili izuzetak koji ti ručno uradiš i dalje mogu da se dese: ukloni **AI Video Editor** access, opozovi licencu, MailerLite `Refund`. **Lab ostaje aktivan.** |
 
 ### Evidencija kupaca u WooCommerce-u
 Sajt: **vladsdigital.com**. Svaka uspešna naplata pravi porudžbinu u WooCommerce-u, pa je tamo spisak svih kupaca i svih uplata na jednom mestu. Stripe ostaje sistem koji naplaćuje, a Woo služi samo za evidenciju i ne naplaćuje ništa.
 
 | Stripe event | WooCommerce (REST API `/wp-json/wc/v3`) |
 |---|---|
-| `checkout.session.completed` | `POST /orders`: status `completed`, `set_paid: true`, stavke Creator Studio (+ Hook Pack), cena kakva je stvarno plaćena, `payment_method_title: "Stripe"`, `transaction_id` = PaymentIntent ID |
+| `checkout.session.completed` | `POST /orders`: status `completed`, `set_paid: true`, stavke AI Video Editor (+ Hook Pack), cena kakva je stvarno plaćena, `payment_method_title: "Stripe"`, `transaction_id` = PaymentIntent ID |
 | `invoice.paid` (Lab) | Nova porudžbina za svaku naplatu Lab-a (1€, pa svaka 47€), da se vidi i ponavljana uplata |
 | `charge.refunded` | `POST /orders/{id}/refunds` sa `api_refund: false` (beleži povraćaj, ne pokušava da vrati novac drugi put) |
 | `customer.subscription.deleted` | Beleška na poslednjoj Lab porudžbini: „Pretplata otkazana“ |
@@ -228,7 +228,7 @@ Pravila:
 - U Circle lekciji je **ista komanda za sve:**
   - Mac: `curl -fsSL https://studio.[domen]/install.sh | bash`
   - Windows: `irm https://studio.[domen]/install.ps1 | iex`
-- Pri prvom pokretanju plugin traži **mejl sa kojim si kupio** → šalje mu 6-cifreni kod → aktivira licencu na tom računaru (`/api/license/activate`, limit npr. 2 uređaja).
+- Pri prvom pokretanju plugin traži **mejl sa kojim si kupio** → šalje mu 6-cifreni kod → aktivira licencu na tom računaru (`/api/license/activate`, 1 računar po licenci).
 - Ažuriranja proveravaju licencu (`/api/license/verify`). Chargeback = licenca opozvana = nema više ažuriranja.
 - Kod privatan (privatni GitHub repo, a server isporučuje paket tek posle provere licence).
 - `doctor` komanda proverava i licencu.
@@ -242,7 +242,7 @@ Ovim je komanda u Circle-u bezbedna i ako procuri, a „prijavi se mejlom, bez l
 ```
 [Tvoj Brend] zajednica
 │
-├── 🎬 CREATOR STUDIO              (access group: Creator Studio)
+├── 🎬 CREATOR STUDIO              (access group: AI Video Editor)
 │   ├── 📍 Kreni ovde              (course, otključavanje po redu)
 │   │     01 Dobrodošlica (2 min video)
 │   │     02 Šta ti treba (Claude desktop, Pro plan)
@@ -272,7 +272,7 @@ Ovim je komanda u Circle-u bezbedna i ako procuri, a „prijavi se mejlom, bez l
 ```
 
 **Circle Workflows** (Business plan):
-- Dodat u *Creator Studio* → DM od tebe („Hej [ime], počni od lekcije 03/04, piši mi ovde ako zapne“) + tag `studio`
+- Dodat u *AI Video Editor* → DM od tebe („Hej [ime], počni od lekcije 03/04, piši mi ovde ako zapne“) + tag `studio`
 - Dodat u *AI Profit Lab* → DM + automatski otvara *Prvih 30 dana*
 - 3 dana bez otvorene lekcije 05 → podsetnik DM
 
@@ -397,7 +397,7 @@ Sve metrike osim aktivacije su u PostHog dashboard-u. Aktivacija dolazi iz Circl
 2. Cloudflare: `studio.aiprofit.rs`, Worker sa static assets, D1, Queue, Workers Paid plan, secrets
 3. `/api/checkout` + landing CONFIG + datumi + placeholderi
 4. `/api/stripe-webhook` + Queue consumer → Circle + MailerLite + welcome mejl + licenca + WooCommerce porudžbina na vladsdigital.com (proizvodi sa SKU-om, REST ključ, ugašeni Woo mejlovi kupcima) + noćni cron
-5. Circle: access groups (Lab grupa otvara iste prostore kao Lab Paywall), Creator Studio prostori, lekcije *Kreni ovde*, workflows
+5. Circle: access groups (Lab grupa otvara iste prostore kao Lab Paywall), AI Video Editor prostori, lekcije *Kreni ovde*, workflows
 6. Install skripte + aktivacija licence u pluginu
 7. `/hvala` + pravne stranice
 8. PostHog + Cloudflare Web Analytics + cookie banner, osnovni događaji i funnel dashboard
