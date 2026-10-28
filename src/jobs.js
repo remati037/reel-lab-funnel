@@ -92,7 +92,7 @@ const STUDIO_STEPS = [
   ["circle_check", (o, env) => ensureInGroup(env, o.email, env.CIRCLE_STUDIO_GROUP, env.CIRCLE_STUDIO_SPACE)],
 ];
 
-// Svaka Lab naplata: 1€ prvi mesec, pa 47€ svakog sledećeg
+// Svaka Lab naplata: 1€ prvi mesec, pa 57€ svakog sledećeg
 const LAB_STEPS = [
   ["circle", (o, env) => grantAccess(env, o, env.CIRCLE_LAB_GROUP)],
   [

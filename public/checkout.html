@@ -151,7 +151,7 @@
         <div class="sum"><span>Ukupno</span><b data-total>67€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes" data-launch-only>Cena je 67€ do srede, 11. novembra u 21h, a posle toga 97€.</p>
+        <p class="closes" data-launch-only>Cena je 67€ do kraja srede, 11. novembra, a posle toga 97€.</p>
       </div>
 
       <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
@@ -168,8 +168,8 @@
 
 <script>
   // Ista cena kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL u wrangler.jsonc):
-  // 67€ do 11. novembra u 21h, posle toga 97€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
-  const LAUNCH_UNTIL = new Date("2026-11-11T21:00:00+01:00").getTime();
+  // 67€ do kraja 11. novembra, posle toga 97€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
+  const LAUNCH_UNTIL = new Date("2026-11-12T00:00:00+01:00").getTime();
   const launch = Date.now() < LAUNCH_UNTIL;
   document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "67€" : "97€"));
   document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = !launch));

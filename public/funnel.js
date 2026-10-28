@@ -8,7 +8,7 @@ const FUNNEL = {
   circleUrl: "https://www.aiprofit.rs/c/ai-video-editor", // Circle prostor kursa
   email: "podrska@vladsdigital.com",
 
-  lab: { first: "1€", monthly: "47€", regular: "57€", trialDays: 30 },
+  lab: { first: "1€", monthly: "57€", trialDays: 30 },
   // Stripe Customer Portal: otkazivanje Lab-a i promena kartice (uživo zameni test link)
   portalUrl: "https://billing.stripe.com/p/login/test_4gM7sEea56162wueiKd7q00",
 
@@ -46,7 +46,7 @@ function withSession(url, extra = {}) {
    ========================================================= */
 const offer = document.querySelector("[data-main]");
 if (offer) {
-  // datum prve naplate od 47€
+  // datum prve naplate od 57€
   const d = new Date(Date.now() + FUNNEL.lab.trialDays * 86400000);
   const months = ["januara", "februara", "marta", "aprila", "maja", "juna", "jula", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
   const dateText = `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}`;

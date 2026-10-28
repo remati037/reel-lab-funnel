@@ -11,7 +11,7 @@ const CONFIG = {
   // Faze cene. +01:00 = srednjoevropsko vreme. Tajmer broji do kraja TRENUTNE faze i nikad se ne resetuje.
   // Posle poslednje faze važi regularPrice zauvek: prodaja se ne zatvara, a tajmer i sve sa data-launch-only nestaje.
   phases: [
-    { until: "2026-11-11T21:00:00+01:00", price: "67€" }, // cena za lansiranje (do srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
+    { until: "2026-11-12T00:00:00+01:00", price: "67€" }, // cena za lansiranje (do kraja srede, 11. nov; isto kao LAUNCH_UNTIL u wrangler.jsonc)
   ],
 
   // Fiksni tekstovi: upisuju se svuda gde u HTML-u piše data-t="...". data-t="price" je cena trenutne faze.

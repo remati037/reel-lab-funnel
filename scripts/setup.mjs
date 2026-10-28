@@ -32,8 +32,10 @@ async function setupStripe() {
   };
   const price = async (lookup_key, params) => {
     const { data } = await s.prices.list({ lookup_keys: [lookup_key] });
-    if (data[0]) return console.log(`  ✓ cena ${lookup_key} postoji`), data[0];
-    const p = await s.prices.create({ lookup_key, currency: "eur", ...params });
+    if (data[0]?.unit_amount === params.unit_amount) return console.log(`  ✓ cena ${lookup_key} postoji`), data[0];
+    // Promenjen iznos: nova cena preuzima lookup_key, stara se gasi (postojeće pretplate ostaju na njoj)
+    const p = await s.prices.create({ lookup_key, currency: "eur", ...params, ...(data[0] && { transfer_lookup_key: true }) });
+    if (data[0]) await s.prices.update(data[0].id, { active: false });
     console.log(`  + cena ${lookup_key}: ${params.unit_amount / 100}€${params.recurring ? " mesečno" : ""}`);
     return p;
   };
@@ -44,14 +46,14 @@ async function setupStripe() {
   await price("studio_lead", { product: studio.id, unit_amount: 6700, nickname: "Lični rok 72h 67€" });
 
   const lab = await product("AI Profit Lab", "lab");
-  await price("lab_monthly", { product: lab.id, unit_amount: 4700, recurring: { interval: "month" }, nickname: "Lab 47€ mesečno" });
+  await price("lab_monthly", { product: lab.id, unit_amount: 5700, recurring: { interval: "month" }, nickname: "Lab 57€ mesečno" });
 
   try {
-    await s.coupons.retrieve("PRVI_MESEC_1E");
-    console.log("  ✓ kupon PRVI_MESEC_1E postoji");
+    await s.coupons.retrieve("LAB_PRVI_MESEC_1E");
+    console.log("  ✓ kupon LAB_PRVI_MESEC_1E postoji");
   } catch {
-    await s.coupons.create({ id: "PRVI_MESEC_1E", name: "Prvi mesec 1€", amount_off: 4600, currency: "eur", duration: "once" });
-    console.log("  + kupon PRVI_MESEC_1E (46€ popusta, prvi mesec)");
+    await s.coupons.create({ id: "LAB_PRVI_MESEC_1E", name: "Prvi mesec 1€", amount_off: 5600, currency: "eur", duration: "once" });
+    console.log("  + kupon LAB_PRVI_MESEC_1E (56€ popusta, prvi mesec)");
   }
 }
 
@@ -69,7 +71,7 @@ async function setupWoo() {
   const ids = {};
   for (const [sku, name, price] of [
     ["CS-STUDIO", PRODUCT_NAME, "97"],
-    ["LAB-MESECNO", "AI Profit Lab (AI Video Editor upsell, mesečno)", "47"],
+    ["LAB-MESECNO", "AI Profit Lab (AI Video Editor upsell, mesečno)", "57"],
   ]) {
     const [found] = await woo("GET", `/products?sku=${sku}&status=any`);
     if (found) {

@@ -20,7 +20,7 @@
 <!--
   STRANICA: /ponuda — one-click upsell odmah posle Stripe Checkout-a (korak 2 od 3).
   Stripe success_url: /ponuda?session_id={CHECKOUT_SESSION_ID}
-  Ponuda: AI Profit Lab, 1€ prvi mesec, pa 47€/mes (redovno 57€, cena zaključana).
+  Ponuda: AI Profit Lab, 1€ prvi mesec, pa 57€/mes (ista cena kao na aiprofit.rs, zaključana dok je član).
   Dugme "Da" je na četiri mesta: hero, posle kartica, na dnu i u traci koja se zalepi pri dnu ekrana.
   Svako dugme ima data-yes="mesto", pa se u PostHog-u vidi koje prodaje (upsell_click → position).
   Ako je kupac već Lab član, server ga preskače direktno na /hvala?lab=clan.
@@ -57,7 +57,7 @@
         <p class="hero-sub"><b>AI Profit Lab.</b> Zajednica u kojoj dobijaš AI agente, automatizacije i 14 kurseva koje sam testirao na svojim biznisima. Samo ono što radi, korak po korak.</p>
 
         <div class="offer offer-mini" data-offer>
-          <p class="mini-price"><span class="amt" data-f="lab.first">1€</span><span>prvi mesec, pa <b><span data-f="lab.monthly">47€</span>/mes</b> <s data-f="lab.regular">57€</s></span></p>
+          <p class="mini-price"><span class="amt" data-f="lab.first">1€</span><span>prvi mesec, pa <b><span data-f="lab.monthly">57€</span>/mes</b></span></p>
           <button class="btn" type="button" data-yes="hero" data-label="Da, dodaj AI Profit Lab za 1€"><span>Da, dodaj AI Profit Lab za 1€</span></button>
           <p class="btn-note">Jedan klik, ista kartica. Otkaži bilo kad.</p>
           <p class="fail">Banka nije prihvatila naplatu. Tvoj AI Video Editor je i dalje kupljen. Probaj ponovo, ili idi dalje i Lab dodaj kasnije iz Circle-a.</p>
@@ -65,9 +65,7 @@
       </div>
 
       <div class="hero-video">
-        <!-- Video 60–90 sek: ti, iskreno, šta je Lab i šta dobija u prvih 30 dana.
-             Zameni sa: <video src="assets/lab.mp4" controls playsinline poster="assets/lab.jpg"></video> -->
-        <div class="media"><div class="ph">Video 60–90 sek · šta je AI Profit Lab</div><span class="play"></span></div>
+        <div class="media"><img src="assets/lab-naslovna.webp" alt="AI Profit Lab"></div>
         <a class="cue mono" href="#unutra">Šta dobijaš</a>
       </div>
     </div>
@@ -134,7 +132,7 @@
 
     <div class="offer offer-row" data-offer>
       <button class="btn" type="button" data-yes="kartice" data-label="Da, hoću Lab za 1€"><span>Da, hoću Lab za 1€</span></button>
-      <p class="btn-note">Pristup odmah · <span data-f="lab.monthly">47€</span>/mes od <span data-renew-date>…</span> · otkaži bilo kad</p>
+      <p class="btn-note">Pristup odmah · <span data-f="lab.monthly">57€</span>/mes od <span data-renew-date>…</span> · otkaži bilo kad</p>
       <p class="fail">Banka nije prihvatila naplatu. Tvoj AI Video Editor je i dalje kupljen. Probaj ponovo, ili idi dalje i Lab dodaj kasnije iz Circle-a.</p>
     </div>
   </div>
@@ -164,9 +162,8 @@
           </ul>
         </div>
       </div>
-      <!-- Zameni sa: <img src="assets/autor-lab.jpg" alt="Vladimir S."> -->
       <figure class="author">
-        <div class="media"><div class="ph">Tvoja fotografija</div></div>
+        <div class="media"><img src="assets/vlad.webp" alt="Vladimir Stanković" loading="lazy" style="object-position:50% 30%"></div>
         <figcaption class="mono">Sve testiram na svojih 5 biznisa · 20+ AI agenata</figcaption>
       </figure>
     </div>
@@ -186,10 +183,10 @@
           <span class="amt" data-f="lab.first">1€</span>
           <span class="lbl"><span class="lbl-k">Prvi mesec</span><b>Pristup odmah</b></span>
         </p>
-        <p class="lock">Posle toga <b><span data-f="lab.monthly">47€</span> mesečno</b> umesto <s><span data-f="lab.regular">57€</span></s>. Kao kupac AI Video Editora zadržavaš tu cenu dok god si član.<br>Unutra: 14 kurseva (1838€) i 500 Claude veština (197€).</p>
+        <p class="lock">Posle toga <b><span data-f="lab.monthly">57€</span> mesečno</b>. Kad Lab poskupi, tvoja cena ostaje ista dok god si član.<br>Unutra: 14 kurseva (1838€) i 500 Claude veština (197€).</p>
 
         <button class="btn" type="button" data-yes="dno" data-label="Da, dodaj AI Profit Lab za 1€"><span>Da, dodaj AI Profit Lab za 1€</span></button>
-        <p class="btn-note">Jedan klik. Naplaćujemo karticu koju si upravo koristio.<br><span data-f="lab.first">1€</span> sada, <span data-f="lab.monthly">47€</span>/mes od <span data-renew-date>…</span>. Otkaži bilo kad.</p>
+        <p class="btn-note">Jedan klik. Naplaćujemo karticu koju si upravo koristio.<br><span data-f="lab.first">1€</span> sada, <span data-f="lab.monthly">57€</span>/mes od <span data-renew-date>…</span>. Otkaži bilo kad.</p>
         <p class="fail">Banka nije prihvatila naplatu. Tvoj AI Video Editor je i dalje kupljen. Probaj ponovo, ili idi dalje i Lab možeš dodati kasnije iz Circle-a.</p>
         <a class="decline" data-no href="hvala.html">Ne hvala, idem na svoj AI Video Editor →</a>
       </div>

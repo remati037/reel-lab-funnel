@@ -84,7 +84,7 @@ const INSIGHTS = [
   },
   {
     name: "Lab zadržavanje po mesecima",
-    description: "Broj Lab naplata po mesecu pretplate (1 = prvi mesec 1€, 2 = prva naplata 47€...). Odnos 2 i 1 je zadržavanje.",
+    description: "Broj Lab naplata po mesecu pretplate (1 = prvi mesec 1€, 2 = prva naplata 57€...). Odnos 2 i 1 je zadržavanje.",
     query: viz({
       kind: "TrendsQuery",
       series: [ev("lab_payment", { custom_name: "Lab naplate" })],

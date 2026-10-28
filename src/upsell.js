@@ -5,7 +5,7 @@ import { track } from "./notify.js";
 const OFFER_HOURS = 24;
 
 // POST /api/upsell { session_id } → { status: succeeded | requires_action | declined | already | processing }
-// Pravi Lab pretplatu (1€ prvi mesec, pa 47€) karticom sačuvanom u checkout-u, bez ponovnog unosa.
+// Pravi Lab pretplatu (1€ prvi mesec, pa 57€) karticom sačuvanom u checkout-u, bez ponovnog unosa.
 export async function upsell(request, env) {
   const { session_id } = await request.json().catch(() => ({}));
   const session = await paidStudioSession(env, session_id);
@@ -43,7 +43,7 @@ export async function upsell(request, env) {
     const sub = await s.subscriptions.create({
       customer: session.customer,
       items: [{ price: prices[0].id }],
-      discounts: [{ coupon: "PRVI_MESEC_1E" }],
+      discounts: [{ coupon: "LAB_PRVI_MESEC_1E" }],
       default_payment_method: session.payment_intent.payment_method,
       payment_behavior: "allow_incomplete",
       metadata: { source: SOURCE, studio_session: session.id, ...utm },
