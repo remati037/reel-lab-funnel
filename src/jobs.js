@@ -71,7 +71,7 @@ const STUDIO_STEPS = [
   [
     "telegram",
     (o, env) =>
-      telegram(env, `🎬 Studio Reel Lab: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
+      telegram(env, `🎬 AI Video Editor: nova kupovina #${o.buyer_no}\n${o.email}\n${euros(o.amount_cents)}€ · ${o.utm_source || "direktno"}${o.utm_campaign ? " / " + o.utm_campaign : ""}`),
   ],
   [
     "meta",

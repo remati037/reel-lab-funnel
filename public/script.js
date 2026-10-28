@@ -177,13 +177,35 @@ setInterval(tick, 1000);
 /* ---------- hero video: dugme za zvuk ---------- */
 const heroVid = document.getElementById("heroVid");
 const heroSound = document.getElementById("heroSound");
-if (heroVid && heroSound) {
-  heroSound.addEventListener("click", () => {
-    heroVid.muted = !heroVid.muted;
-    if (!heroVid.muted) heroVid.play();
-    heroSound.textContent = heroVid.muted ? "▶ Pusti zvuk" : "❚❚ Isključi zvuk";
-  });
+// Zvuk ide samo iz jednog videa: kad ga pustiš na jednom, ostali se utišaju.
+function setSound(video, btn, on) {
+  video.muted = !on;
+  if (on) video.play();
+  btn.textContent = on ? "❚❚ Isključi zvuk" : "▶ Pusti zvuk";
 }
+const soundPairs = [];
+function soloSound(video, btn) {
+  const on = video.muted;
+  soundPairs.forEach(([v, b]) => v !== video && setSound(v, b, false));
+  setSound(video, btn, on);
+}
+if (heroVid && heroSound) {
+  soundPairs.push([heroVid, heroSound]);
+  heroSound.addEventListener("click", () => soloSound(heroVid, heroSound));
+}
+
+/* ---------- moji rilsovi: vrte se bez zvuka samo dok su na ekranu ---------- */
+const reelObserver = new IntersectionObserver(
+  (entries) => entries.forEach((e) => (e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause())),
+  { threshold: 0.4 }
+);
+document.querySelectorAll("#reels figure, #trials figure").forEach((fig) => {
+  const video = fig.querySelector("video");
+  const btn = fig.querySelector(".sound");
+  soundPairs.push([video, btn]);
+  btn.addEventListener("click", () => soloSound(video, btn));
+  reelObserver.observe(video);
+});
 
 /* ---------- sticky donja traka (pojavi se posle hero sekcije) ---------- */
 const bar = document.getElementById("stickybar");
@@ -203,3 +225,17 @@ const io = new IntersectionObserver(
   { rootMargin: "0px 0px -8% 0px" }
 );
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+/* ---------- karuseli: svaka kartica lista svoje slajdove (2,2 s po slajdu) ---------- */
+document.querySelectorAll(".caro .media.slides").forEach((box, n) => {
+  const imgs = [...box.querySelectorAll("img")];
+  const count = box.querySelector(".count");
+  let i = 0;
+  imgs[0].classList.add("on");
+  setTimeout(() => setInterval(() => {
+    imgs[i].classList.remove("on");
+    i = (i + 1) % imgs.length;
+    imgs[i].classList.add("on");
+    count.textContent = `${i + 1}/${imgs.length}`;
+  }, 2200), n * 400);
+});
