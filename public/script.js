@@ -16,14 +16,14 @@ const CONFIG = {
 
   // Fiksni tekstovi: upisuju se svuda gde u HTML-u piše data-t="...". data-t="price" je cena trenutne faze.
   texts: {
-    regularPrice: "97€",
+    regularPrice: "200€",
     launchPrice: "67€",
   },
 
   // Natpisi uz tajmer, po fazi
   labels: {
     short: ["Cena raste za"],
-    long: ["Cena raste na 97€ za"],
+    long: ["Cena raste na 200€ za"],
   },
 };
 

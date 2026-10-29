@@ -22,7 +22,7 @@ Od prvog rilsa do 2. meseca u AI Profit Lab-u.
  Email lista + Lab članovi ─────────────────► LANDING (/)  ◄────────────┘
                                                     │  CTA
                                                     ▼
-                                     STRIPE CHECKOUT 97€ (67€ launch)
+                                     STRIPE CHECKOUT 200€ (67€ launch)
                                      + order bump: Viral Hook Pack 27€
                                      + sačuvana kartica (off_session)
                                                     │
@@ -49,7 +49,7 @@ Od prvog rilsa do 2. meseca u AI Profit Lab-u.
 |---|---|---|
 | **Organski rils** sa CTA „komentariši STUDIO“ | ManyChat DM → landing sa UTM-om | Topla publika, ide direktno na prodaju |
 | **Organski rils** „komentariši SKILL“ | ManyChat DM → `/besplatno` | Gradi listu, prodaje kasnije kroz mejl |
-| **Meta ads, hladni** | `/besplatno` (lead magnet) | Jeftiniji lead od direktne prodaje za 97€ |
+| **Meta ads, hladni** | `/besplatno` (lead magnet) | Jeftiniji lead od direktne prodaje za 200€ |
 | **Meta ads, retarget** (posetili landing, gledali 50% rilsa, lead-ovi) | Landing | Ovde se prodaje |
 | **Email lista** | Landing, launch sekvenca | |
 | **Postojeći AI Profit Lab članovi** | Landing sa članskom cenom 67€ tokom celog launcha | Obrnuti cross-sell, nagrađuje članove |
@@ -65,7 +65,7 @@ Od prvog rilsa do 2. meseca u AI Profit Lab-u.
   - D1 tvoja priča (zašto si ga napravio, sati montaže)
   - D2 dokaz: pre/posle, broj pregleda, testimonijal
   - D3 šta Studio dodaje originalu (46 efekata, probni rilsovi, karuseli, objavljivanje)
-  - D4 **lična ponuda 72h**: 67€ umesto 97€ (pravi rok po osobi, ne lažni tajmer)
+  - D4 **lična ponuda 72h**: 67€ umesto 200€ (pravi rok po osobi, ne lažni tajmer)
   - D6 još 24h
   - D7 zatvaranje ponude
 - Ko ne kupi → opšti newsletter + povremeno direktna ponuda AI Profit Lab za 1€ (Lab ima i svoj ulaz, ne samo kroz Studio).
@@ -85,7 +85,7 @@ Struktura je jaka. Pre puštanja:
 - [ ] PostHog + Pixel (vidi sekciju 10).
 
 **Dodati**
-- [ ] `CONFIG.mode: "launch" | "evergreen"`. U evergreen modu nestaju „vrata se zatvaraju“ blokovi, ostaje cena 97€ i bonus.
+- [ ] `CONFIG.mode: "launch" | "evergreen"`. U evergreen modu nestaju „vrata se zatvaraju“ blokovi, ostaje cena 200€ i bonus.
 - [ ] Mala linija ispod glavnog CTA: „Sigurno plaćanje preko Stripe-a · Apple Pay / Google Pay · Pristup odmah“.
 - [ ] Ako dolazi Lab član (`?clan=lab`): prikaz cene 67€ i promo kod automatski prosleđen u checkout.
 
@@ -99,7 +99,7 @@ Struktura je jaka. Pre puštanja:
 
 | Podešavanje | Vrednost | Zašto |
 |---|---|---|
-| `mode` | `payment` | jednokratno 97€ / 67€ |
+| `mode` | `payment` | jednokratno 200€ / 67€ |
 | `line_items` | AI Video Editor (price koji važi u tom trenutku: launch / regular / lead-72h) | cena se bira na serveru, ne u browseru |
 | `optional_items` | Viral Hook Pack 27€ | order bump direktno u Stripe Checkout-u |
 | `customer_creation` | `always` | treba nam Customer za upsell |
@@ -317,7 +317,7 @@ Najava 3 dana pre · otvaranje · „48h launch cena ističe“ · dokaz/studija
 
 ## 9. Posle lansiranja: evergreen
 
-- Landing prelazi u `evergreen` mod: 97€, bez „vrata se zatvaraju“.
+- Landing prelazi u `evergreen` mod: 200€, bez „vrata se zatvaraju“.
 - Hitnost postoji **samo tamo gde je istinita:** lični rok 72h u nurture sekvenci (67€) i bonus za brzu kupovinu.
 - Radionica za prvih 100 se pretvara u **mesečni live Q&A za nove kupce** (ili snimak u Studio prostoru).
 - Ads: stalna kampanja na `/besplatno` + retarget na landing.
@@ -393,7 +393,7 @@ Sve metrike osim aktivacije su u PostHog dashboard-u. Aktivacija dolazi iz Circl
 ## 12. Redosled izrade
 
 **Faza 1: bez ovoga nema lansiranja**
-1. Stripe: proizvodi i cene (Studio 97/67/lead-67, Hook Pack 27, Lab 47/mes, kupon 1€), Tax, Radar, Customer Portal
+1. Stripe: proizvodi i cene (Studio 200/67/lead-67, Hook Pack 27, Lab 47/mes, kupon 1€), Tax, Radar, Customer Portal
 2. Cloudflare: `studio.aiprofit.rs`, Worker sa static assets, D1, Queue, Workers Paid plan, secrets
 3. `/api/checkout` + landing CONFIG + datumi + placeholderi
 4. `/api/stripe-webhook` + Queue consumer → Circle + MailerLite + welcome mejl + licenca + WooCommerce porudžbina na vladsdigital.com (proizvodi sa SKU-om, REST ključ, ugašeni Woo mejlovi kupcima) + noćni cron
@@ -419,7 +419,7 @@ Sve metrike osim aktivacije su u PostHog dashboard-u. Aktivacija dolazi iz Circl
 
 ### Predlog kalendara (datumi na landingu su prošli)
 - 2 nedelje izrade + testiranja → **otvaranje pon 9.11. u 9h**
-- 67€ do sre 11.11. u 21h → 97€ do **ned 15.11. u 21h**
+- 67€ do sre 11.11. u 21h → 200€ do **ned 15.11. u 21h**
 - Radionica za prvih 100: **ned 22.11. u 11h**
 - Od 16.11. evergreen
 

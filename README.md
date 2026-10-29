@@ -41,7 +41,7 @@ Plan izrade korak po korak je u [REALIZACIJA.md](REALIZACIJA.md).
 
 1. **Landing:** na http://localhost:8787 klikni bilo koje dugme **„Neka Claude montira moje rilsove“**.
 2. **Checkout:** otvara se test checkout, sa formom i odbrojavanjem levo i karticom „Tvoja porudžbina“ desno.
-   - Po želji čekiraj **Viral Hook Pack (+27€)** (order bump). Ukupno u kartici porudžbine se menja sa 97€ na 124€.
+   - Po želji čekiraj **Viral Hook Pack (+27€)** (order bump). Ukupno u kartici porudžbine se menja sa 200€ na 227€.
    - Upiši bilo koji email (npr. `test@primer.rs`) i čekiraj **uslove**. Polja kartice su zaključana test vrednostima.
    - Klikni **Završi porudžbinu**.
 3. **Ponuda (upsell):** stranica „Tvoja porudžbina nije završena“.

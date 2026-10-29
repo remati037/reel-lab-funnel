@@ -44,7 +44,7 @@ async function setupStripe() {
 
   const studio = await product(PRODUCT_NAME, "studio");
   await price("studio_launch", { product: studio.id, unit_amount: 6700, nickname: "Launch 67€" });
-  await price("studio_regular", { product: studio.id, unit_amount: 9700, nickname: "Redovna 97€" });
+  await price("studio_regular", { product: studio.id, unit_amount: 20000, nickname: "Redovna 200€" });
   await price("studio_lead", { product: studio.id, unit_amount: 6700, nickname: "Lični rok 72h 67€" });
 
   const lab = await product("AI Profit Lab", "lab");
@@ -72,7 +72,7 @@ async function setupWoo() {
   console.log("WooCommerce");
   const ids = {};
   for (const [sku, name, price] of [
-    ["CS-STUDIO", PRODUCT_NAME, "97"],
+    ["CS-STUDIO", PRODUCT_NAME, "200"],
     ["LAB-MESECNO", "AI Profit Lab (AI Video Editor upsell, mesečno)", "57"],
   ]) {
     const [found] = await woo("GET", `/products?sku=${sku}&status=any`);

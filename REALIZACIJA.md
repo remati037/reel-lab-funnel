@@ -65,7 +65,7 @@ Sve u **test modu** gde postoji. Live ključevi tek u Fazi 5.
 ### 0.7 Podešavanje preko skripti [JA]
 Kad su ključevi u `.dev.vars`, pokrećem skripte (sve u test modu):
 - **Stripe:**
-  - proizvodi: AI Video Editor (cene `studio_launch` 67€, `studio_regular` 97€, `studio_lead` 67€), Viral Hook Pack (`hookpack` 27€), AI Profit Lab (`lab_monthly` 47€/mes)
+  - proizvodi: AI Video Editor (cene `studio_launch` 67€, `studio_regular` 200€, `studio_lead` 67€), Viral Hook Pack (`hookpack` 27€), AI Profit Lab (`lab_monthly` 47€/mes)
   - kupon `PRVI_MESEC_1E` (46€ popusta, jednom)
 - **Woo:** 3 proizvoda sa SKU-ovima.
 - **MailerLite:** grupe `Lead – Free skill`, `Kupci – Studio`, `Lab – član`, `Lab – bivši`, `Radionica`, `Refund` + polja.
