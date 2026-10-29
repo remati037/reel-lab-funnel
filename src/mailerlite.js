@@ -7,7 +7,15 @@ async function ml(env, method, path, body) {
     body: body && JSON.stringify(body),
   });
   if (r.status === 404 && method === "DELETE") return null; // već nije u grupi
-  if (!r.ok) throw new Error(`MailerLite ${method} ${path}: ${r.status} ${await r.text()}`);
+  if (!r.ok) {
+    const text = await r.text();
+    // Odjavljen pretplatnik ne može ponovo da se upiše preko API-ja; ne sme da blokira isporuku
+    if (r.status === 422 && text.includes("unsubscribed")) {
+      console.warn(`MailerLite ${method} ${path}: odjavljen pretplatnik, preskačem`);
+      return null;
+    }
+    throw new Error(`MailerLite ${method} ${path}: ${r.status} ${text}`);
+  }
   return r.status === 204 ? null : r.json();
 }
 
