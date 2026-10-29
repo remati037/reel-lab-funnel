@@ -37,8 +37,8 @@ export async function checkout(request, env) {
     mode: "payment",
     line_items: [{ price: prices[0].id, quantity: 1 }],
     customer_creation: "always",
-    // Čuva karticu za one-click upsell na /ponuda
-    payment_intent_data: { setup_future_usage: "off_session", metadata },
+    // Čuva karticu za one-click upsell na /ponuda. Opis je naziv proizvoda u Orderly-ju (čita naplate iz Stripe-a).
+    payment_intent_data: { setup_future_usage: "off_session", description: "AI Video Editor", metadata },
     // Upsell naplaćuje sačuvanu karticu (uklj. Apple Pay, Google Pay, Link). Bancontact i iDEAL
     // bi umesto kartice ostavili SEPA nalog, pa ih ovde ne nudimo.
     excluded_payment_method_types: ["bancontact", "ideal"],
