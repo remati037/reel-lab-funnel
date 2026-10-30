@@ -208,6 +208,37 @@ document.querySelectorAll("#reels figure, #trials figure").forEach((fig) => {
   reelObserver.observe(video);
 });
 
+/* ---------- računica: koliko se isplati (cena montažera po rilsu je data-per-reel na .calc) ---------- */
+const calc = document.querySelector(".calc");
+if (calc) {
+  const perReel = Number(calc.dataset.perReel);
+  const range = document.getElementById("calcRange");
+  const eur = (n) => `${n.toLocaleString("de-DE")}€`;
+  const $ = (id) => document.getElementById(id);
+  function priceNow() {
+    const phase = currentPhase(Date.now());
+    const p = phase >= CONFIG.phases.length ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
+    return parseInt(p, 10);
+  }
+  function updateCalc() {
+    const n = Number(range.value);
+    const price = priceNow();
+    const editor = n * perReel;
+    const save = editor - price;
+    const breakEven = Math.floor(price / perReel) + 1;
+    $("calcN").textContent = n;
+    $("calcMath").textContent = `${n} × ${perReel}€`;
+    $("calcEditor").textContent = eur(editor);
+    $("calcPrice").textContent = eur(price);
+    $("calcSave").textContent = save > 0 ? eur(save) : "0€";
+    $("calcNote").innerHTML = save > 0
+      ? `Isplati se već od <b>${breakEven}. rilsa</b>. Svaki posle toga je čista ušteda.`
+      : `Isplati se od <b>${breakEven}. rilsa</b>. Pomeri klizač i vidi koliko štediš posle toga.`;
+  }
+  range.addEventListener("input", updateCalc);
+  updateCalc();
+}
+
 /* ---------- sticky donja traka (pojavi se posle hero sekcije) ---------- */
 const bar = document.getElementById("stickybar");
 const hero = document.getElementById("top");

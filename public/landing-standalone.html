@@ -699,6 +699,26 @@ footer a { color: var(--taupe); }
 
 /* fotografija autora: lice je pri vrhu, pa natpis ide na dno slike */
 .close-photo .display { top: auto; bottom: 4%; }
+
+/* ---------- računica: kalkulator uštede ---------- */
+.calc { display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center; }
+.calc-slider { display: block; margin-top: 36px; }
+.calc-slider > .mono { display: block; color: var(--taupe); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.calc-n { display: block; font-family: var(--f-display); font-size: clamp(56px, 8vw, 96px); line-height: 1; text-transform: uppercase; margin: 8px 0 14px; }
+.calc-n b { color: var(--orange); font-weight: 400; }
+.calc-slider input { width: 100%; accent-color: var(--orange); height: 28px; cursor: pointer; }
+.calc-slider .calc-scale { display: flex; justify-content: space-between; color: var(--taupe); font-size: 10px; margin-top: 4px; }
+.calc-card { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 32px 32px 28px; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .9); }
+.calc-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(22, 9, 3, .15); font-size: 16px; }
+.calc-row small { display: block; font-size: 10px; color: rgba(22, 9, 3, .55); margin-top: 4px; }
+.calc-row b { font-family: var(--f-display); font-weight: 400; font-size: 34px; line-height: 1; }
+.calc-row.save { border-bottom: 0; padding-top: 20px; }
+.calc-row.save span { font-weight: 700; font-size: 18px; }
+.calc-row.save b { font-size: clamp(56px, 7vw, 84px); color: var(--orange-press, var(--orange)); }
+.calc-note { margin: 4px 0 22px; font-size: 15px; line-height: 1.45; }
+.calc-card .btn { display: block; text-align: center; }
+@media (max-width: 1023px) { .calc { grid-template-columns: 1fr; gap: 36px; } }
+@media (max-width: 767px) { .calc-card { padding: 24px 20px 22px; } }
   </style>
 </head>
 <body>
@@ -1201,10 +1221,39 @@ footer a { color: var(--taupe); }
   </div>
 </section>
 
-<!-- ================= SCENA 09 · CENA ================= -->
+<!-- ================= SCENA 09 · RAČUNICA ================= -->
+<!-- Kalkulator: cena montažera po rilsu je u data-per-reel, cena proizvoda se čita iz CONFIG (trenutna faza). -->
+<section class="sec" id="racunica">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Računica</div>
+
+    <div class="calc reveal" data-per-reel="30">
+      <div>
+        <h2 class="display h2">Izračunaj za koliko ti se isplati.</h2>
+        <p class="lead" style="margin-top:20px">Montažer u regionu uzima oko <b>30€ po rilsu</b>. Pomeri klizač na broj rilsova koje montiraš i vidi koliko ostaje u tvom džepu.</p>
+        <label class="calc-slider">
+          <span class="mono">Koliko rilsova montiraš</span>
+          <span class="calc-n"><b id="calcN">100</b> rilsova</span>
+          <input type="range" id="calcRange" min="1" max="300" step="1" value="100" aria-label="Broj rilsova">
+          <span class="calc-scale mono"><span>1</span><span>100</span><span>200</span><span>300</span></span>
+        </label>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-row"><span>Kod montažera <small class="mono" id="calcMath">100 × 30€</small></span><b id="calcEditor">3.000€</b></div>
+        <div class="calc-row"><span>AI Video Editor <small class="mono">jedna uplata</small></span><b id="calcPrice">67€</b></div>
+        <div class="calc-row save"><span>Uštediš</span><b id="calcSave">2.933€</b></div>
+        <p class="calc-note" id="calcNote">Isplati se već od <b>3. rilsa</b>. Svaki posle toga je čista ušteda.</p>
+        <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 10 · CENA ================= -->
 <section class="sec price-sec" id="cena">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Cena</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Cena</div>
 
     <div class="price-grid">
       <div class="reveal">
@@ -1271,10 +1320,10 @@ footer a { color: var(--taupe); }
   </div>
 </section>
 
-<!-- ================= SCENA 10 · LANSIRANJE ================= -->
+<!-- ================= SCENA 11 · LANSIRANJE ================= -->
 <section class="sec" id="lansiranje" data-launch-only>
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Nedelja lansiranja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>11</b> <span class="sep">|</span> Nedelja lansiranja</div>
 
     <div class="launch-grid">
       <div class="reveal">
@@ -1296,10 +1345,10 @@ footer a { color: var(--taupe); }
   </div>
 </section>
 
-<!-- ================= SCENA 11 · PITANJA ================= -->
+<!-- ================= SCENA 12 · PITANJA ================= -->
 <section class="sec faqs" id="pitanja">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>11</b> <span class="sep">|</span> Pitanja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>12</b> <span class="sep">|</span> Pitanja</div>
 
     <div class="faq-grid">
       <h2 class="display h2">Iskreni odgovori pre kupovine.</h2>
@@ -1338,10 +1387,10 @@ footer a { color: var(--taupe); }
   </div>
 </section>
 
-<!-- ================= SCENA 12 · POSLEDNJI KADAR ================= -->
+<!-- ================= SCENA 13 · POSLEDNJI KADAR ================= -->
 <section class="sec">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>12</b> <span class="sep">|</span> Poslednji kadar</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>13</b> <span class="sep">|</span> Poslednji kadar</div>
 
     <div class="finale reveal">
       <h2 class="display"><span>Ubaci klipove.</span><span>Reci kreni.</span><span>Objavi rils.</span></h2>
@@ -1596,6 +1645,37 @@ document.querySelectorAll("#reels figure, #trials figure").forEach((fig) => {
   btn.addEventListener("click", () => soloSound(video, btn));
   reelObserver.observe(video);
 });
+
+/* ---------- računica: koliko se isplati (cena montažera po rilsu je data-per-reel na .calc) ---------- */
+const calc = document.querySelector(".calc");
+if (calc) {
+  const perReel = Number(calc.dataset.perReel);
+  const range = document.getElementById("calcRange");
+  const eur = (n) => `${n.toLocaleString("de-DE")}€`;
+  const $ = (id) => document.getElementById(id);
+  function priceNow() {
+    const phase = currentPhase(Date.now());
+    const p = phase >= CONFIG.phases.length ? CONFIG.texts.regularPrice : CONFIG.phases[phase].price;
+    return parseInt(p, 10);
+  }
+  function updateCalc() {
+    const n = Number(range.value);
+    const price = priceNow();
+    const editor = n * perReel;
+    const save = editor - price;
+    const breakEven = Math.floor(price / perReel) + 1;
+    $("calcN").textContent = n;
+    $("calcMath").textContent = `${n} × ${perReel}€`;
+    $("calcEditor").textContent = eur(editor);
+    $("calcPrice").textContent = eur(price);
+    $("calcSave").textContent = save > 0 ? eur(save) : "0€";
+    $("calcNote").innerHTML = save > 0
+      ? `Isplati se već od <b>${breakEven}. rilsa</b>. Svaki posle toga je čista ušteda.`
+      : `Isplati se od <b>${breakEven}. rilsa</b>. Pomeri klizač i vidi koliko štediš posle toga.`;
+  }
+  range.addEventListener("input", updateCalc);
+  updateCalc();
+}
 
 /* ---------- sticky donja traka (pojavi se posle hero sekcije) ---------- */
 const bar = document.getElementById("stickybar");

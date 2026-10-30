@@ -688,3 +688,23 @@ footer a { color: var(--taupe); }
 
 /* fotografija autora: lice je pri vrhu, pa natpis ide na dno slike */
 .close-photo .display { top: auto; bottom: 4%; }
+
+/* ---------- računica: kalkulator uštede ---------- */
+.calc { display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center; }
+.calc-slider { display: block; margin-top: 36px; }
+.calc-slider > .mono { display: block; color: var(--taupe); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.calc-n { display: block; font-family: var(--f-display); font-size: clamp(56px, 8vw, 96px); line-height: 1; text-transform: uppercase; margin: 8px 0 14px; }
+.calc-n b { color: var(--orange); font-weight: 400; }
+.calc-slider input { width: 100%; accent-color: var(--orange); height: 28px; cursor: pointer; }
+.calc-slider .calc-scale { display: flex; justify-content: space-between; color: var(--taupe); font-size: 10px; margin-top: 4px; }
+.calc-card { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 32px 32px 28px; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .9); }
+.calc-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(22, 9, 3, .15); font-size: 16px; }
+.calc-row small { display: block; font-size: 10px; color: rgba(22, 9, 3, .55); margin-top: 4px; }
+.calc-row b { font-family: var(--f-display); font-weight: 400; font-size: 34px; line-height: 1; }
+.calc-row.save { border-bottom: 0; padding-top: 20px; }
+.calc-row.save span { font-weight: 700; font-size: 18px; }
+.calc-row.save b { font-size: clamp(56px, 7vw, 84px); color: var(--orange-press, var(--orange)); }
+.calc-note { margin: 4px 0 22px; font-size: 15px; line-height: 1.45; }
+.calc-card .btn { display: block; text-align: center; }
+@media (max-width: 1023px) { .calc { grid-template-columns: 1fr; gap: 36px; } }
+@media (max-width: 767px) { .calc-card { padding: 24px 20px 22px; } }

@@ -513,10 +513,39 @@
   </div>
 </section>
 
-<!-- ================= SCENA 09 · CENA ================= -->
+<!-- ================= SCENA 09 · RAČUNICA ================= -->
+<!-- Kalkulator: cena montažera po rilsu je u data-per-reel, cena proizvoda se čita iz CONFIG (trenutna faza). -->
+<section class="sec" id="racunica">
+  <div class="wrap">
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Računica</div>
+
+    <div class="calc reveal" data-per-reel="30">
+      <div>
+        <h2 class="display h2">Izračunaj za koliko ti se isplati.</h2>
+        <p class="lead" style="margin-top:20px">Montažer u regionu uzima oko <b>30€ po rilsu</b>. Pomeri klizač na broj rilsova koje montiraš i vidi koliko ostaje u tvom džepu.</p>
+        <label class="calc-slider">
+          <span class="mono">Koliko rilsova montiraš</span>
+          <span class="calc-n"><b id="calcN">100</b> rilsova</span>
+          <input type="range" id="calcRange" min="1" max="300" step="1" value="100" aria-label="Broj rilsova">
+          <span class="calc-scale mono"><span>1</span><span>100</span><span>200</span><span>300</span></span>
+        </label>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-row"><span>Kod montažera <small class="mono" id="calcMath">100 × 30€</small></span><b id="calcEditor">3.000€</b></div>
+        <div class="calc-row"><span>AI Video Editor <small class="mono">jedna uplata</small></span><b id="calcPrice">67€</b></div>
+        <div class="calc-row save"><span>Uštediš</span><b id="calcSave">2.933€</b></div>
+        <p class="calc-note" id="calcNote">Isplati se već od <b>3. rilsa</b>. Svaki posle toga je čista ušteda.</p>
+        <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCENA 10 · CENA ================= -->
 <section class="sec price-sec" id="cena">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>09</b> <span class="sep">|</span> Cena</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Cena</div>
 
     <div class="price-grid">
       <div class="reveal">
@@ -583,10 +612,10 @@
   </div>
 </section>
 
-<!-- ================= SCENA 10 · LANSIRANJE ================= -->
+<!-- ================= SCENA 11 · LANSIRANJE ================= -->
 <section class="sec" id="lansiranje" data-launch-only>
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>10</b> <span class="sep">|</span> Nedelja lansiranja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>11</b> <span class="sep">|</span> Nedelja lansiranja</div>
 
     <div class="launch-grid">
       <div class="reveal">
@@ -608,10 +637,10 @@
   </div>
 </section>
 
-<!-- ================= SCENA 11 · PITANJA ================= -->
+<!-- ================= SCENA 12 · PITANJA ================= -->
 <section class="sec faqs" id="pitanja">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>11</b> <span class="sep">|</span> Pitanja</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>12</b> <span class="sep">|</span> Pitanja</div>
 
     <div class="faq-grid">
       <h2 class="display h2">Iskreni odgovori pre kupovine.</h2>
@@ -650,10 +679,10 @@
   </div>
 </section>
 
-<!-- ================= SCENA 12 · POSLEDNJI KADAR ================= -->
+<!-- ================= SCENA 13 · POSLEDNJI KADAR ================= -->
 <section class="sec">
   <div class="wrap">
-    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>12</b> <span class="sep">|</span> Poslednji kadar</div>
+    <div class="scene mono"><svg class="clap"><use href="#clap"/></svg> Scena <b>13</b> <span class="sep">|</span> Poslednji kadar</div>
 
     <div class="finale reveal">
       <h2 class="display"><span>Ubaci klipove.</span><span>Reci kreni.</span><span>Objavi rils.</span></h2>
