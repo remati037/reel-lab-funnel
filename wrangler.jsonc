@@ -44,7 +44,7 @@
     "AUTOMATIC_TAX": "false",
     // Lab članovi sa 3+ meseca ili kvartalnom/godišnjom pretplatom dobijaju AI Video Editor (src/labperks.js).
     // dry = samo Telegram spisak, live = dodeljuje, off = isključeno
-    "LAB_PERKS": "dry",
+    "LAB_PERKS": "live",
     // Javni Stripe ključ (pk_...), treba samo za 3DS potvrdu na /ponuda
     "STRIPE_PUBLISHABLE_KEY": "pk_live_51TZnpX3qt764ELv72A4YKrXQfhvngwVR27JEerIo1GgjGmtu8InXdAo4ONlEf6mp7sO3mxHw46ORXQSN3tosPM5600byaVpMhp",
     // Stripe Customer Portal: Lab član sam otkazuje ili menja karticu

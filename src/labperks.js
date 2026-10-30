@@ -4,7 +4,7 @@ import { telegram } from "./notify.js";
 // AI Video Editor besplatno za Lab članove: aktivna pretplata i 3+ plaćene naplate (prvi mesec od 1€ se računa),
 // ili aktivna kvartalna/godišnja pretplata. Proverava se svake noći (cron). Licenca ostaje i ako kasnije otkažu Lab.
 // Lab pretplate su sve Stripe pretplate na proizvod iz LAB_PRODUCT_IDS, a ako nije zadat, na proizvod čije ime
-// sadrži "Profit Lab" (i funnel upsell i Circle Paywall, jer su na istom Stripe nalogu).
+// sadrži "Profit Lab" ili "Webinar Ponuda" (i funnel upsell i Circle Paywall, jer su na istom Stripe nalogu).
 // LAB_PERKS: "live" dodeljuje, "dry" samo javi na Telegram koga bi dodao, sve ostalo isključuje proveru.
 
 const MIN_PAID = 3;
@@ -21,7 +21,7 @@ async function labProducts(s, env) {
   const all = new Map();
   for await (const p of s.products.list({ limit: 100 })) {
     all.set(p.id, p.name);
-    if (ids.length ? ids.includes(p.id) : /profit lab/i.test(p.name)) lab.set(p.id, p.name);
+    if (ids.length ? ids.includes(p.id) : /profit lab|webinar ponuda/i.test(p.name)) lab.set(p.id, p.name);
   }
   return { lab, all };
 }
