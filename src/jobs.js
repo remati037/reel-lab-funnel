@@ -5,6 +5,8 @@ import { createOrder, addOrderNote } from "./woo.js";
 import { sendEmail, track, telegram } from "./notify.js";
 import { welcomeEmail, labPerkEmail } from "./emails.js";
 import { metaEvent } from "./meta.js";
+import { chargeLab } from "./upsell.js";
+import { paidStudioSession } from "./lab.js";
 
 const euros = (cents) => (cents / 100).toFixed(2).replace(/\.00$/, "");
 
@@ -21,6 +23,17 @@ const STUDIO_STEPS = [
         o.circle_new = 1;
       }
       await addToAccessGroup(env, o.email, env.CIRCLE_STUDIO_GROUP);
+    },
+  ],
+  [
+    // Order bump: Lab naplaćuje /ponuda čim se kupac vrati sa plaćanja. Ovo je rezerva ako je
+    // zatvorio stranicu pre toga. Ako je /ponuda već pokušala (bilo kakav ishod), ne diramo.
+    "lab_bump",
+    async (o, env) => {
+      const session = await paidStudioSession(env, o.stripe_ref);
+      if (session?.metadata?.bump !== "1") return;
+      const tried = await env.DB.prepare("SELECT 1 FROM upsells WHERE session_id = ?").bind(o.stripe_ref).first();
+      if (!tried) await chargeLab(env, session);
     },
   ],
   [

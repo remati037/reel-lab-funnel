@@ -34,6 +34,17 @@
   </symbol>
 </svg>
 
+<!-- ORDER BUMP: kupac je u checkout-u već dodao Lab, pa umesto ponude vidi samo ovo dok se 1€ naplaćuje.
+     Ako banka odbije, ovo nestaje i ostaje obična ponuda sa porukom o grešci (funnel.js). -->
+<div class="bump-run" data-bump-run role="status" aria-live="polite" hidden>
+  <div class="wrap">
+    <span class="mono">AI Video Editor je plaćen ✓</span>
+    <p class="display">Aktiviramo tvoj AI Profit Lab…</p>
+    <p class="sub">Naplaćujemo 1€ karticom koju si upravo koristio. Ne zatvaraj stranicu, traje par sekundi.</p>
+    <span class="spin" aria-hidden="true"></span>
+  </div>
+</div>
+
 <!-- STOP TRAKA: prvo što kupac vidi posle plaćanja -->
 <div class="stop" role="status">
   <div class="wrap">

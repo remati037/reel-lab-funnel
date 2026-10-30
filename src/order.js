@@ -5,6 +5,7 @@ import { stripe } from "./stripe.js";
 //   ready:  webhook je obradio kupovinu
 //   lab:    uzeo je Lab u ovom funnelu
 //   labClan: već je bio Lab član (ponuda se preskače)
+//   bump:   čekirao je Lab u checkout-u (order bump), pa /ponuda naplaćuje bez pitanja
 export async function order(request, env) {
   const sessionId = new URL(request.url).searchParams.get("session_id");
   const session = await paidStudioSession(env, sessionId);
@@ -24,5 +25,6 @@ export async function order(request, env) {
     ...(row && { amount: row.amount_cents / 100, currency: row.currency.toUpperCase() }),
     lab,
     labClan: !lab && (await isLabMember(env, session.customer_details.email.toLowerCase())),
+    bump: session.metadata?.bump === "1",
   });
 }

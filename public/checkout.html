@@ -84,6 +84,22 @@
 
         <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš da je sačuvamo za eventualne naredne kupovine kod nas, uvek samo uz tvoj klik.</p>
 
+        <!-- ORDER BUMP: Lab se naplaćuje odmah posle plaćanja, istom karticom (src/upsell.js).
+             Ko ga čekira, preskače ponudu na /ponuda; ko ne čekira, vidi je kao i do sada. -->
+        <label class="co-bump">
+          <span class="top"><b>Dodaj u porudžbinu</b><span>Opciono</span></span>
+          <span class="yes"><input type="checkbox" name="bump"> Da, dodaj AI Profit Lab za 1€</span>
+          <p><b>Prvi mesec 1€, zatim 57€ mesečno od <span data-renew-date>…</span>. Otkaži bilo kad, jednim klikom.</b> Unutra: 14 kurseva i 500 Claude veština, u istom Circle-u kao tvoj AI Video Editor.</p>
+          <details>
+            <summary>Saznaj više</summary>
+            <ul>
+              <li>Samo ono što je testirano na stvarnom biznisu: problem → rešenje → korak po korak.</li>
+              <li>Zapneš, pitaš i dobiješ odgovor u zajednici.</li>
+              <li>Tvoja cena od 57€ ostaje ista dok god si član, i kad Lab poskupi.</li>
+              <li>Naplaćuje se ista kartica, kao posebna stavka. <a href="/uslovi-pretplate" target="_blank">Uslovi pretplate</a>.</li>
+            </ul>
+          </details>
+        </label>
 
         <label class="co-terms">
           <input type="checkbox" name="terms">
@@ -124,7 +140,7 @@
       <fieldset class="co-sim" data-test-only hidden>
         <legend class="mono">Simulacija (samo test)</legend>
         <label><input type="checkbox" data-sim="labClan"> Kupac je već AI Profit Lab član (preskače ponudu)</label>
-        <label><input type="checkbox" data-sim="fail"> Banka odbija upsell naplatu</label>
+        <label><input type="checkbox" data-sim="fail"> Banka odbija naplatu Lab-a (upsell ili order bump)</label>
       </fieldset>
     </main>
 
@@ -148,7 +164,8 @@
           <li><span>09</span>Podešavanje prvog rilsa</li>
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
-        <div class="sum"><span>Ukupno</span><b data-total>97€</b></div>
+        <div class="addon"><span>+ AI Profit Lab, prvi mesec</span><b>1€</b></div>
+        <div class="sum"><span>Ukupno danas</span><b data-sum>97€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
         <p class="closes" data-launch-only>Cena je 97€ do kraja srede, 11. novembra, a posle toga 200€.</p>
@@ -174,6 +191,27 @@
   document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "97€" : "200€"));
   document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = !launch));
   let DEADLINE = LAUNCH_UNTIL;
+
+  /* ---------- order bump: Lab 1€ (naplata posle plaćanja, na /ponuda) ---------- */
+  const LAB_FIRST = 1, LAB_TRIAL_DAYS = 30; // isto kao FUNNEL.lab u funnel.js
+  const bump = document.querySelector("[name=bump]");
+  const order = document.querySelector("[data-order]");
+  let base = { amount: launch ? 67 : 200, text: null }; // text: iznos u drugoj valuti iz Stripe-a
+  const euro = (n) => `${Number.isInteger(n) ? n : n.toFixed(2)}€`;
+  const renderSum = () => {
+    order.classList.toggle("has-bump", bump.checked);
+    document.querySelector("[data-sum]").textContent = base.text || euro(base.amount + (bump.checked ? LAB_FIRST : 0));
+  };
+  bump.addEventListener("change", () => {
+    renderSum();
+    window.studioTrack?.(bump.checked ? "bump_checked" : "bump_unchecked");
+  });
+  renderSum();
+  {
+    const d = new Date(Date.now() + LAB_TRIAL_DAYS * 86400000);
+    const months = ["januara", "februara", "marta", "aprila", "maja", "juna", "jula", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
+    document.querySelectorAll("[data-renew-date]").forEach((el) => (el.textContent = `${d.getDate()}. ${months[d.getMonth()]}`));
+  }
 
   /* ---------- odbrojavanje ---------- */
   const pad = (n) => String(n).padStart(2, "0");
@@ -249,8 +287,10 @@
       checkout.on("change", (session) => {
         const t = session.total.total;
         const euros = t.minorUnitsAmount / session.minorUnitsAmountDivisor;
-        const text = session.currency.toLowerCase() === "eur" ? `${Number.isInteger(euros) ? euros : euros.toFixed(2)}€` : t.amount;
-        document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = text));
+        const isEur = session.currency.toLowerCase() === "eur";
+        document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = isEur ? euro(euros) : t.amount));
+        base = { amount: euros, text: isEur ? null : t.amount };
+        renderSum();
       });
       checkout.createPaymentElement({
         layout: "tabs",
@@ -283,15 +323,21 @@
     err.textContent = "";
     payLabel.textContent = "Obrađujem...";
     form.querySelector("button").disabled = true;
-    track("checkout_submit");
+    track("checkout_submit", { bump: bump.checked });
 
     try {
+      // Pristanak i izbor order bump-a idu u metadata sesije; /ponuda po tome odmah naplaćuje Lab
       const consent = await fetch("/api/checkout/consent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: sessionId }),
+        body: JSON.stringify({ session_id: sessionId, bump: bump.checked }),
       });
       if (!consent.ok) throw new Error("pristanak");
+      // Da /ponuda odmah (pre odgovora servera) prikaže "aktiviramo Lab" umesto ponude
+      try {
+        if (bump.checked) sessionStorage.setItem("studio_bump", sessionId);
+        else sessionStorage.removeItem("studio_bump");
+      } catch {}
       const loaded = await checkout.loadActions();
       if (loaded.type !== "success") throw new Error("akcije");
       // Uspešno plaćanje (i 3DS potvrda) vodi na /ponuda, ovde se vraća samo greška
@@ -317,6 +363,7 @@
     // isto što bi Stripe vratio u return_url: /ponuda?session_id=...
     const q = new URLSearchParams({ session_id: "cs_test_" + Math.random().toString(36).slice(2, 10) });
     if (sim("fail")) q.set("fail", "1");
+    if (bump.checked) q.set("bump", "1");
     // već Lab član: server preskače ponudu i šalje direktno na hvala
     if (sim("labClan")) q.set("lab", "clan");
     const next = sim("labClan") ? "hvala.html" : "ponuda.html";

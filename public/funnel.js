@@ -55,7 +55,14 @@ if (offer) {
   const no = offer.querySelector("[data-no]");
   no.href = withSession("hvala.html");
   no.addEventListener("click", () => window.studioTrack?.("upsell_declined"));
-  document.addEventListener("DOMContentLoaded", () => window.studioTrack?.("upsell_viewed"));
+
+  // Order bump: kupac je Lab čekirao u checkout-u. Checkout to pamti u sessionStorage, pa ekran
+  // "aktiviramo Lab" ide odmah, bez treptaja ponude; server (/api/order → bump) je rezerva.
+  let bumped = params.get("bump") === "1";
+  try {
+    bumped ||= !!sessionId && sessionStorage.getItem("studio_bump") === sessionId;
+  } catch {}
+  document.addEventListener("DOMContentLoaded", () => window.studioTrack?.(bumped ? "bump_landed" : "upsell_viewed"));
 
   // Dugme "Da" ima više kopija na stranici. Dok jedna naplata traje, sva su zaključana.
   const buttons = [...document.querySelectorAll("[data-yes]")];
@@ -91,40 +98,76 @@ if (offer) {
     watched.forEach((el) => el && io.observe(el));
   }
 
-  // Već je Lab član: ponuda nema smisla, ide pravo na hvala
-  if (!FUNNEL.demo)
-    fetch(`${FUNNEL.orderApi}?session_id=${encodeURIComponent(sessionId)}`)
-      .then((r) => r.json())
-      .then((res) => res.labClan && location.replace(withSession("hvala.html")))
-      .catch(() => {});
-
   buttons.forEach((b) => b.addEventListener("click", () => {
     clicked = b;
     charge();
   }));
 
-  const charge = async () => {
-    setState("processing");
-    window.studioTrack?.("upsell_click", { position: clicked.dataset.yes });
-    if (FUNNEL.demo) return setTimeout(() => (params.get("fail") === "1" ? setState("failed") : done()), 900);
-    try {
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Naplata Lab-a sačuvanom karticom → "ok" | "failed"
+  const pay = async () => {
+    if (FUNNEL.demo) return wait(900).then(() => (params.get("fail") === "1" ? "failed" : "ok"));
+    // "processing": ista naplata već teče (isporuka posle webhook-a za order bump), pa sačekamo njen ishod
+    for (let i = 0; i < 10; i++) {
       const r = await fetch(FUNNEL.upsellApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId }),
       });
       const res = await r.json();
-      if (res.status === "succeeded" || res.status === "already") return done();
+      if (res.status === "succeeded" || res.status === "already") return "ok";
       if (res.status === "requires_action" && window.Stripe && res.publishable_key) {
         // Banka traži potvrdu (3DS): kupac potvrdi u Stripe prozoru
         const { error } = await Stripe(res.publishable_key).confirmCardPayment(res.client_secret);
-        return error ? setState("failed") : done();
+        return error ? "failed" : "ok";
       }
-      setState("failed");
-    } catch (e) {
-      setState("failed");
+      if (res.status !== "processing") return "failed";
+      await wait(1500);
     }
+    return "failed";
   };
+
+  const charge = async () => {
+    setState("processing");
+    window.studioTrack?.("upsell_click", { position: clicked.dataset.yes });
+    (await pay().catch(() => "failed")) === "ok" ? done() : setState("failed");
+  };
+
+  // Order bump: naplata bez pitanja, pa na hvala. Ako ne prođe, kupac vidi ponudu sa porukom o grešci.
+  const bumpRun = document.querySelector("[data-bump-run]");
+  let bumping = false;
+  const runBump = async () => {
+    if (bumping) return;
+    bumping = true;
+    bumpRun.hidden = false;
+    document.body.classList.add("bumping");
+    // Stripe.js (defer) je spreman tek na DOMContentLoaded; 3DS potvrda ga treba
+    if (document.readyState === "loading") await new Promise((r) => document.addEventListener("DOMContentLoaded", r, { once: true }));
+    const result = await pay().catch(() => "failed");
+    window.studioTrack?.(`bump_${result}`);
+    if (result === "ok") return done();
+    try {
+      sessionStorage.removeItem("studio_bump");
+    } catch {}
+    bumpRun.hidden = true;
+    document.body.classList.remove("bumping");
+    clicked = offer.querySelector("[data-yes]");
+    setState("failed");
+    offer.scrollIntoView({ block: "center" });
+  };
+  if (bumped) runBump();
+
+  // Već je Lab član: ponuda nema smisla, ide pravo na hvala. Čekiran bump: naplata (ako već nije krenula).
+  if (!FUNNEL.demo)
+    fetch(`${FUNNEL.orderApi}?session_id=${encodeURIComponent(sessionId)}`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (bumping) return;
+        if (res.labClan) location.replace(withSession("hvala.html"));
+        else if (res.bump) res.lab ? done() : runBump();
+      })
+      .catch(() => {});
 }
 
 /* =========================================================

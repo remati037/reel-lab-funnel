@@ -68,10 +68,10 @@ export async function checkout(request, env) {
   });
 }
 
-// POST /api/checkout/consent { session_id } → pre plaćanja beleži da je kupac prihvatio uslove
-// (bez povraćaja posle pristupa). Vreme pristanka ostaje u metadata sesije.
+// POST /api/checkout/consent { session_id, bump } → pre plaćanja beleži da je kupac prihvatio uslove
+// (bez povraćaja posle pristupa) i da li je čekirao order bump (Lab 1€). Oboje ostaje u metadata sesije.
 export async function consent(request, env) {
-  const { session_id } = await request.json().catch(() => ({}));
+  const { session_id, bump } = await request.json().catch(() => ({}));
   if (!/^cs_(test|live)_[A-Za-z0-9]+$/.test(session_id || "")) return Response.json({ ok: false }, { status: 400 });
 
   const s = stripe(env);
@@ -79,7 +79,8 @@ export async function consent(request, env) {
   if (session.metadata?.source !== SOURCE || session.status !== "open") return Response.json({ ok: false }, { status: 400 });
 
   await s.checkout.sessions.update(session_id, {
-    metadata: { ...session.metadata, terms_accepted_at: new Date().toISOString() },
+    // Prazan string briše ključ (kupac je odčekirao bump pa ponovo kliknuo)
+    metadata: { ...session.metadata, terms_accepted_at: new Date().toISOString(), bump: bump === true ? "1" : "" },
   });
   return Response.json({ ok: true });
 }

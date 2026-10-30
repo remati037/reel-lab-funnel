@@ -474,3 +474,14 @@
   .co-order .pr .n { font-size: 68px; }
   .co-order .inc, .co-order ol { display: none; }
 }
+
+/* /ponuda: order bump iz checkout-a se naplaćuje, ponuda se ne prikazuje */
+.bump-run { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; background: var(--black); text-align: center; }
+.bump-run[hidden] { display: none; }
+.bump-run .wrap { max-width: 560px; }
+.bump-run .mono { color: var(--orange); font-size: 11px; letter-spacing: .12em; }
+.bump-run .display { font-size: clamp(38px, 7vw, 60px); text-transform: uppercase; line-height: .95; margin: 14px 0 12px; }
+.bump-run .sub { color: var(--cream-2); margin: 0; }
+.bump-run .spin { display: inline-block; width: 28px; height: 28px; margin-top: 26px; border: 3px solid var(--line-2); border-top-color: var(--orange); border-radius: 50%; animation: bump-spin .8s linear infinite; }
+@keyframes bump-spin { to { transform: rotate(360deg); } }
+body.bumping { overflow: hidden; }

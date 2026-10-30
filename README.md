@@ -41,10 +41,11 @@ Plan izrade korak po korak je u [REALIZACIJA.md](REALIZACIJA.md).
 
 1. **Landing:** na http://localhost:8787 klikni bilo koje dugme **„Neka Claude montira moje rilsove“**.
 2. **Checkout:** otvara se test checkout, sa formom i odbrojavanjem levo i karticom „Tvoja porudžbina“ desno.
-   - Po želji čekiraj **Viral Hook Pack (+27€)** (order bump). Ukupno u kartici porudžbine se menja sa 200€ na 227€.
+   - Po želji čekiraj **AI Profit Lab za 1€** (order bump). „Ukupno danas“ u kartici porudžbine dobija +1€.
    - Upiši bilo koji email (npr. `test@primer.rs`) i čekiraj **uslove**. Polja kartice su zaključana test vrednostima.
    - Klikni **Završi porudžbinu**.
 3. **Ponuda (upsell):** stranica „Tvoja porudžbina nije završena“.
+   - **Sa čekiranim bump-om** ponuda se ne prikazuje: ekran „Aktiviramo tvoj AI Profit Lab…“ naplati 1€ istom karticom i vodi na hvala. Ako banka odbije, ostaje obična ponuda sa porukom o grešci.
    - **„Da, dodaj AI Profit Lab za 1€“** vodi na hvala stranicu sa karticom za Lab.
    - **„Ne hvala, idem na svoj Studio →“** vodi na hvala stranicu bez Lab-a.
 4. **Hvala:** prikazuje samo kartice koje važe za tu porudžbinu (Lab, Hook Pack, radionica), pa tri koraka do prvog rilsa.
@@ -59,7 +60,7 @@ Na dnu checkout-a je okvir **„Simulacija (samo test)“**:
 |---|---|
 | Kupac je među prvih 100 | Na hvala stranici se pojavi kartica za radionicu i dugme „Dodaj u kalendar“ |
 | Kupac je već AI Profit Lab član | Preskače ponudu i ide pravo na hvala, sa porukom „Već si u Lab-u“ |
-| Banka odbija upsell naplatu | Na ponudi, posle klika na „Da“, pojavi se poruka o odbijenoj naplati |
+| Banka odbija naplatu Lab-a | Na ponudi, posle klika na „Da“ (ili odmah, ako je bump čekiran), pojavi se poruka o odbijenoj naplati |
 
 ### Direktni linkovi za pregled
 
@@ -69,6 +70,8 @@ Na dnu checkout-a je okvir **„Simulacija (samo test)“**:
 | Hvala, sve kartice | http://localhost:8787/hvala?lab=1&bump=1&radionica=1 |
 | Hvala, već Lab član | http://localhost:8787/hvala?lab=clan |
 | Ponuda sa odbijenom naplatom | http://localhost:8787/ponuda?fail=1 |
+| Order bump: aktivacija Lab-a | http://localhost:8787/ponuda?bump=1 |
+| Order bump, banka odbila | http://localhost:8787/ponuda?bump=1&fail=1 |
 
 ## Fajlovi
 

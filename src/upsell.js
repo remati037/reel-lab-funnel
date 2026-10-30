@@ -6,24 +6,32 @@ const OFFER_HOURS = 24;
 
 // POST /api/upsell { session_id } → { status: succeeded | requires_action | declined | already | processing }
 // Pravi Lab pretplatu (1€ prvi mesec, pa 57€) karticom sačuvanom u checkout-u, bez ponovnog unosa.
+// Isto poziva i /ponuda kad je kupac čekirao order bump u checkout-u.
 export async function upsell(request, env) {
   const { session_id } = await request.json().catch(() => ({}));
   const session = await paidStudioSession(env, session_id);
   if (!session) return Response.json({ status: "declined", error: "Nepoznata kupovina" }, { status: 400 });
-  if (Date.now() / 1000 - session.created > OFFER_HOURS * 3600) return Response.json({ status: "declined", error: "Ponuda je istekla" });
+  return Response.json(withKey(env, await chargeLab(env, session)));
+}
+
+// Naplata Lab-a za plaćenu sesiju (session sa expand payment_intent). Zove je /api/upsell
+// i isporuka posle webhook-a, kao rezerva za order bump ako kupac zatvori stranicu.
+export async function chargeLab(env, session) {
+  if (Date.now() / 1000 - session.created > OFFER_HOURS * 3600) return { status: "declined", error: "Ponuda je istekla" };
+  const via = session.metadata?.bump === "1" ? "bump" : "ponuda";
 
   const email = session.customer_details.email.toLowerCase();
   const s = stripe(env);
 
   const existing = await env.DB.prepare("SELECT status, subscription_id FROM upsells WHERE session_id = ?").bind(session.id).first();
-  if (existing?.status === "succeeded") return Response.json({ status: "already" });
+  if (existing?.status === "succeeded") return { status: "already" };
   if (existing?.status === "requires_action") {
     const r = await resume(env, s, session.id, existing.subscription_id);
-    if (r.status !== "declined") return Response.json(withKey(env, r));
+    if (r.status !== "declined") return r;
     // Prethodna potvrda kod banke nije prošla: odmah nov pokušaj, bez dodatnog klika
   }
 
-  if (await isLabMember(env, email)) return Response.json({ status: "already" });
+  if (await isLabMember(env, email)) return { status: "already" };
 
   // Jedan pokušaj u isto vreme po sesiji; posle odbijene kartice sme ponovo
   const { meta } = await env.DB.prepare(
@@ -32,7 +40,7 @@ export async function upsell(request, env) {
   )
     .bind(session.id, email)
     .run();
-  if (!meta.changes) return Response.json({ status: "processing" });
+  if (!meta.changes) return { status: "processing" };
 
   const { data: prices } = await s.prices.list({ lookup_keys: ["lab_monthly"], active: true });
   if (!prices[0]) throw new Error("Nema Stripe cene lab_monthly");
@@ -46,7 +54,7 @@ export async function upsell(request, env) {
       discounts: [{ coupon: "LAB_PRVI_MESEC_1E" }],
       default_payment_method: session.payment_intent.payment_method,
       payment_behavior: "allow_incomplete",
-      metadata: { source: SOURCE, studio_session: session.id, ...utm },
+      metadata: { source: SOURCE, studio_session: session.id, via, ...utm },
     });
     await env.DB.prepare("UPDATE upsells SET subscription_id = ? WHERE session_id = ?").bind(sub.id, session.id).run();
     result = await outcome(s, sub);
@@ -61,10 +69,10 @@ export async function upsell(request, env) {
   await track(env, `upsell_${result.status}`, {
     distinctId: session.metadata.ph_id || email,
     insertId: `upsell-${session.id}-${result.status}`,
-    properties: { product: "lab", utm_source: session.metadata.utm_source, utm_campaign: session.metadata.utm_campaign },
+    properties: { product: "lab", via, utm_source: session.metadata.utm_source, utm_campaign: session.metadata.utm_campaign },
   }).catch((e) => console.error("posthog", e));
 
-  return Response.json(withKey(env, result));
+  return result;
 }
 
 // Stripe.js na stranici treba javni ključ samo za 3DS potvrdu
