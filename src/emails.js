@@ -70,3 +70,33 @@ Nisi ti tražio kod? Samo ignoriši ovaj mejl, bez koda niko ne može da aktivir
 
   return { subject: `${code} je tvoj kod za AI Video Editor`, text, html };
 }
+
+// Poklon za Lab članove (3+ meseca ili kvartalna/godišnja pretplata): AI Video Editor besplatno
+export function labPerkEmail(env, email) {
+  const url = env.CIRCLE_STUDIO_URL;
+
+  const text = `Ćao,
+
+hvala ti što si u AI Profit Lab-u. Kao Lab član sa 3+ meseca (ili kvartalnom/godišnjom pretplatom) dobijaš AI Video Editor besplatno.
+
+1. Otvori kurs: ${url}
+   Prijavi se na aiprofit.rs svojim postojećim nalogom (mejl ${email}).
+2. Prati lekciju za instalaciju i nalepi komandu.
+3. Kad AI Video Editor zatraži mejl, upiši ${email}. Na taj mejl stiže kod za aktivaciju.
+
+Zapelo je negde? Samo odgovori na ovaj mejl.
+
+Vidimo se unutra!`;
+
+  const html = `<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;color:#1a1a1a;max-width:560px">
+<p>Ćao,</p>
+<p>hvala ti što si u AI Profit Lab-u. Kao Lab član sa 3+ meseca (ili kvartalnom/godišnjom pretplatom) dobijaš <b>AI Video Editor</b> besplatno.</p>
+<p style="margin:24px 0"><a href="${esc(url)}" style="background:#ff5a1f;color:#fff;text-decoration:none;padding:14px 22px;border-radius:8px;font-weight:600;display:inline-block">Otvori AI Video Editor kurs</a></p>
+<p>Prijavi se na <a href="${LOGIN_URL}">aiprofit.rs</a> svojim postojećim nalogom (mejl <b>${esc(email)}</b>). Zaboravio si lozinku? <a href="${RESET_URL}">Napravi novu</a>.</p>
+<p><b>Prvi rils:</b> u kursu prati lekciju za instalaciju i nalepi komandu. Kad AI Video Editor zatraži mejl, upiši <b>${esc(email)}</b>. Na taj mejl stiže kod za aktivaciju.</p>
+<p>Zapelo je negde? Samo odgovori na ovaj mejl.</p>
+<p>Vidimo se unutra!</p>
+</div>`;
+
+  return { subject: "Poklon za Lab članove: AI Video Editor je tvoj", text, html };
+}

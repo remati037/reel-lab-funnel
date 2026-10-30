@@ -5,6 +5,8 @@ import { upsell } from "./upsell.js";
 import { lead } from "./lead.js";
 import { licenseCode, licenseActivate, licenseVerify, licenseDeactivate } from "./license.js";
 import { handleBatch, reconcile } from "./jobs.js";
+import { labPerks } from "./labperks.js";
+import { telegram } from "./notify.js";
 
 const routes = {
   "GET /api/checkout": checkoutRedirect,
@@ -43,6 +45,12 @@ export default {
   queue: handleBatch,
 
   async scheduled(_controller, env) {
-    await reconcile(env);
+    // Nezavisne provere: greška u jednoj ne zaustavlja drugu
+    const [rec, perks] = await Promise.allSettled([reconcile(env), labPerks(env)]);
+    if (rec.status === "rejected") console.error("noćna provera", rec.reason);
+    if (perks.status === "rejected") {
+      console.error("Lab poklon", perks.reason);
+      await telegram(env, `🛑 Lab poklon: noćna provera nije uspela\n${String(perks.reason?.message ?? perks.reason).slice(0, 300)}`).catch(() => {});
+    }
   },
 };

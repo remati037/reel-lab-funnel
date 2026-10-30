@@ -3,7 +3,7 @@ import { grantAccess, revokeAccess, createMemberIfMissing, addToAccessGroup, ens
 import { addToGroup, removeFromGroup } from "./mailerlite.js";
 import { createOrder, addOrderNote } from "./woo.js";
 import { sendEmail, track, telegram } from "./notify.js";
-import { welcomeEmail } from "./emails.js";
+import { welcomeEmail, labPerkEmail } from "./emails.js";
 import { metaEvent } from "./meta.js";
 
 const euros = (cents) => (cents / 100).toFixed(2).replace(/\.00$/, "");
@@ -167,6 +167,8 @@ export async function runJob(job, env) {
       return labCanceled(job.object_id, env);
     case "charge.dispute.created":
       return dispute(job.object_id, env);
+    case "lab.perk":
+      return labPerk(job.object_id, job.reason, env);
   }
   console.warn("nepoznat posao", job);
 }
@@ -294,6 +296,17 @@ async function dispute(disputeId, env) {
     ["woo", (o, env) => o.woo_order_id && addOrderNote(env, o.woo_order_id, `Chargeback (${d.id}, razlog: ${d.reason}). Pristup AI Video Editoru ugašen.`)],
     ["posthog", (o, env) => track(env, "chargeback", { distinctId: o.ph_id || o.email, insertId: d.id, properties: { reason: d.reason, amount: d.amount / 100 } })],
     ["telegram", (o, env) => telegram(env, `🚨 Chargeback za AI Video Editor\n${o.email}\n${euros(d.amount)}€, razlog: ${d.reason}. Pristup AI Video Editoru ugašen, Lab ostaje.`)],
+  ], env);
+}
+
+// Lab član dobija AI Video Editor besplatno (noćna provera u labperks.js): licenca, kurs u Circle-u, mejl
+async function labPerk(email, reason, env) {
+  await runSteps(`lab-perk-${email}`, { email, reason }, [
+    ["grant", (c, env) => env.DB.prepare("INSERT OR IGNORE INTO license_grants (email, note) VALUES (?, ?)").bind(c.email, `auto:lab ${c.reason}`).run()],
+    ["circle", (c, env) => addToAccessGroup(env, c.email, env.CIRCLE_STUDIO_GROUP)],
+    ["email", (c, env) => sendEmail(env, { to: c.email, idempotencyKey: `lab-perk-${c.email}`, ...labPerkEmail(env, c.email) })],
+    ["telegram", (c, env) => telegram(env, `🎁 Lab poklon: AI Video Editor besplatno\n${c.email} (${c.reason})`)],
+    ["circle_check", (c, env) => ensureInGroup(env, c.email, env.CIRCLE_STUDIO_GROUP, env.CIRCLE_STUDIO_SPACE)],
   ], env);
 }
 
