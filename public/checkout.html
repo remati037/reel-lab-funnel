@@ -133,7 +133,7 @@
       <div class="co-order" data-order>
         <div class="top">Tvoja porudžbina <span>Jedna uplata, bez pretplate</span></div>
         <h2>AI Video Editor</h2>
-        <div class="pr"><span class="n" data-total>67€</span><span class="mono">JEDNA UPLATA<br>BEZ PRETPLATE</span></div>
+        <div class="pr"><span class="n" data-total>97€</span><span class="mono">JEDNA UPLATA<br>BEZ PRETPLATE</span></div>
 
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
@@ -148,10 +148,10 @@
           <li><span>09</span>Podešavanje prvog rilsa</li>
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
-        <div class="sum"><span>Ukupno</span><b data-total>67€</b></div>
+        <div class="sum"><span>Ukupno</span><b data-total>97€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes" data-launch-only>Cena je 67€ do kraja srede, 11. novembra, a posle toga 200€.</p>
+        <p class="closes" data-launch-only>Cena je 97€ do kraja srede, 11. novembra, a posle toga 200€.</p>
       </div>
 
       <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
@@ -168,10 +168,10 @@
 
 <script>
   // Ista cena kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL u wrangler.jsonc):
-  // 67€ do kraja 11. novembra, posle toga 200€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
+  // 97€ do kraja 11. novembra, posle toga 200€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
   const LAUNCH_UNTIL = new Date("2026-11-12T00:00:00+01:00").getTime();
   const launch = Date.now() < LAUNCH_UNTIL;
-  document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "67€" : "200€"));
+  document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "97€" : "200€"));
   document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = !launch));
   let DEADLINE = LAUNCH_UNTIL;
 

@@ -1,4 +1,4 @@
-// Lični rok iz nurture mejlova: potpisan link /checkout?ponuda=TOKEN daje cenu studio_lead (67€)
+// Lični rok iz nurture mejlova: potpisan link /checkout?ponuda=TOKEN daje cenu studio_lead (97€)
 // samo toj osobi i samo do roka. Token = base64url(mejl|rok) + "." + HMAC, pa ne može da se izmisli.
 
 const enc = new TextEncoder();

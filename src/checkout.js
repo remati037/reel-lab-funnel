@@ -18,7 +18,7 @@ export async function checkout(request, env) {
   if (!env.STRIPE_SECRET_KEY) return Response.json({ test: true });
 
   const { params = {} } = await request.json().catch(() => ({}));
-  // Lični link iz mejla (67€ do roka) važi i posle LAUNCH_UNTIL
+  // Lični link iz mejla (97€ do roka) važi i posle LAUNCH_UNTIL
   const offer = await readOffer(env, params.ponuda);
   const priceKey = offer ? "studio_lead" : currentPriceKey(env);
 

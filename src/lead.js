@@ -3,7 +3,7 @@ import { track } from "./notify.js";
 import { metaEvent, clientInfo } from "./meta.js";
 import { createOffer } from "./offer.js";
 
-// Lični rok za 67€: 4 dana nurture-a + 72h ponude
+// Lični rok za 97€: 4 dana nurture-a + 72h ponude
 const OFFER_DAYS = 7;
 
 // POST /api/lead { email, name?, website?, eventId, params: { utm_..., ph_id, consent, fbp, fbc } }

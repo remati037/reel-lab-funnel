@@ -39,5 +39,5 @@ Upsell (`public/ponuda.html`):
 
 - [ ] Obrisati traku **TEST FUNNEL** sa `public/ponuda.html` i `public/hvala.html` (i `.demo` stil u `funnel.css`)
 - [ ] Pravi Stripe Customer Portal link umesto test linka u `public/funnel.js` (`portalUrl`) i u `public/uslovi-pretplate.html`
-- [ ] Live Stripe ključevi u Cloudflare secrets i Stripe cene `studio_launch` (67€) i `studio_regular` (200€)
+- [ ] Live Stripe ključevi u Cloudflare secrets i Stripe cene `studio_launch` (97€) i `studio_regular` (200€)
 - [ ] Posle svake izmene landinga: `npm run standalone` (pravi `landing-standalone.html`)

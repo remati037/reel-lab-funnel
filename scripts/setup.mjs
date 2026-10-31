@@ -43,9 +43,9 @@ async function setupStripe() {
   };
 
   const studio = await product(PRODUCT_NAME, "studio");
-  await price("studio_launch", { product: studio.id, unit_amount: 6700, nickname: "Launch 67€" });
+  await price("studio_launch", { product: studio.id, unit_amount: 9700, nickname: "Launch 97€" });
   await price("studio_regular", { product: studio.id, unit_amount: 20000, nickname: "Redovna 200€" });
-  await price("studio_lead", { product: studio.id, unit_amount: 6700, nickname: "Lični rok 72h 67€" });
+  await price("studio_lead", { product: studio.id, unit_amount: 9700, nickname: "Lični rok 72h 97€" });
 
   const lab = await product("AI Profit Lab", "lab");
   await price("lab_monthly", { product: lab.id, unit_amount: 5700, recurring: { interval: "month" }, nickname: "Lab 57€ mesečno" });
