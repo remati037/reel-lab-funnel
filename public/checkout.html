@@ -196,7 +196,7 @@
   const LAB_FIRST = 1, LAB_TRIAL_DAYS = 30; // isto kao FUNNEL.lab u funnel.js
   const bump = document.querySelector("[name=bump]");
   const order = document.querySelector("[data-order]");
-  let base = { amount: launch ? 67 : 200, text: null }; // text: iznos u drugoj valuti iz Stripe-a
+  let base = { amount: launch ? 97 : 200, text: null }; // text: iznos u drugoj valuti iz Stripe-a
   const euro = (n) => `${Number.isInteger(n) ? n : n.toFixed(2)}€`;
   const renderSum = () => {
     order.classList.toggle("has-bump", bump.checked);

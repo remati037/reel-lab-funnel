@@ -34,7 +34,7 @@
   },
 
   // Noćna provera: Stripe naplate iz poslednjih 48h moraju da postoje u bazi.
-  "triggers": { "crons": ["0 3 * * *"] },
+  "triggers": { "crons": ["0 3 * * *", "5 0 31 10 *"] },
 
   "vars": {
     // launch | evergreen
