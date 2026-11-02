@@ -57,6 +57,21 @@ async function setupStripe() {
     await s.coupons.create({ id: "LAB_PRVI_MESEC_1E", name: "Prvi mesec 1€", amount_off: 5600, currency: "eur", duration: "once" });
     console.log("  + kupon LAB_PRVI_MESEC_1E (56€ popusta, prvi mesec)");
   }
+
+  // Kod "video30" koji kupac upisuje na checkout-u: 30€ manje na AI Video Editor (svaka cena tog proizvoda)
+  try {
+    await s.coupons.retrieve("VIDEO30");
+    console.log("  ✓ kupon VIDEO30 postoji");
+  } catch {
+    await s.coupons.create({ id: "VIDEO30", name: "Popust 30€", amount_off: 3000, currency: "eur", duration: "once", applies_to: { products: [studio.id] } });
+    console.log("  + kupon VIDEO30 (30€ popusta na AI Video Editor)");
+  }
+  const { data: codes } = await s.promotionCodes.list({ code: "video30", limit: 1 });
+  if (codes[0]) console.log("  ✓ promo kod video30 postoji");
+  else {
+    await s.promotionCodes.create({ promotion: { type: "coupon", coupon: "VIDEO30" }, code: "video30" });
+    console.log("  + promo kod video30");
+  }
 }
 
 async function setupWoo() {

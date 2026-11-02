@@ -385,6 +385,17 @@
 .co-pay { margin-bottom: 18px; min-height: 120px; }
 .co-loading { font-size: 11px; color: var(--taupe); padding: 20px 0; }
 .co-hint { font-size: 12px; color: #f5a623; margin: -4px 0 14px; }
+.co-promo { margin: 4px 0 18px; font-size: 14px; }
+.co-promo summary { cursor: pointer; color: var(--cream-2); text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
+.co-promo-row { display: flex; gap: 8px; margin-top: 10px; }
+.co-promo-row[hidden], .co-promo-ok[hidden] { display: none; }
+.co-promo-row input { flex: 1; min-width: 0; padding: 11px 13px; font: inherit; color: var(--cream); background: #111113; border: 1px solid rgba(244, 237, 224, .3); border-radius: 6px; text-transform: uppercase; }
+.co-promo-row input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255, 91, 31, .2); }
+.co-promo-btn { padding: 0 16px; font: inherit; font-weight: 600; color: var(--cream); background: transparent; border: 1px solid rgba(244, 237, 224, .45); border-radius: 6px; cursor: pointer; }
+.co-promo-btn:disabled { opacity: .5; }
+.co-promo-ok { margin: 10px 0 0; color: var(--cream); }
+.co-promo-ok button { font: inherit; color: var(--cream-2); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.co-promo-err { color: #ff8a65; margin: 6px 0 0; min-height: 0; }
 .co-fee { font-size: 14px; color: var(--cream-2); margin: 4px 0 22px; }
 .co-fee b { color: var(--cream); }
 
@@ -446,6 +457,8 @@
 .co-order li.plus span { font-size: 16px; padding-top: 0; }
 .co-order .addon { display: none; justify-content: space-between; align-items: baseline; margin-top: 14px; padding: 10px 12px; background: rgba(255, 91, 31, .12); border-radius: 4px; font-size: 14px; }
 .co-order.has-bump .addon { display: flex; }
+.co-order .disc { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding: 10px 12px; background: rgba(22, 9, 3, .06); border-radius: 4px; font-size: 14px; }
+.co-order .disc[hidden] { display: none; }
 .co-order .sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--ink); font-weight: 700; }
 .co-order .sum b { font-family: var(--f-display); font-weight: 400; font-size: 34px; }
 .co-order .now { font-size: 13px; margin: 16px 0 8px; display: flex; gap: 8px; }

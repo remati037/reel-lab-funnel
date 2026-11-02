@@ -37,6 +37,8 @@ export async function checkout(request, env) {
     mode: "payment",
     line_items: [{ price: prices[0].id, quantity: 1 }],
     customer_creation: "always",
+    // Kupac upisuje kod (npr. video30) u polje "Imaš kod za popust?"; kodovi se prave u scripts/setup.mjs
+    allow_promotion_codes: true,
     // Čuva karticu za one-click upsell na /ponuda. Opis je naziv proizvoda u Orderly-ju (čita naplate iz Stripe-a).
     payment_intent_data: { setup_future_usage: "off_session", description: "AI Video Editor", metadata },
     // Upsell naplaćuje sačuvanu karticu (uklj. Apple Pay, Google Pay, Link). Bancontact i iDEAL

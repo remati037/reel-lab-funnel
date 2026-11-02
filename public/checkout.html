@@ -82,6 +82,17 @@
           <p class="co-hint">TEST: polja kartice su zaključana, ništa se ne naplaćuje.</p>
         </div>
 
+        <!-- Kod za popust (npr. video30): Stripe ga proverava i umanjuje iznos sesije; samo uz Stripe ključ -->
+        <details class="co-promo" data-live-only data-promo>
+          <summary>Imaš kod za popust?</summary>
+          <div class="co-promo-row">
+            <input name="promo" placeholder="Upiši kod" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Kod za popust">
+            <button type="button" class="co-promo-btn" data-promo-apply>Primeni</button>
+          </div>
+          <p class="co-promo-ok" data-promo-ok hidden><span></span> <button type="button" data-promo-remove>Ukloni</button></p>
+          <p class="co-promo-err" data-promo-err></p>
+        </details>
+
         <p class="co-fee"><b>Jednokratna uplata.</b> Unosom kartice dozvoljavaš da je sačuvamo za eventualne naredne kupovine kod nas, uvek samo uz tvoj klik.</p>
 
         <!-- ORDER BUMP: Lab se naplaćuje odmah posle plaćanja, istom karticom (src/upsell.js).
@@ -165,6 +176,7 @@
           <li class="plus"><span>+</span>Besplatna ažuriranja zauvek</li>
         </ol>
         <div class="addon"><span>+ AI Profit Lab, prvi mesec</span><b>1€</b></div>
+        <div class="disc" data-disc hidden><span data-disc-name>Popust</span><b data-disc-amount></b></div>
         <div class="sum"><span>Ukupno danas</span><b data-sum>97€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
@@ -286,12 +298,26 @@
       // Iznos uvek iz Stripe sesije (Stripe to i traži pre potvrde)
       checkout.on("change", (session) => {
         const t = session.total.total;
-        const euros = t.minorUnitsAmount / session.minorUnitsAmountDivisor;
+        const toEur = (x) => x.minorUnitsAmount / session.minorUnitsAmountDivisor;
+        const euros = toEur(t);
         const isEur = session.currency.toLowerCase() === "eur";
-        document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = isEur ? euro(euros) : t.amount));
+        // Cena proizvoda ostaje puna, popust je posebna stavka, a "Ukupno danas" je iznos posle popusta
+        const sub = session.total.subtotal;
+        document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = isEur ? euro(toEur(sub)) : sub.amount));
+        const d = session.discountAmounts?.[0];
+        const disc = document.querySelector("[data-disc]");
+        disc.hidden = !d;
+        if (d) {
+          document.querySelector("[data-disc-name]").textContent = `Kod ${(d.promotionCode || d.displayName).toUpperCase()}`;
+          document.querySelector("[data-disc-amount]").textContent = "−" + (isEur ? euro(d.minorUnitsAmount / session.minorUnitsAmountDivisor) : d.amount);
+        }
+        promoState(d);
         base = { amount: euros, text: isEur ? null : t.amount };
         renderSum();
       });
+      // Link sa ?kod=video30 odmah primenjuje kod
+      const urlCode = new URLSearchParams(location.search).get("kod");
+      if (urlCode) applyPromo(urlCode);
       checkout.createPaymentElement({
         layout: "tabs",
         fields: { billingDetails: { email: "never", name: "always" } },
@@ -300,6 +326,50 @@
       }).mount("#payment-element");
     })
     .catch(() => fail("Plaćanje trenutno ne može da se učita. Osveži stranicu ili nam piši na podrska@vladsdigital.com."));
+  });
+
+  /* ---------- kod za popust ---------- */
+  const promo = document.querySelector("[data-promo]");
+  const promoErr = document.querySelector("[data-promo-err]");
+  const promoOk = document.querySelector("[data-promo-ok]");
+  const promoRow = promo.querySelector(".co-promo-row");
+  function promoState(d) {
+    promoOk.hidden = !d;
+    promoRow.hidden = !!d;
+    if (d) {
+      promo.open = true;
+      promoOk.querySelector("span").textContent = `Kod ${(d.promotionCode || d.displayName).toUpperCase()} je primenjen.`;
+    }
+  }
+  async function applyPromo(code) {
+    code = code.trim();
+    if (!code || !checkout) return;
+    promoErr.textContent = "";
+    promo.open = true;
+    const btn = document.querySelector("[data-promo-apply]");
+    btn.disabled = true;
+    try {
+      const loaded = await checkout.loadActions();
+      if (loaded.type !== "success") throw new Error("akcije");
+      const r = await loaded.actions.applyPromotionCode(code);
+      if (r.type === "error") {
+        promoErr.textContent = "Ovaj kod ne važi.";
+        track("promo_invalid", { code: code.toLowerCase().slice(0, 40) });
+      } else track("promo_applied", { code: code.toLowerCase().slice(0, 40) });
+    } catch {
+      promoErr.textContent = "Kod trenutno ne može da se proveri. Pokušaj ponovo.";
+    }
+    btn.disabled = false;
+  }
+  document.querySelector("[data-promo-apply]").addEventListener("click", () => applyPromo(form.promo.value));
+  // Enter u polju za kod primenjuje kod, ne šalje porudžbinu
+  form.promo.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") e.preventDefault(), applyPromo(form.promo.value);
+  });
+  document.querySelector("[data-promo-remove]").addEventListener("click", async () => {
+    const loaded = await checkout.loadActions();
+    if (loaded.type === "success") await loaded.actions.removePromotionCode();
+    form.promo.value = "";
   });
 
   // Lični rok iz mejla: odbrojavanje do njega i mejl unapred upisan
