@@ -208,6 +208,63 @@ document.querySelectorAll("#reels figure, #trials figure").forEach((fig) => {
   reelObserver.observe(video);
 });
 
+/* ---------- svi efekti: filter po ulozi, samo novi, prikaz po delovima ---------- */
+// Video se učitava tek kad je kartica na ekranu (data-src), a pušta se samo dok je vidljiva.
+const fxGrid = document.querySelector(".fx-grid");
+if (fxGrid) {
+  const cards = [...fxGrid.querySelectorAll(".fx-card")];
+  const chips = document.querySelectorAll(".fx-chip[data-filter]");
+  const onlyNewBtn = document.querySelector("[data-only-new]");
+  const moreBtn = document.querySelector(".fx-more-btn");
+  const page = () => (matchMedia("(max-width: 760px)").matches ? 8 : 15);
+  let filter = "sve", onlyNew = false, shown = page();
+
+  function render() {
+    const match = cards.filter((c) => (filter === "sve" || c.dataset.uloga === filter) && (!onlyNew || "novo" in c.dataset));
+    cards.forEach((c) => (c.hidden = true));
+    match.slice(0, shown).forEach((c) => (c.hidden = false));
+    const left = match.length - shown;
+    moreBtn.hidden = left <= 0;
+    moreBtn.textContent = `Prikaži još (${left})`;
+  }
+
+  chips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.toggle("on", c === chip));
+      filter = chip.dataset.filter;
+      shown = page();
+      render();
+    })
+  );
+  onlyNewBtn.addEventListener("click", () => {
+    onlyNew = !onlyNew;
+    onlyNewBtn.setAttribute("aria-pressed", onlyNew);
+    shown = page();
+    render();
+  });
+  moreBtn.addEventListener("click", () => {
+    shown += page();
+    render();
+  });
+
+  const fxObserver = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        const v = e.target;
+        if (e.isIntersecting) {
+          if (!v.src) {
+            v.src = v.dataset.src;
+            v.addEventListener("playing", () => v.classList.add("on"), { once: true });
+          }
+          v.play().catch(() => {});
+        } else if (v.src) v.pause();
+      }),
+    { threshold: 0.5 }
+  );
+  cards.forEach((c) => fxObserver.observe(c.querySelector("video")));
+  render();
+}
+
 /* ---------- računica: koliko se isplati (cena montažera po rilsu je data-per-reel na .calc) ---------- */
 const calc = document.querySelector(".calc");
 if (calc) {

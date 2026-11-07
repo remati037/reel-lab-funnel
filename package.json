@@ -8,7 +8,8 @@
     "db:remote": "wrangler d1 migrations apply creator-studio --remote",
     "deploy": "wrangler deploy",
     "stripe:listen": "stripe listen --forward-to localhost:8787/api/stripe-webhook",
-    "standalone": "node scripts/standalone.mjs"
+    "standalone": "node scripts/standalone.mjs",
+    "efekti": "node scripts/efekti.mjs"
   },
   "dependencies": {
     "stripe": "23.0.1"

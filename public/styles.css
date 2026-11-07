@@ -314,15 +314,28 @@ p { margin: 0 0 1em; }
 .own .mono { color: var(--orange); }
 
 /* ---------- efekti ---------- */
-.fx-feature { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; }
-.fx-feature h4 { font-family: var(--f-display); font-weight: 400; font-size: 36px; line-height: .95; text-transform: uppercase; margin: 16px 0 10px; }
-.fx-feature .what { background: var(--cream); color: var(--ink); border-radius: 4px; padding: 12px 14px; font-size: 14px; line-height: 1.4; }
-.fx-feature .what .mono { color: var(--orange-press); font-weight: 700; display: block; margin-bottom: 6px; font-size: 9px; }
-
-.fx-all { margin-top: 80px; }
-.fx-list { columns: 3; column-gap: 36px; margin-top: 28px; padding: 0; list-style: none; }
-.fx-list li { break-inside: avoid; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--taupe); line-height: 1.4; }
-.fx-list li b { font-family: var(--f-display); font-weight: 400; font-size: 21px; color: var(--cream); text-transform: uppercase; margin-right: 6px; letter-spacing: .02em; }
+.fx-head { margin-top: 120px; }
+.fx-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0 24px; }
+.fx-chip {
+  flex: 0 0 auto; min-height: 40px; padding: 0 16px; border-radius: 99px;
+  border: 1px solid var(--line-2); background: transparent; color: var(--cream);
+  font: 600 14px/1 var(--f-body); cursor: pointer; transition: background .15s, color .15s, border-color .15s;
+}
+.fx-chip.on { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+.fx-chip-new[aria-pressed="true"] { background: var(--orange); color: var(--ink); border-color: var(--orange); }
+.fx-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px 14px; margin: 0; padding: 0; list-style: none; }
+.fx-card[hidden] { display: none; }
+.fx-card .media { position: relative; aspect-ratio: 9 / 16; border-radius: 6px; overflow: hidden; background: var(--ground-2); }
+.fx-card img, .fx-card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.fx-card video { opacity: 0; transition: opacity .25s; }
+.fx-card video.on { opacity: 1; }
+.fx-new { position: absolute; top: 8px; left: 8px; background: var(--orange); color: var(--ink); font-size: 9px; font-weight: 700; padding: 5px 7px; border-radius: 3px; }
+.fx-card h4 { font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1; text-transform: uppercase; letter-spacing: .02em; margin: 12px 0 4px; }
+.fx-card p { font-size: 13px; line-height: 1.4; color: var(--taupe); margin: 0; }
+.fx-more { text-align: center; margin-top: 32px; }
+.fx-more-btn { min-height: 48px; padding: 0 28px; border-radius: 99px; border: 1px solid var(--line-2); background: transparent; color: var(--cream); cursor: pointer; }
+.fx-more-btn:hover { border-color: var(--cream); }
+.fx-note { margin-top: 24px; font-size: 14px; text-align: center; }
 
 /* ---------- trial reels ---------- */
 .trials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -498,9 +511,8 @@ footer a { color: var(--taupe); }
 @media (max-width: 1020px) {
   .sheet-grid { grid-template-columns: 1fr 1fr; }
   .cards, .cards.four { grid-template-columns: repeat(3, 1fr); }
-  .fx-feature { grid-template-columns: repeat(2, 1fr); }
+  .fx-grid { grid-template-columns: repeat(4, 1fr); }
   .caro { grid-template-columns: repeat(3, 1fr); }
-  .fx-list { columns: 2; }
   .screen-grid, .launch-grid, .price-grid, .close-grid { grid-template-columns: 1fr; }
   .guarantee { margin-top: 0; }
 }
@@ -520,9 +532,11 @@ footer a { color: var(--taupe); }
   .item { padding-right: 0; }
   .styles-row { grid-template-columns: 1fr; }
   .cards, .cards.four { grid-template-columns: repeat(2, 1fr); }
-  .fx-feature { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .fx-feature h4 { font-size: 28px; }
-  .fx-list { columns: 1; }
+  .fx-head { margin-top: 80px; }
+  .fx-filters { margin: 24px 0 20px; }
+  .fx-chip { min-height: 38px; padding: 0 13px; font-size: 13px; }
+  .fx-grid { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+  .fx-card h4 { font-size: 20px; }
   .trials { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; margin: 0 calc(var(--gutter) * -1); padding: 0 var(--gutter); }
   .trials figure { flex: 0 0 72%; scroll-snap-align: center; }
   .swipe-hint { display: block; }

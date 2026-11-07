@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>AI Video Editor: Ti snimaš. Claude montira.</title>
-  <meta name="description" content="Bez programa za montažu. Ubaciš klipove, kažeš „montiraj ga“ i dobiješ gotov rils. 46 efekata, koliko god probnih verzija hoćeš od jednog videa i karuseli od bilo kog videa.">
+  <meta name="description" content="Bez programa za montažu. Ubaciš klipove, kažeš „montiraj ga“ i dobiješ gotov rils. 85 efekata, koliko god probnih verzija hoćeš od jednog videa i karuseli od bilo kog videa.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Gothic:wdth@75..100&family=Libre+Franklin:ital,wght@0,400..800;1,400..600&family=Martian+Mono:wdth,wght@75..112.5,400..700&display=swap" rel="stylesheet">
@@ -133,7 +133,7 @@
         <h3 class="display h3">Podesi jednom. Onda samo reci kreni.</h3>
         <div class="steps">
           <div class="step"><span class="num">1</span><div><span class="mono">Jednom, brzi način</span><p>Izaberi jedan od 9 gotovih stilova montaže.</p></div></div>
-          <div class="step"><span class="num">2</span><div><span class="mono">Ili jednom, na tvoj način</span><p>Napravi svoj: kombinuj 46 efekata i 20 stilova titlova, ili daj Claude-u rils koji voliš i on prepozna stil.</p></div></div>
+          <div class="step"><span class="num">2</span><div><span class="mono">Ili jednom, na tvoj način</span><p>Napravi svoj: kombinuj <span data-fx-count>85</span> efekata i 20 stilova titlova, ili daj Claude-u rils koji voliš i on prepozna stil.</p></div></div>
           <div class="step"><span class="num">3</span><div><span class="mono">Svaki rils</span><p>Ubaci klipove i reci <b><i>„montiraj ga“</i></b>. Claude odradi ostalo.</p></div></div>
         </div>
         <p class="muted" style="font-size:15px">Hoćeš nešto da promeniš? Napiši <i>„povećaj titlove“</i> i Claude za oko dva minuta napravi novu verziju.</p>
@@ -196,75 +196,455 @@
     <div class="own reveal">
       <div>
         <span class="mono">Ili napravi svoj</span>
-        <h3 class="display h3" style="margin-top:10px">20 stilova titlova. 46 efekata. Tvoja kombinacija.</h3>
+        <h3 class="display h3" style="margin-top:10px">20 stilova titlova. <span data-fx-count>85</span> efekata. Tvoja kombinacija.</h3>
       </div>
       <p class="lead" style="margin:0">Izaberi titlove i efekte koji ti se sviđaju i to je tvoj stil. Ili daj Claude-u rils koji voliš i on napravi tvoj stil od njega, <b>sa tvojim fontovima i tvojim bojama.</b></p>
     </div>
 
-    <!-- Efekti -->
-    <div class="reveal" style="margin-top:120px">
-      <h2 class="display h2">Četiri od 46 efekata, na ekranu.</h2>
-      <p class="lead" style="margin-top:20px">Svaki klip ovde je pravi efekat, koji je Claude napravio na mom snimku.</p>
+    <!-- Svi efekti: kartice upisuje scripts/efekti.mjs iz efekti-za-sajt.json (npm run efekti) -->
+    <div class="fx-head reveal" id="svi-efekti">
+      <h2 class="display h2"><span data-fx-count>85</span> efekata.<br>Svi su ovde.</h2>
+      <p class="lead" style="margin-top:20px">Svaki klip je pravi efekat koji je Claude napravio na mom snimku. Izaberi one koji ti se sviđaju, a Claude ih ugradi u rils.</p>
     </div>
-    <div class="fx-feature reveal">
-      <div><div class="media"><video src="assets/efekti/type-wall.mp4" poster="assets/efekti/type-wall.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Type Wall</h4><div class="what"><span class="mono">Šta radi</span>Ogromne reči marširaju iza tebe i menjaju se na reč koju izgovoriš.</div></div>
-      <div><div class="media"><video src="assets/efekti/ui-world.mp4" poster="assets/efekti/ui-world.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>UI World</h4><div class="what"><span class="mono">Šta radi</span>Ekran aplikacije popuni kadar, a ti stojiš ispred njega.</div></div>
-      <div><div class="media"><video src="assets/efekti/couch-wall.mp4" poster="assets/efekti/couch-wall.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Couch Wall</h4><div class="what"><span class="mono">Šta radi</span>Naslovne slike tvojih rilsova postanu mreža na zidu iza tebe.</div></div>
-      <div><div class="media"><video src="assets/efekti/comment-bubble.mp4" poster="assets/efekti/comment-bubble.jpg" autoplay muted loop playsinline preload="metadata"></video></div><h4>Comment Bubble</h4><div class="what"><span class="mono">Šta radi</span>Komentar se sam ukuca, objavi, i stigne tvoj odgovor sa linkom.</div></div>
+    <div class="fx-filters" role="group" aria-label="Filter efekata">
+      <button type="button" class="fx-chip on" data-filter="sve">Svi</button>
+      <button type="button" class="fx-chip" data-filter="udica">Udica</button>
+      <button type="button" class="fx-chip" data-filter="objasnjenje">Objašnjenje</button>
+      <button type="button" class="fx-chip" data-filter="dokaz">Dokaz</button>
+      <button type="button" class="fx-chip" data-filter="poziv">Poziv na akciju</button>
+      <button type="button" class="fx-chip fx-chip-new" data-only-new aria-pressed="false">Prikaži samo nove (<span data-fx-new>39</span>)</button>
     </div>
-
-    <div class="fx-all reveal">
-      <h3 class="display h3">Svih 46 efekata.</h3>
-      <p class="muted" style="margin-top:10px">Koristi bilo koji, bilo gde u rilsu. Izaberi one koji ti se sviđaju.</p>
-      <ul class="fx-list">
-        <li><b>Orbit</b>Tvoji rilsovi kruže oko tebe.</li>
-        <li><b>Frame Break</b>Video se smanji u karticu, a ti iskočiš iz nje.</li>
-        <li><b>Type Wall</b>Ogromne reči marširaju iza tebe i menjaju se dok pričaš.</li>
-        <li><b>Digital Zoom</b>Polako približavanje licu, pa nagli zum na ključnoj reči.</li>
-        <li><b>Headline Wall</b>Zid iza tebe se popuni naslovima.</li>
-        <li><b>Zoom-Through Cut</b>Kamera proleti kroz tebe u sledeći kadar.</li>
-        <li><b>Clone</b>Još tebe se pojavi pored tebe, tačno na tvoje reči.</li>
-        <li><b>Couch Wall</b>Naslovne slike tvojih rilsova postanu mreža na zidu iza tebe.</li>
-        <li><b>UI World</b>Ekran aplikacije popuni kadar, a ti stojiš ispred njega.</li>
-        <li><b>The Stack</b>Kartice sa podacima i trkačkim stubićima se slažu iznad tebe.</li>
-        <li><b>Sticky Text</b>Etiketa zalepljena na kačket ili grudi koja se pomera sa tobom.</li>
-        <li><b>Spotlight</b>Soba se zatamni, ti ostaješ osvetljen, ključne reči padaju velike.</li>
-        <li><b>Freeze and Label</b>Slika se zamrzne i oznake pokazuju na tebe.</li>
-        <li><b>Phone Mockup</b>3D telefon uleti pored tebe i pušta ekran.</li>
-        <li><b>Checklist</b>Svaki korak se štiklira dok ga izgovaraš.</li>
-        <li><b>Pointer Callout</b>Kartice vezane za tebe linijama koje te prate.</li>
-        <li><b>Odometer</b>Brojevi se vrte cifru po cifru, kao brojač kilometara.</li>
-        <li><b>Before and After</b>Linija brisanja pretvara tvoj sirov klip u montažu.</li>
-        <li><b>Chart Grow</b>Grafikon se iscrta iza tebe i poleti na tvoju reč.</li>
-        <li><b>Freeze Sticker</b>Tvoj zamrznuti kadar postane isečena nalepnica sa rukom pisanim beleškama.</li>
-        <li><b>Comment Bubble</b>Komentar se sam ukuca, objavi, i stigne tvoj odgovor sa linkom.</li>
-        <li><b>Green Screen</b>Smanjiš se na dno, a ceo ekran postane ono o čemu pričaš.</li>
-        <li><b>Blackout</b>Svetla se ugase na tvojoj rečenici i upale na sledećoj.</li>
-        <li><b>Timeline Burn</b>Timeline za montažu se izgradi ispred tebe, pa se zapali na tvoju reč.</li>
-        <li><b>Pull-Back Reveal</b>Video se smanji u karticu u prozoru aplikacije i gledaš kako se montira.</li>
-        <li><b>Knockout Tiles</b>Pločice sa imenima udaraju u zid iza tebe i ispadaju jedna po jedna.</li>
-        <li><b>Shatter 3D</b>Kadar se razbije u staklo koje lebdi, pa se rasprsne i otkrije tebe.</li>
-        <li><b>Paper Cut</b>Soba se pocepa u kolaž od papira sa slovima kao iz pisma ucene.</li>
-        <li><b>Doodle Boil</b>Linija kredom te ocrta, a crteži se sami crtaju na tvoje reči.</li>
-        <li><b>Code Scan</b>Slika se pretvori u kod, pa nazad.</li>
-        <li><b>Word Pile</b>Stvari koje nabrojiš padaju kao čvrsti blokovi i slažu se na liniji.</li>
-        <li><b>Vertigo</b>Ti stojiš mirno dok se soba iza tebe razvlači.</li>
-        <li><b>Inside Out</b>Tvoje telo postane prozor u drugi klip, pa soba postane on.</li>
-        <li><b>Scene Text</b>Reč se odštampa preko tvog pravog zida, pa dve velike reči padnu na njega.</li>
-        <li><b>Cover Story</b>Tvoj kadar postane naslovna strana časopisa dok ti i dalje pričaš.</li>
-        <li><b>Neon Sign</b>Tvoja fraza zasvetli kao neonski natpis na zidu.</li>
-        <li><b>Spatial Glass</b>Tri mutna staklena panela lebde oko tebe za tri koraka.</li>
-        <li><b>Rack Focus</b>Fokus prelazi sa tebe na naslov, kao pravo sočivo.</li>
-        <li><b>God Rays</b>Soba se zatamni i svetlo probija iza tvoje glave.</li>
-        <li><b>Glass Type</b>Jedna reč u debelom providnom staklu na tvom zidu.</li>
-        <li><b>Depth Scatter</b>Tvoje prve reči padaju u različitim veličinama i izlaze iz fokusa.</li>
-        <li><b>Stat Stack</b>Broj koji izgovoriš padne ogroman, sa sitnom linijom ispod.</li>
-        <li><b>Dot Counter</b>Tačka se pojavi za svaku stvar koju ćeš pokriti.</li>
-        <li><b>Chip Row</b>Pilula se pojavi ispod titlova za svaku stvar koju nabrojiš.</li>
-        <li><b>Prompt Box</b>Ono što kažeš AI-ju se samo ukuca u stakleni okvir.</li>
-        <li><b>Serif Flow</b>Tamna kartica crta tvoj proces korak po korak serifnim fontom.</li>
-      </ul>
-    </div>
+    <ul class="fx-grid">
+        <!-- efekti:start -->
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/orbit.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/orbit.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Orbit</h4>
+          <p>Tvoji rilsi kruže oko tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/couch-wall.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/couch-wall.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Couch Wall</h4>
+          <p>Naslovne slike tvojih rilsova postanu mreža na zidu iza tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/ui-world.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/ui-world.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>UI World</h4>
+          <p>Ekran aplikacije ispuni kadar, a ti stojiš ispred njega.</p>
+        </li>
+        <li class="fx-card" data-uloga="poziv">
+          <div class="media"><img src="assets/efekti-svi/freeze-sticker.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/freeze-sticker.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Freeze Sticker</h4>
+          <p>Zamrznut kadar postane isečena nalepnica sa beleškama pisanim rukom.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/frame-break.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/frame-break.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Frame Break</h4>
+          <p>Video se smanji u karticu, a ti iskočiš iz nje.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/type-wall.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/type-wall.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Type Wall</h4>
+          <p>Ogromne reči marširaju iza tebe i menjaju se dok pričaš.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/the-stack.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/the-stack.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>The Stack</h4>
+          <p>Kartice sa podacima i trakama koje jure slažu se iznad tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/digital-zoom.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/digital-zoom.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Digital Zoom</h4>
+          <p>Spor prilaz ka licu, pa nagli trzaj na ključnoj reči.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/sticky-text.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/sticky-text.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Sticky Text</h4>
+          <p>Etiketa zalepljena za kapu ili grudi koja se kreće s tobom.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/odometer.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/odometer.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Odometer</h4>
+          <p>Brojevi se okreću cifru po cifru, kao brojač kilometara.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/spotlight.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/spotlight.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Spotlight</h4>
+          <p>Soba se zamrači, ti ostaješ osvetljen, ključne reči slete velike.</p>
+        </li>
+        <li class="fx-card" data-uloga="poziv">
+          <div class="media"><img src="assets/efekti-svi/comment-bubble.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/comment-bubble.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Comment Bubble</h4>
+          <p>Komentar se sam ukuca i objavi, pa stigne tvoj odgovor sa linkom.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/freeze-and-label.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/freeze-and-label.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Freeze and Label</h4>
+          <p>Slika se zamrzne, a natpisi pokazuju na tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/phone-mockup.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/phone-mockup.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Phone Mockup</h4>
+          <p>3D telefon doleti pored tebe i na njemu ide snimak ekrana.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/checklist.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/checklist.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Checklist</h4>
+          <p>Svaki korak se štiklira dok ga izgovaraš.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/headline-wall.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/headline-wall.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Headline Wall</h4>
+          <p>Zid iza tebe se ispuni naslovima.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/zoom-through-cut.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/zoom-through-cut.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Zoom-Through Cut</h4>
+          <p>Kamera proleti kroz tebe u sledeći kadar.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/clone.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/clone.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Clone</h4>
+          <p>Još tvojih kopija iskoči pored tebe, tačno na tvoje reči.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/before-and-after.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/before-and-after.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Before and After</h4>
+          <p>Linija prelaza pretvara tvoj sirovi snimak u montiran.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/chart-grow.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/chart-grow.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Chart Grow</h4>
+          <p>Grafikon se iscrta iza tebe i poleti na tvoju reč.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/pointer-callout.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/pointer-callout.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Pointer Callout</h4>
+          <p>Kartice vezane za tebe linijama koje te prate.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/blackout.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/blackout.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Blackout</h4>
+          <p>Svetla se ugase na tvojoj rečenici i vrate na sledećoj.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/timeline-burn.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/timeline-burn.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Timeline Burn</h4>
+          <p>Montažna traka se slaže ispred tebe, pa se zapali na tvoju reč.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/pull-back-reveal.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/pull-back-reveal.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Pull-Back Reveal</h4>
+          <p>Video se smanji u karticu u prozoru aplikacije i gledaš kako ga montiraju.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/knockout-tiles.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/knockout-tiles.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Knockout Tiles</h4>
+          <p>Pločice sa imenima udare o zid iza tebe i ispadaju jedna po jedna.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/green-screen.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/green-screen.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Green Screen</h4>
+          <p>Ti se smanjiš na dno, a ceo ekran postane ono o čemu pričaš.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/shatter-3d.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/shatter-3d.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Shatter 3D</h4>
+          <p>Kadar se raspadne u staklo koje lebdi, pa se razbije i otkrije tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/paper-cut.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/paper-cut.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Paper Cut</h4>
+          <p>Soba se pocepa u papirni kolaž sa slovima isečenim iz novina.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/doodle-boil.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/doodle-boil.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Doodle Boil</h4>
+          <p>Linija kredom te ocrta, a crteži se sami crtaju na tvoje reči.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/code-scan.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/code-scan.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Code Scan</h4>
+          <p>Slika se pretvori u kod, pa nazad.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/word-pile.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/word-pile.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Word Pile</h4>
+          <p>Stvari koje pomeneš padaju kao čvrsti blokovi i slažu se na liniju.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/vertigo.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/vertigo.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Vertigo</h4>
+          <p>Ti stojiš mirno, a soba se razvlači iza tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/inside-out.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/inside-out.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Inside Out</h4>
+          <p>Tvoje telo postane prozor u drugi snimak, a onda ga postane i cela soba.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/scene-text.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/scene-text.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Scene Text</h4>
+          <p>Reč se ispiše preko tvog pravog zida, pa na nju slete dve velike reči.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/cover-story.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/cover-story.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Cover Story</h4>
+          <p>Tvoj kadar postane naslovna strana magazina dok ti pričaš dalje.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/neon-sign.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/neon-sign.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Neon Sign</h4>
+          <p>Tvoja fraza zasvetli kao neonski natpis na zidu.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/spatial-glass.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/spatial-glass.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Spatial Glass</h4>
+          <p>Tri mutna staklena panela lebde oko tebe za tri koraka.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/rack-focus.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/rack-focus.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Rack Focus</h4>
+          <p>Fokus pređe sa tebe na naslov, kao pravi objektiv.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/god-rays.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/god-rays.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>God Rays</h4>
+          <p>Soba se zatamni, a svetlo probije iza tvoje glave.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/glass-type.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/glass-type.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Glass Type</h4>
+          <p>Jedna reč od debelog providnog stakla na tvom zidu.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica">
+          <div class="media"><img src="assets/efekti-svi/depth-scatter.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/depth-scatter.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Depth Scatter</h4>
+          <p>Tvoje prve reči slete u različitim veličinama i odu van fokusa.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz">
+          <div class="media"><img src="assets/efekti-svi/stat-stack.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/stat-stack.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Stat Stack</h4>
+          <p>Broj koji izgovoriš sleti ogroman, sa sitnim redom ispod.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/dot-counter.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/dot-counter.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Dot Counter</h4>
+          <p>Za svaku stvar koju ćeš pokriti iskoči po jedna tačka.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/chip-row.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/chip-row.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Chip Row</h4>
+          <p>Za svaku stvar koju nabrojiš ispod titlova iskoči po jedna pilula.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/prompt-box.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/prompt-box.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Prompt Box</h4>
+          <p>Ono što kažeš AI-ju samo se ukuca u stakleni okvir.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje">
+          <div class="media"><img src="assets/efekti-svi/serif-flow.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/serif-flow.mp4" muted loop playsinline preload="none"></video></div>
+          <h4>Serif Flow</h4>
+          <p>Tamna kartica crta tvoj proces korak po korak serif slovima.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/hook-stack.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/hook-stack.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Hook Stack</h4>
+          <p>Prvi red pada slovo po slovo iza tvoje glave, soba postaje zelena, a sledeće reči se guraju jedna za drugom.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/letter-stamp.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/letter-stamp.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Letter Stamp</h4>
+          <p>Jedna ogromna reč slovo po slovo iza tvoje glave, utisnuta ili pala uz odskok.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/frame-sheet.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/frame-sheet.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Frame Sheet</h4>
+          <p>Kadar se smanji u mrežu, polja se pune tvojim kadrovima jedno po jedno, pa uroniš nazad.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/feed-flick.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/feed-flick.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Feed Flick</h4>
+          <p>Fid leti sve brže i zakoči tačno na tebi.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/phone-dive.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/phone-dive.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Phone Dive</h4>
+          <p>Naslovna kartica, pa se kadar smanji u telefon i uroni nazad.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/iris-card.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/iris-card.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Iris Card</h4>
+          <p>Iris se zatvori na tvom licu, a kartica kao iz nemog filma slaže tvoju rečenicu.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/picture-loop.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/picture-loop.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Picture Loop</h4>
+          <p>Smanjiš se u uramljenu sliku samog sebe, nekoliko nivoa duboko, pa izletiš nazad.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/plate-word.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/plate-word.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Plate Word</h4>
+          <p>Titlovi rastu, pa jedna ogromna reč iseče papir, a video se vrti kroz slova.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/grid-snap.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/grid-snap.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Grid Snap</h4>
+          <p>Smanjiš se u sredinu mreže 3x3 od tvojih videa, pa se vratiš preko celog kadra.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/slab-caption.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/slab-caption.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Slab Caption</h4>
+          <p>Reč izraste u veliku ploču na vrhu, a ispod brade legne završna rečenica.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/lens-readout.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/lens-readout.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Lens Readout</h4>
+          <p>Skala objektiva se vrti dok se kadar širi, pa sledeće reči niču slovo po slovo.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/split-grade.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/split-grade.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Split Grade</h4>
+          <p>Nagnuta linija deli lice na staru i novu boju, pa prebriše ceo kadar.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/grade-curtain.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/grade-curtain.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Grade Curtain</h4>
+          <p>Na reč, tamna boja padne preko kadra kao zavesa, sa zrnom i tamnim ivicama.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/film-cut.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/film-cut.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Film Cut</h4>
+          <p>Oštar prelaz u filmsku boju za jednu rečenicu: duboke crne, hladne senke, topla svetla.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/film-gate.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/film-gate.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Film Gate</h4>
+          <p>Kadar postaje 35mm film: perforacije, zvučni trag od tvog glasa, treperenje i prašina.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/color-picker.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/color-picker.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Color Picker</h4>
+          <p>Kapaljka uzima pet pravih boja iz kadra u paletu, a one se menjaju sa bojom snimka.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/receipt-print.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/receipt-print.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Receipt Print</h4>
+          <p>Štampač iznad glave štampa tvoje uputstvo kao račun, otcepi ga i baci.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/app-delete.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/app-delete.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>App Delete</h4>
+          <p>Pločice se tresu i brišu se jedna po jedna kako ih imenuješ.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/strike-tiles.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/strike-tiles.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Strike Tiles</h4>
+          <p>Pločice iskaču na imena, crvena olovka ih precrtava, padnu, a ostane jedna reč.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/key-rain.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/key-rain.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Key Rain</h4>
+          <p>Tasteri padaju i gomilaju se na tvojoj glavi, pa ih nešto počisti.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/note-thread.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/note-thread.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Note Thread</h4>
+          <p>Kartica iskoči, tvoja beleška se ispiše, a odgovor stigne ispod nje.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/marked-sheet.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/marked-sheet.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Marked Sheet</h4>
+          <p>List filmskih traka sa tvojim kadrovima, a crvena olovka zaokružuje šta je izbačeno.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/board-deal.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/board-deal.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Board Deal</h4>
+          <p>Storibord od tvojih pravih kadrova se deli kao karte, okreće se i dobija belešku.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/file-drop.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/file-drop.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>File Drop</h4>
+          <p>Tvoj sirovi fajl upadne u polje, otvori se kao plejer, a pečati udaraju po lošim delovima.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/script-page.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/script-page.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Script Page</h4>
+          <p>Kadar postaje scenario sa tvojim rečima, a reči se označavaju dok ih izgovaraš.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/pencil-mark.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/pencil-mark.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Pencil Mark</h4>
+          <p>Kadar postane crno-beo, crvena olovka zaokruži tvoju glavu i dopiše reč sa strelicom.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/wipe-set.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/wipe-set.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Wipe Set</h4>
+          <p>Prelaz na rezu u obliku po izboru: iris, roletne, vrata ili sat.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/camera-cuts.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/camera-cuts.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Camera Cuts</h4>
+          <p>Pokret kamere na rezu po izboru: trzaj, zum, okret, guranje ili pad.</p>
+        </li>
+        <li class="fx-card" data-uloga="poziv" data-novo>
+          <div class="media"><img src="assets/efekti-svi/comment-flow.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/comment-flow.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Comment Flow</h4>
+          <p>Polje za komentar ukuca ključnu reč i objavi je, stigne odgovor, pa se pritisne dugme za praćenje.</p>
+        </li>
+        <li class="fx-card" data-uloga="poziv" data-novo>
+          <div class="media"><img src="assets/efekti-svi/comment-letters.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/comment-letters.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Comment Letters</h4>
+          <p>Slova ključne reči padaju u 3D u polje za komentar, pa se objavi.</p>
+        </li>
+        <li class="fx-card" data-uloga="objasnjenje" data-novo>
+          <div class="media"><img src="assets/efekti-svi/prompt-send.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/prompt-send.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Prompt Send</h4>
+          <p>Traka ukuca šta tražiš od AI, pošalje, i stigne rezultat.</p>
+        </li>
+        <li class="fx-card" data-uloga="udica" data-novo>
+          <div class="media"><img src="assets/efekti-svi/cover-build.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/cover-build.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Cover Build</h4>
+          <p>Cela naslovna strana magazina se slaže iza tvoje glave: naslov, linije, bar kod, nalepnica.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/edit-timeline.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/edit-timeline.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Edit Timeline</h4>
+          <p>Tamni panel slaže pravi tajmlajn ovog rilsa sloj po sloj, a glava preleti preko njega.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/counter-dive.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/counter-dive.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Counter Dive</h4>
+          <p>Brojač se vrti od dužine sirovog snimka do gotovog rilsa, pa kadar uroni u samog sebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/page-roll.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/page-roll.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Page Roll</h4>
+          <p>Stranica se podigne, skroluje kao snimak ekrana i osvetljava redove koje pominješ.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/reel-rain.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/reel-rain.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Reel Rain</h4>
+          <p>Osam tvojih videa se prevrće iz mraka i slaže u zid iza tebe.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/live-grid.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/live-grid.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Live Grid</h4>
+          <p>Šest tvojih videa, svi puštaju, padaju u mrežu iza tebe sa pravom težinom.</p>
+        </li>
+        <li class="fx-card" data-uloga="poziv" data-novo>
+          <div class="media"><img src="assets/efekti-svi/walk-card.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/walk-card.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Walk Card</h4>
+          <p>Kartica se otvori, plej se pritisne na reč, a poglavlja tvog videa promiču unutra.</p>
+        </li>
+        <li class="fx-card" data-uloga="dokaz" data-novo>
+          <div class="media"><img src="assets/efekti-svi/room-swap.jpg" alt="" loading="lazy" decoding="async"><video data-src="assets/efekti-svi/room-swap.mp4" muted loop playsinline preload="none"></video><span class="fx-new mono">Novo</span></div>
+          <h4>Room Swap</h4>
+          <p>Tvoj video zameni sobu iza tebe, poglavlje po poglavlje.</p>
+        </li>
+        <!-- efekti:end -->
+    </ul>
+    <div class="fx-more"><button type="button" class="fx-more-btn mono" hidden>Prikaži još</button></div>
+    <p class="fx-note muted">Boju efekata biraš sam. Primeri su u narandžastoj.</p>
 
     <div class="cta reveal">
       <a class="btn js-buy" href="#cena">Neka Claude montira moje rilsove</a>
@@ -299,8 +679,8 @@
           <p>9 gotovih stilova montaže, 5 za njega i 4 za nju, plus 20 stilova titlova. Izaberi šta ti se sviđa. <b>Ili daj Claude-u rils koji voliš i on napravi stil samo za tebe.</b></p>
         </div></div>
         <div class="item"><span class="n">02</span><div>
-          <h3>FX paket: 46 efekata</h3>
-          <p>46 vizuelnih efekata, na primer ogromne reči iza tebe ili ekran aplikacije preko celog kadra. <b>Izabereš one koji ti se sviđaju, a Claude ih ugradi u rils.</b></p>
+          <h3>FX paket: <span data-fx-count>85</span> efekata</h3>
+          <p><span data-fx-count>85</span> vizuelnih efekata, na primer ogromne reči iza tebe ili ekran aplikacije preko celog kadra. <b>Izabereš one koji ti se sviđaju, a Claude ih ugradi u rils.</b></p>
         </div></div>
         <div class="item"><span class="n">03</span><div>
           <h3>Pravila zvuka</h3>
@@ -553,7 +933,7 @@
         <!-- Value stack: procena vrednosti, menjaj slobodno -->
         <div class="stack">
           <div class="stack-row"><span>Look Builder: 9 stilova montaže i 20 stilova titlova</span><b>97€</b></div>
-          <div class="stack-row"><span>FX paket: 46 efekata</span><b>67€</b></div>
+          <div class="stack-row"><span>FX paket: <span data-fx-count>85</span> efekata</span><b>67€</b></div>
           <div class="stack-row"><span>Probni rilsovi</span><b>47€</b></div>
           <div class="stack-row"><span>Carousel Studio</span><b>47€</b></div>
           <div class="stack-row"><span>Automatsko objavljivanje i zakazivanje</span><b>37€</b></div>
@@ -566,7 +946,7 @@
         <p style="font-weight:600;font-size:19px"><span data-t="price">97€</span> jednom, bez pretplate. <span data-launch-only><span data-label="short">Cena raste za</span> <span data-countdown="days">2 dana</span>.</span></p>
         <ul class="list">
           <li><b>Look Builder:</b> 9 stilova montaže, 20 stilova titlova, ili tvoj</li>
-          <li><b>FX paket:</b> 46 video efekata</li>
+          <li><b>FX paket:</b> <span data-fx-count>85</span> video efekata</li>
           <li><b>Probni rilsovi:</b> koliko god verzija hoćeš, objavljene kao probni rilsovi na Instagramu</li>
           <li><b>Carousel Studio:</b> 8 izgleda, ili nalepi link i napravi svoj</li>
           <li><b>Automatsko objavljivanje i zakazivanje:</b> Instagram, TikTok, YouTube Shorts, Facebook i druge mreže</li>
@@ -658,7 +1038,7 @@
         <details><summary>Da li radi na srpskom?</summary>
         <p>Da. Pri podešavanju biraš srpski, hrvatski, bosanski ili engleski, i titlovi prate ono što zaista kažeš. Prepis radi besplatno na tvom računaru. Ako hoćeš tačnije titlove na našem jeziku (imena, padeži, naši izrazi), možeš da povežeš Soniox, koji košta par centi po rilsu.</p></details>
         <details><summary>Da li će moji rilsovi izgledati kao tvoji?</summary><p>Samo ako to želiš. Ima 9 gotovih stilova montaže i 20 stilova titlova za biranje, ili daš Claude-u rils koji voliš i Look Builder napravi tvoj, sa tvojim fontovima i bojama.</p></details>
-        <details><summary>Po čemu se ovo razlikuje od skill-a iz tvog rilsa?</summary><p>Skill iz mog rilsa je originalni. Ima tri izgleda i možeš da nastaviš da ga koristiš. AI Video Editor je ono što su ljudi tražili posle: 46 efekata, 20 stilova titlova i 9 stilova montaže, Look Builder (daš Claude-u rils koji voliš i on napravi tvoj stil), probni rilsovi objavljeni umesto tebe, Carousel Studio, zvuk postavljen umesto tebe, GIF finder i snimci kako ja montiram. Ako ti je original dovoljan, zadrži njega.</p></details>
+        <details><summary>Po čemu se ovo razlikuje od skill-a iz tvog rilsa?</summary><p>Skill iz mog rilsa je originalni. Ima tri izgleda i možeš da nastaviš da ga koristiš. AI Video Editor je ono što su ljudi tražili posle: <span data-fx-count>85</span> efekata, 20 stilova titlova i 9 stilova montaže, Look Builder (daš Claude-u rils koji voliš i on napravi tvoj stil), probni rilsovi objavljeni umesto tebe, Carousel Studio, zvuk postavljen umesto tebe, GIF finder i snimci kako ja montiram. Ako ti je original dovoljan, zadrži njega.</p></details>
         <details><summary>Zar ne mogu sam da ovo napravim sa Claude-om?</summary><p>Možeš, ali verovatno nećeš dobiti ovako dobre rezultate. Proveo sam preko 40 sati praveći i testirajući ovo na pravim klipovima da bi zvukovi, titlovi i efekti izgledali kako treba. Plaćaš da preskočiš tu nedelju rada.</p></details>
         <details><summary>Da li je ovo kurs?</summary><p>Ne. Postoje kratki snimci da me gledaš dok radim, a ostalo su alati. Ne učiš da montiraš.</p></details>
         <details><summary>Mogu li da probam pre kupovine?</summary><p>Nema probnog perioda ni povraćaja novca, jer kad ga kupiš, ceo AI Video Editor je instaliran na tvom računaru i ne može da se vrati. Zato prvo isprobaj besplatni skill iz mog rilsa: AI Video Editor radi na isti način, samo sa mnogo više. Ako imaš pitanje pre kupovine, pošalji mejl na <a class="js-mail todo" href="#">[UBACI mejl za podršku]</a>.</p></details>
