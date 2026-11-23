@@ -45,5 +45,10 @@ html = html.replace(/(<[^>]*data-fx-new[^>]*>)\d+(<)/g, `$1${data.novo_u_1_2_0}$
 html = html.replace(/(<meta name="description" content="[^"]*?)\d+ efekata/, `$1${data.ukupno} efekata`);
 writeFileSync(indexUrl, html);
 
+for (const f of ["checkout.html", "hvala.html"]) {
+  const url = new URL(`../public/${f}`, import.meta.url);
+  writeFileSync(url, readFileSync(url, "utf8").replace(/(<[^>]*data-fx-count[^>]*>)\d+(<)/g, `$1${data.ukupno}$2`));
+}
+
 if (cards.length !== data.ukupno) console.warn(`Pažnja: JSON kaže ${data.ukupno}, a efekata ima ${cards.length}`);
 console.log(`${cards.length} efekata (${data.efekti.filter((e) => e.novo).length} novih) upisano u index.html, fajlovi u public/assets/efekti-svi/`);

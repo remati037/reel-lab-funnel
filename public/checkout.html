@@ -165,7 +165,7 @@
         <p class="inc">Šta je uključeno: devet stvari</p>
         <ol>
           <li><span>01</span>Look Builder</li>
-          <li><span>02</span>FX paket: 46 efekata</li>
+          <li><span>02</span><div>FX paket: <b data-fx-count style="font-weight:inherit">85</b> efekata</div></li>
           <li><span>03</span>Probni rilsovi, objavljeni umesto tebe</li>
           <li><span>04</span>Carousel Studio</li>
           <li><span>05</span>Automatsko objavljivanje i zakazivanje</li>
@@ -180,7 +180,7 @@
         <div class="sum"><span>Ukupno danas</span><b data-sum>97€</b></div>
 
         <p class="now"><span>Pristup dobijaš odmah. Svih devet delova odjednom. <a href="index.html#sta-dobijas">Pogledaj svih devet na prodajnoj stranici.</a></span></p>
-        <p class="closes" data-launch-only>Cena je 97€ do kraja srede, 11. novembra, a posle toga 200€.</p>
+        <p class="closes" data-launch-only>Cena je 97€ do kraja nedelje, 29. novembra, a posle toga 200€.</p>
       </div>
 
       <!-- Sakriveno dok se ne potvrdi pravi autor utiska (brojku 4x zadrži) -->
@@ -197,8 +197,8 @@
 
 <script>
   // Ista cena kao na landingu (script.js → CONFIG.phases) i na serveru (LAUNCH_UNTIL u wrangler.jsonc):
-  // 97€ do kraja 11. novembra, posle toga 200€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
-  const LAUNCH_UNTIL = new Date("2026-11-12T00:00:00+01:00").getTime();
+  // 97€ do kraja 29. novembra, posle toga 200€ bez roka. Pravi iznos uvek dolazi iz Stripe sesije.
+  const LAUNCH_UNTIL = new Date("2026-11-30T00:00:00+01:00").getTime();
   const launch = Date.now() < LAUNCH_UNTIL;
   document.querySelectorAll("[data-total]").forEach((el) => (el.textContent = launch ? "97€" : "200€"));
   document.querySelectorAll("[data-launch-only]").forEach((el) => (el.hidden = !launch));
